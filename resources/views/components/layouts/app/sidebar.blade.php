@@ -5,6 +5,15 @@
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+            <flux:sidebar.header>
+                <flux:sidebar.brand
+                        href="#"
+                        logo="https://fluxui.dev/img/demo/logo.png"
+                        logo:dark="https://fluxui.dev/img/demo/dark-mode-logo.png"
+                        name="ЭДО"
+                />
+                <flux:sidebar.collapse class="lg:hidden" />
+            </flux:sidebar.header>
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
