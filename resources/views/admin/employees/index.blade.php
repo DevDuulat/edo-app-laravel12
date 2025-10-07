@@ -2,7 +2,10 @@
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Сотрудники</h1>
+                <flux:breadcrumbs>
+                    <flux:breadcrumbs.item href="{{route('dashboard')}}">Панель управление</flux:breadcrumbs.item>
+                    <flux:breadcrumbs.item>{{ __('Сотрудники') }}</flux:breadcrumbs.item>
+                </flux:breadcrumbs>
                 @if(isset($department))
                     <h2 class="text-xl font-semibold mt-1 text-gray-800 dark:text-gray-200">
                         Департамент: "{{ $department->name }}"
