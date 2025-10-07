@@ -1,7 +1,10 @@
 <x-layouts.app :title="__('Departments')">
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between">
-            <h1 class="text-3xl font-semibold text-gray-900 dark:text-gray-100">{{ __('Департамент') }}</h1>
+            <flux:breadcrumbs>
+                <flux:breadcrumbs.item href="{{route('dashboard')}}">Панель управление</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item>{{ __('Департамент') }}</flux:breadcrumbs.item>
+            </flux:breadcrumbs>
             <a href="{{ route('admin.departments.create') }}"  class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
                 {{ __('Добавить департамент') }}
             </a>
@@ -26,19 +29,29 @@
                         <td class="px-6 py-4">{{ $department->location ?? '-' }}</td>
                         <td class="px-6 py-4">{{ $department->created_at }}</td>
                         <td class="px-6 py-4 flex gap-2">
-                            <a href="{{ route('admin.departments.edit', $department) }}"
-                               class="px-3 py-1 bg-gray-600 dark:bg-gray-700 text-white text-sm font-medium rounded-lg shadow hover:bg-gray-500 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
-                                Редактировать
-                            </a>
 
-                            <form action="{{ route('admin.departments.destroy', $department) }}" method="POST" onsubmit="return confirm('Вы уверены что хотите удалить?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit"
-                                        class="px-3 py-1 bg-red-600 dark:bg-red-700 text-white text-sm font-medium rounded-lg shadow hover:bg-red-500 dark:hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 transition-all duration-200">
-                                    Удалить
-                                </button>
-                            </form>
+                            <flux:button
+                                    href="{{ route('admin.departments.edit', $department) }}"
+                                    icon="pencil-square">
+                            </flux:button>
+                            <flux:button
+                                    icon="trash"
+                                    icon-only
+                                    class="text-red-600 hover:text-red-500"
+                                    title="Удалить"
+                                    onclick="
+                                    if (!confirm('Вы уверены что хотите удалить?')) return;
+                                    fetch('{{ route('admin.departments.destroy', $department) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ _method: 'DELETE' })
+                                    }).then(() => location.reload());
+                                "
+                            />
+
                         </td>
 
                     </tr>
@@ -48,7 +61,7 @@
         </div>
 
         <div class="mt-4">
-{{--            {{ $departments->links() }} <!-- Пагинация, если используешь paginate() -->--}}
+            {{ $departments->links() }}
         </div>
     </div>
 </x-layouts.app>

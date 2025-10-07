@@ -1,5 +1,10 @@
 <x-layouts.app :title="__('Создать Департамент')">
     <div class="flex flex-col flex-1 w-full h-full gap-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-xl shadow-lg">
+        <flux:breadcrumbs>
+            <flux:breadcrumbs.item href="{{route('dashboard')}}">Панель управление</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item href="{{route('admin.departments.index')}}">{{ __('Департамент') }}</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Создание Департамента</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
         <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">
             {{ __('Создать Департамент') }}
         </h1>

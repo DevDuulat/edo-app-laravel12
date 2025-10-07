@@ -48,24 +48,35 @@
                         </a>
                     </td>
                     <td class="px-6 py-4 flex gap-2 justify-left">
-                        <a href="{{ route('admin.employees.show', $employee) }}"
-                           class="px-3 py-1 bg-gray-600 dark:bg-gray-700 text-white text-sm font-medium rounded-lg shadow hover:bg-gray-500 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
-                            Посмотреть
-                        </a>
 
-                        <a href="{{ route('admin.employees.edit', $employee) }}"
-                           class="px-3 py-1 bg-gray-600 dark:bg-gray-700 text-white text-sm font-medium rounded-lg shadow hover:bg-gray-500 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition-all duration-200">
-                            Редактировать
-                        </a>
+                        <flux:button
+                                href="{{ route('admin.employees.show', $employee) }}"
+                                icon="eye">
+                        </flux:button>
+                        <flux:button
+                                href="{{ route('admin.employees.edit', $employee) }}"
+                                icon="pencil-square">
+                        </flux:button>
 
-                        <!-- Delete -->
-                        <form action="{{ route('admin.employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-3 py-1 text-sm font-medium rounded-lg bg-red-600 dark:bg-red-700 text-white hover:bg-red-500 dark:hover:bg-red-600 shadow transition-all duration-200">
-                                Удалить
-                            </button>
-                        </form>
+                        <flux:button
+                                icon="trash"
+                                icon-only
+                                class="text-red-600 hover:text-red-500"
+                                title="Удалить"
+                                onclick="
+                                    if (!confirm('Вы уверены что хотите удалить?')) return;
+                                    fetch('{{ route('admin.employees.destroy', $employee) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ _method: 'DELETE' })
+                                    }).then(() => location.reload());
+                                "
+                        />
+
+
                     </td>
                 </tr>
             @endforeach
