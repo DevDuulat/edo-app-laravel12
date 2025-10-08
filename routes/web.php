@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SsoController;
+use App\Http\Controllers\UserController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -37,9 +39,9 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('admin.user.index');
+    Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
 
-    Route::get('/sso/callback', [\App\Http\Controllers\SsoController::class, 'callback']);
+    Route::get('/sso/callback', [SsoController::class, 'callback']);
 
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::resource('departments', DepartmentController::class);
