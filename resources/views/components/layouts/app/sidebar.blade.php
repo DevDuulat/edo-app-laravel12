@@ -19,11 +19,11 @@
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
 {{--                <x-app-logo />--}}
             </a>
-
-            <flux:sidebar.group expandable heading="Менеджмент" class="grid">
                 <flux:sidebar.item icon="home" :href="route('dashboard')" wire:navigate>
                     Панель управления
                 </flux:sidebar.item>
+            <flux:sidebar.group expandable heading="Менеджмент" class="grid">
+
 
                 <flux:sidebar.item icon="user" :href="route('admin.departments.index')" wire:navigate>
                     Департаменты
