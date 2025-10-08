@@ -11,7 +11,7 @@ class EmployeeController extends Controller
 {
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::query()->paginate(10);
         return view('admin.employees.index', compact('employees'));
     }
 
@@ -111,7 +111,7 @@ class EmployeeController extends Controller
 
     public function byDepartment(Department $department)
     {
-        $employees = $department->employees()->with('department')->get();
+        $employees = $department->employees()->with('department')->paginate(10);
 
         return view('admin.employees.index', compact('employees', 'department'));
     }
