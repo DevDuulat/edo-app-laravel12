@@ -1,10 +1,30 @@
 <x-layouts.app :title="__('Редактировать Сотрудника')">
-
-    <div class="flex flex-col flex-1 w-full h-full gap-6 p-6 bg-gray-50 dark:bg-gray-900 rounded-xl shadow-lg">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-6">
-            {{ __('Редактировать Сотрудника') }}
-        </h1>
-
+    <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
+        <div class="flex items-center justify-between">
+            <nav class="flex px-5 py-3 text-gray-700 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="{{route('dashboard')}}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-zinc-800 dark:text-gray-400 dark:hover:text-white">
+                            <x-icon.home-icon/>
+                            Панель управление
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <x-icon.arrow-breadcrumb-icon/>
+                            <a href="{{route('admin.employees.index')}}" class="ms-1 text-sm font-medium text-gray-700 hover:text-zinc-800 md:ms-2 dark:text-gray-400 dark:hover:text-white">{{ __('Сотрудники') }}</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <x-icon.arrow-breadcrumb-icon/>
+                            <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Редактирование Сотрудника</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <div class="px-5 py-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <form action="{{ route('admin.employees.update', $employee) }}" method="POST" enctype="multipart/form-data" class="grid gap-5 max-w-5xl md:grid-cols-2">
             @csrf
             @method('PUT')
@@ -121,6 +141,7 @@
             </div>
 
         </form>
+    </div>
     </div>
 
     <!-- Скрипт превью аватара -->

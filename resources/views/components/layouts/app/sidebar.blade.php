@@ -20,7 +20,7 @@
 {{--                <x-app-logo />--}}
             </a>
 
-            <flux:sidebar.group expandable heading="Избранное" class="grid">
+            <flux:sidebar.group expandable heading="Менеджмент" class="grid">
                 <flux:sidebar.item icon="home" :href="route('dashboard')" wire:navigate>
                     Панель управления
                 </flux:sidebar.item>

@@ -1,9 +1,33 @@
 <x-layouts.app :title="$employee->full_name">
-
-    <div class="p-6 bg-gray-50 dark:bg-gray-900 rounded-xl shadow-lg max-w-lg mx-auto">
+    <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
+        <div class="flex items-center justify-between">
+            <nav class="flex px-5 py-3 text-gray-700 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="{{route('dashboard')}}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-zinc-800 dark:text-gray-400 dark:hover:text-white">
+                            <x-icon.home-icon/>
+                            Панель управление
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <x-icon.arrow-breadcrumb-icon/>
+                            <a href="{{route('admin.employees.index')}}" class="ms-1 text-sm font-medium text-gray-700 hover:text-zinc-800 md:ms-2 dark:text-gray-400 dark:hover:text-white">{{ __('Сотрудники') }}</a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <x-icon.arrow-breadcrumb-icon/>
+                            <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Редактирование Сотрудника</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+        </div>
+    <div class="p-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
 
         <!-- Аватар -->
-        <div class="flex justify-center mb-4">
+        <div class="flex justify-left mb-4">
             @if ($employee->avatar_url)
                 <img src="{{ asset('storage/' . $employee->avatar_url) }}"
                      alt="{{ $employee->full_name }}"

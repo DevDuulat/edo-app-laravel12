@@ -1,18 +1,32 @@
 <x-layouts.app :title="__('Departments')">
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between">
-            <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="{{route('dashboard')}}">Панель управление</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>{{ __('Департамент') }}</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
+            <!-- Breadcrumb -->
+            <nav class="flex px-5 py-3 text-gray-700 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="{{route('dashboard')}}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-zinc-800 dark:text-gray-400 dark:hover:text-white">
+                            <x-icon.home-icon/>
+                            Панель управление
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <x-icon.arrow-breadcrumb-icon/>
+                            <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">{{ __('Департамент') }}</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
             <a href="{{ route('admin.departments.create') }}"  class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
                 {{ __('Добавить департамент') }}
             </a>
         </div>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
-            <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow">
-                <thead class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+        <div class="relative overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+            <table class="min-w-full overflow-hidden">
+                <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
                 <tr>
                     <th scope="col" class="px-6 py-3 text-left">ID</th>
                     <th scope="col" class="px-6 py-3 text-left">Название</th>
