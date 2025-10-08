@@ -21,7 +21,7 @@ class Employee extends Model
         'avatar_url',
     ];
     protected $casts = [
-        'hire_date' => 'date', // <-- добавляем это
+        'hire_date' => 'date',
     ];
 
     public function department()
@@ -29,6 +29,10 @@ class Employee extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function files()
+    {
+        return $this->hasMany(EmployeeFile::class);
+    }
 
 
     public function getFullNameAttribute()

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Services\EmployeeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,31 +23,20 @@ class EmployeeController extends Controller
         return view('admin.employees.create' , compact('departments'))  ;
     }
 
-    public function store(Request $request)
+    public function store(StoreEmployeeRequest $request, EmployeeService $employeeService)
     {
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'position' => 'required|string|max:100',
-            'salary' => 'required|numeric|min:0',
-            'hire_date' => 'required|date',
-            'department_id' => 'required|exists:departments,id',
-            'passport_number' => 'nullable|string|max:20',
-            'inn' => 'nullable|string|max:12',
-            'avatar_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-        ]);
+        $validated = $request->validated();
 
-        if ($request->hasFile('avatar_url')) {
-            $path = $request->file('avatar_url')->store('avatars', 'public');
-            $validated['avatar_url'] = $path;
-        }
+        $employee = $employeeService->createEmployee(
+            $validated,
+            $request->file('avatar_url')
+        );
 
-        Employee::create($validated);
+        $employeeService->uploadEmployeeFiles($employee, $request->allFiles());
 
         return redirect()->route('admin.employees.index')
-            ->with('success', 'Сотрудник успешно создан.');
+            ->with('success', 'Сотрудник успешно создан и файлы загружены.');
     }
-
 
 
     public function show(string $id)
@@ -85,11 +76,9 @@ class EmployeeController extends Controller
                 Storage::disk('public')->delete($employee->avatar_url);
             }
 
-
             $avatarPath = $request->file('avatar_url')->store('avatars', 'public');
             $validated['avatar_url'] = $avatarPath;
         } else {
-
             unset($validated['avatar_url']);
         }
 
