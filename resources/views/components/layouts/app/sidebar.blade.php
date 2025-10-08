@@ -8,8 +8,8 @@
             <flux:sidebar.header>
                 <flux:sidebar.brand
                         href="#"
-                        logo="https://fluxui.dev/img/demo/logo.png"
-                        logo:dark="https://fluxui.dev/img/demo/dark-mode-logo.png"
+                        logo="https://kutstroy.kg/img/logo_black.png"
+                        logo:dark="https://kutstroy.kg/img/logo_black.png"
                         name="ЭДО"
                 />
                 <flux:sidebar.collapse class="lg:hidden" />
