@@ -4,10 +4,12 @@ namespace App\Services;
 use App\Models\Employee;
 use App\Models\EmployeeFile;
 use App\Enums\EmployeeFileType;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeService
 {
-    public function createEmployee(array $data, ?\Illuminate\Http\UploadedFile $avatar = null): Employee
+    public function createEmployee(array $data, ?UploadedFile $avatar = null): Employee
     {
         if ($avatar) {
             $data['avatar_url'] = $avatar->store('avatars', 'public');
@@ -36,4 +38,18 @@ class EmployeeService
             }
         }
     }
+
+    public function handleAvatarUpload(?UploadedFile $file, Employee $employee): ?string
+    {
+        if (!$file) {
+            return $employee->avatar_url;
+        }
+
+        if ($employee->avatar_url) {
+            Storage::disk('public')->delete($employee->avatar_url);
+        }
+
+        return $file->store('avatars', 'public');
+    }
+
 }
