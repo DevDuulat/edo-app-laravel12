@@ -54,6 +54,38 @@
             <flux:text><strong>Номер паспорта:</strong> {{ $employee->passport_number ?? '-' }}</flux:text>
             <flux:text><strong>ИНН:</strong> {{ $employee->inn ?? '-' }}</flux:text>
         </div>
+        <!-- Документы -->
+        <div class="mt-8">
+            <flux:heading size="xl" class="mb-3 text-gray-900 dark:text-gray-100">
+                Документы
+            </flux:heading>
+
+            @if ($employee->files->isNotEmpty())
+                <div class="space-y-2">
+                    @foreach ($employee->files as $file)
+                        <div class="flex items-center justify-between border border-zinc-200 dark:border-zinc-700 rounded-xl p-3 bg-white dark:bg-zinc-800">
+                            <div>
+                                <flux:text class="text-gray-800 dark:text-gray-200">
+                                    <strong>{{ $file->type->label() }}</strong>
+                                </flux:text>
+                                <flux:text class="text-gray-600 dark:text-gray-400 text-sm">
+                                    {{ $file->file_name }}
+                                </flux:text>
+                            </div>
+                            <a href="{{ asset('storage/' . $file->file_url) }}"
+                               target="_blank"
+                               class="text-blue-600 hover:underline dark:text-blue-400">
+                                Скачать
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            @else
+                <flux:text class="text-gray-500 dark:text-gray-400">
+                    Документы отсутствуют.
+                </flux:text>
+            @endif
+        </div>
 
         <!-- Кнопки -->
         <div class="mt-6 flex gap-3">

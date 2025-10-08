@@ -41,10 +41,11 @@ class EmployeeController extends Controller
 
     public function show(string $id)
     {
-        $employee = Employee::with('department')->findOrFail($id);
+        $employee = Employee::with(['department', 'files'])->findOrFail($id);
 
         return view('admin.employees.show', compact('employee'));
     }
+
 
     public function edit(string $id)
     {
