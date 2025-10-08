@@ -49,7 +49,7 @@
         </div>
 
         <div class="mt-4">
-            {{--            {{ $users->links() }} <!-- Пагинация -->--}}
+            {{ $users->links() }}
         </div>
     </div>
 </x-layouts.app>
