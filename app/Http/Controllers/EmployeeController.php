@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreEmployeeRequest;
+use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Services\EmployeeService;
@@ -38,14 +39,12 @@ class EmployeeController extends Controller
             ->with('success', 'Сотрудник успешно создан и файлы загружены.');
     }
 
-
     public function show(string $id)
     {
         $employee = Employee::with('department')->findOrFail($id);
 
         return view('admin.employees.show', compact('employee'));
     }
-
 
     public function edit(string $id)
     {
@@ -55,31 +54,17 @@ class EmployeeController extends Controller
         return view('admin.employees.edit', compact('employee', 'departments'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(UpdateEmployeeRequest $request, string $id)
     {
         $employee = Employee::findOrFail($id);
 
-        $validated = $request->validate([
-            'first_name' => 'required|string|max:50',
-            'last_name' => 'required|string|max:50',
-            'position' => 'required|string|max:100',
-            'salary' => 'required|numeric|min:0',
-            'hire_date' => 'required|date',
-            'department_id' => 'required|exists:departments,id',
-            'passport_number' => 'nullable|string|max:20',
-            'inn' => 'nullable|string|max:12',
-            'avatar_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
+        $validated = $request->validated();
 
         if ($request->hasFile('avatar_url')) {
             if ($employee->avatar_url) {
                 Storage::disk('public')->delete($employee->avatar_url);
             }
-
-            $avatarPath = $request->file('avatar_url')->store('avatars', 'public');
-            $validated['avatar_url'] = $avatarPath;
-        } else {
-            unset($validated['avatar_url']);
+            $validated['avatar_url'] = $request->file('avatar_url')->store('avatars', 'public');
         }
 
         $employee->update($validated);

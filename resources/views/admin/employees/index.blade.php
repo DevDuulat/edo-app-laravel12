@@ -18,11 +18,20 @@
                     </li>
                 </ol>
             </nav>
+            <div>
+                @if(isset($department))
+                    <h2 class="text-xl font-semibold mt-1 text-gray-800 dark:text-gray-200">
+                        Департамент: "{{ $department->name }}"
+                    </h2>
+                @endif
+            </div>
             <a href="{{ route('admin.employees.create') }}" class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
                Добавить сотрудников
             </a>
         </div>
+
         <div class="relative overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+
             <table class="min-w-full overflow-hidden">
                 <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
             <tr>
@@ -85,8 +94,6 @@
                                     }).then(() => location.reload());
                                 "
                         />
-
-
                     </td>
                 </tr>
             @endforeach
