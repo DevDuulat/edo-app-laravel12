@@ -97,7 +97,7 @@
                 @error('inn')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
-            <div class="flex flex-col gap-2">
+            <div class="flex flex-col gap-2 md:col-span-2">
                 <label class="text-sm font-medium text-gray-700 dark:text-gray-300">
                     {{ __('Фото сотрудника') }}
                 </label>
@@ -116,13 +116,7 @@
                     >
 
                     <div id="preview-container" class="flex flex-col items-center justify-center text-center">
-                        <svg width="64px" height="64px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7 11C8.10457 11 9 10.1046 9 9C9 7.89543 8.10457 7 7 7C5.89543 7 5 7.89543 5 9C5 10.1046 5.89543 11 7 11Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M5.56055 21C11.1305 11.1 15.7605 9.35991 21.0005 15.7899" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M12.28 3H5C3.93913 3 2.92172 3.42136 2.17157 4.17151C1.42142 4.92165 1 5.93913 1 7V17C1 18.0609 1.42142 19.0782 2.17157 19.8284C2.92172 20.5785 3.93913 21 5 21H17C18.0609 21 19.0783 20.5785 19.8284 19.8284C20.5786 19.0782 21 18.0609 21 17V12" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M18.75 8.82996V0.829956" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                            <path d="M15.5508 4.02996L18.7508 0.829956L21.9508 4.02996" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
+                        <x-icon.file-upload-icon/>
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
                             Перетащите фото сюда или нажмите для выбора файла
                         </p>
@@ -132,6 +126,24 @@
                 @error('avatar_url')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label for="passport_copy" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {{ __('Копия паспорта') }}
+                </label>
+                <input type="file" name="passport_copy" id="passport_copy"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                @error('passport_copy')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label for="inn_file" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    {{ __('ИНН (файл)') }}
+                </label>
+                <input type="file" name="inn_file" id="inn_file"
+                       class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                @error('inn_file')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
 
             <!-- Buttons (span 2 columns) -->
