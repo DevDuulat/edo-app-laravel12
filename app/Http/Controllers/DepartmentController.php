@@ -37,7 +37,6 @@ class DepartmentController extends Controller
     {
         $department->update($request->validated());
         return redirect()->route('admin.departments.index')->with('success', 'Department updated successfully.');
-
     }
     public function destroy(Department $department)
     {
