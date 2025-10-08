@@ -13,7 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
-
+    'sso' => [
+        'verify_url' => env('SSO_VERIFY_URL', 'http://localhost:8001/api/sso/verify'),
+    ],
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

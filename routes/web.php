@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\SsoController;
+use App\Http\Controllers\UserController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -34,4 +38,19 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
+
+    Route::get('/sso/callback', [SsoController::class, 'callback']);
+
+    Route::prefix('admin')->name('admin.')->group(function() {
+        Route::resource('departments', DepartmentController::class);
+        Route::resource('employees', EmployeeController::class);
+
+        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
+            ->name('employees.byDepartment');
+    });
+
+});
 require __DIR__.'/auth.php';
+
