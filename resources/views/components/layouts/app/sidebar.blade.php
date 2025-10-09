@@ -3,6 +3,9 @@
     <head>
         @include('partials.head')
     </head>
+    <script defer src="https://unpkg.com/alpinejs-slug@latest/dist/slug.min.js"></script>
+
+
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
@@ -39,7 +42,7 @@
                     Все документы
                 </flux:sidebar.item>
 
-                <flux:sidebar.item icon="document-plus" :href="route('dashboard')" wire:navigate>
+                <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate>
                     Создать документ
                 </flux:sidebar.item>
 
