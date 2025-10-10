@@ -36,29 +36,29 @@
                     Сотрудники
                 </flux:sidebar.item>
             </flux:sidebar.group>
-            <flux:sidebar.group expandable heading="Документы" class="grid">
+{{--            <flux:sidebar.group expandable heading="Документы" class="grid">--}}
 
-                <flux:sidebar.item icon="document" :href="route('dashboard')" wire:navigate>
-                    Все документы
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Все документы--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate>
-                    Создать документ
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate>--}}
+{{--                    Создать документ--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="document-arrow-down" :href="route('dashboard')" wire:navigate>
-                    Входящие
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document-arrow-down" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Входящие--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="document-arrow-up" :href="route('dashboard')" wire:navigate>
-                    Исходящие
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document-arrow-up" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Исходящие--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="archive-box" :href="route('dashboard')" wire:navigate>
-                    Архив
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="archive-box" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Архив--}}
+{{--                </flux:sidebar.item>--}}
 
-            </flux:sidebar.group>
+{{--            </flux:sidebar.group>--}}
             <flux:spacer />
 
 
