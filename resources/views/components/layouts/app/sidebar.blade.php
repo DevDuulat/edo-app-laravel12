@@ -3,6 +3,9 @@
     <head>
         @include('partials.head')
     </head>
+    <script defer src="https://unpkg.com/alpinejs-slug@latest/dist/slug.min.js"></script>
+
+
     <body class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
@@ -25,7 +28,7 @@
             <flux:sidebar.group expandable heading="Менеджмент" class="grid">
 
 
-                <flux:sidebar.item icon="user" :href="route('admin.departments.index')" wire:navigate>
+                <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate>
                     Департаменты
                 </flux:sidebar.item>
 
@@ -33,8 +36,31 @@
                     Сотрудники
                 </flux:sidebar.item>
             </flux:sidebar.group>
+            <flux:sidebar.group expandable heading="Документы" class="grid">
 
+                <flux:sidebar.item icon="document" :href="route('dashboard')" wire:navigate>
+                    Все документы
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate>
+                    Создать документ
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="document-arrow-down" :href="route('dashboard')" wire:navigate>
+                    Входящие
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="document-arrow-up" :href="route('dashboard')" wire:navigate>
+                    Исходящие
+                </flux:sidebar.item>
+
+                <flux:sidebar.item icon="archive-box" :href="route('dashboard')" wire:navigate>
+                    Архив
+                </flux:sidebar.item>
+
+            </flux:sidebar.group>
             <flux:spacer />
+
 
             <!-- Desktop User Menu -->
             <flux:dropdown class="hidden lg:block" position="bottom" align="start">

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SsoController;
 use App\Http\Controllers\UserController;
@@ -46,6 +47,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+        Route::resource('documents', DocumentController::class);
 
         Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
             ->name('employees.byDepartment');
