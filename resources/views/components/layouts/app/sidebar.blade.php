@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
+        @livewireStyles
     </head>
     <script defer src="https://unpkg.com/alpinejs-slug@latest/dist/slug.min.js"></script>
 
@@ -159,7 +160,7 @@
         </flux:header>
 
         {{ $slot }}
-
+        @livewireScripts
         @fluxScripts
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     </body>
