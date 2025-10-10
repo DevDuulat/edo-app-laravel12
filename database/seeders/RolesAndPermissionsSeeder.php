@@ -42,7 +42,7 @@ class RolesAndPermissionsSeeder extends Seeder
          \App\Models\User::factory()->create([
              'name' => 'Admin User',
              'email' => 'admin@example.com',
-             'password' => bcrypt('password'),
+             'password' => bcrypt('1#97eFs0!%$'),
          ])->assignRole('admin');
     }
 }
