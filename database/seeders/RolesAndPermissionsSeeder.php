@@ -43,6 +43,7 @@ class RolesAndPermissionsSeeder extends Seeder
              'name' => 'Admin User',
              'email' => 'admin@example.com',
              'password' => bcrypt('1#97eFs0!%$'),
+             'base_id' => 0,
          ])->assignRole('admin');
     }
 }
