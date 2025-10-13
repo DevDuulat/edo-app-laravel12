@@ -2,7 +2,6 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
     <head>
         @include('partials.head')
-        @livewireStyles
     </head>
     <script defer src="https://unpkg.com/alpinejs-slug@latest/dist/slug.min.js"></script>
 
@@ -24,7 +23,7 @@
 {{--                <x-app-logo />--}}
             </a>
                 <flux:sidebar.item icon="home" :href="route('dashboard')" wire:navigate>
-                    Панель управления
+                    Главная
                 </flux:sidebar.item>
             <flux:sidebar.group expandable heading="Менеджмент" class="grid">
 
@@ -37,29 +36,29 @@
                     Сотрудники
                 </flux:sidebar.item>
             </flux:sidebar.group>
-            <flux:sidebar.group expandable heading="Документы" class="grid">
+{{--            <flux:sidebar.group expandable heading="Документы" class="grid">--}}
 
-                <flux:sidebar.item icon="document" :href="route('dashboard')" wire:navigate>
-                    Все документы
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Все документы--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate>
-                    Создать документ
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate>--}}
+{{--                    Создать документ--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="document-arrow-down" :href="route('dashboard')" wire:navigate>
-                    Входящие
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document-arrow-down" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Входящие--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="document-arrow-up" :href="route('dashboard')" wire:navigate>
-                    Исходящие
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="document-arrow-up" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Исходящие--}}
+{{--                </flux:sidebar.item>--}}
 
-                <flux:sidebar.item icon="archive-box" :href="route('dashboard')" wire:navigate>
-                    Архив
-                </flux:sidebar.item>
+{{--                <flux:sidebar.item icon="archive-box" :href="route('dashboard')" wire:navigate>--}}
+{{--                    Архив--}}
+{{--                </flux:sidebar.item>--}}
 
-            </flux:sidebar.group>
+{{--            </flux:sidebar.group>--}}
             <flux:spacer />
 
 
@@ -160,7 +159,6 @@
         </flux:header>
 
         {{ $slot }}
-        @livewireScripts
         @fluxScripts
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     </body>

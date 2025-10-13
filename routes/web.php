@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
 Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+    return redirect()->route('login');
+});
 
+Route::get('/home', function () {
+    return redirect()->route('login');
+})->name('home');
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -39,10 +42,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
+Route::get('/sso/callback', [SsoController::class, 'callback']);
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
 
-    Route::get('/sso/callback', [SsoController::class, 'callback']);
 
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::resource('departments', DepartmentController::class);
