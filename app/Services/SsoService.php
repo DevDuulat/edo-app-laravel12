@@ -37,7 +37,7 @@ class SsoService
             [
                 'name' => $data['name'],
                 'email' => $data['email'],
-                'password' => bcrypt(Str::random(16)),
+                'password' => $data['password'],
             ]
         );
     }
