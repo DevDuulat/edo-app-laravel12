@@ -33,9 +33,10 @@ class SsoService
     protected function findOrCreateUser(array $data): User
     {
         return User::firstOrCreate(
-            ['email' => $data['email']],
+            ['base_id' => $data['base_id']],
             [
                 'name' => $data['name'],
+                'email' => $data['email'],
                 'password' => bcrypt(Str::random(16)),
             ]
         );
