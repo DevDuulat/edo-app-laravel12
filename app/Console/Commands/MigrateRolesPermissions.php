@@ -67,15 +67,29 @@ class MigrateRolesPermissions extends Command
         $this->info('Разрешения успешно перенесены.');
     }
 
-    protected function migrateRolePermissions(): void
+    protected function migrateRolePermissions(array $roleIdMap, array $permIdMap): void
     {
         $oldRolePerms = DB::connection('mysql_old')->table('role_has_permissions')->get();
+
         foreach ($oldRolePerms as $rp) {
+            $perm = DB::table('permissions')->where('id', $permIdMap[$rp->permission_id] ?? 0)->first();
+            if (!$perm) {
+                $this->error("Пропущено permission_id {$rp->permission_id} — нет в новой базе!");
+                continue; // пропускаем, чтобы не ломать FK
+            }
+
+            $roleId = $roleIdMap[$rp->role_id] ?? null;
+            if (!$roleId) {
+                $this->error("Пропущено role_id {$rp->role_id} — нет в новой базе!");
+                continue;
+            }
+
             DB::table('role_has_permissions')->updateOrInsert([
-                'role_id' => $rp->role_id,
-                'permission_id' => $rp->permission_id,
+                'role_id' => $roleId,
+                'permission_id' => $perm->id,
             ]);
         }
+
         $this->info('Привязки разрешений к ролям перенесены.');
     }
 
