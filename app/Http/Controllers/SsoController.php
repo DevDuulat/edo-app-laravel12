@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\SsoService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class SsoController extends Controller
 {
@@ -24,4 +26,24 @@ class SsoController extends Controller
 
         return redirect('/dashboard');
     }
+
+    public function handleRedirect(SsoService $sso)
+    {
+        $user = Auth::user();
+        $token = $sso->createToken($user);
+        $url = config('services.sso.url') . '/sso-login?token=' . $token;
+
+        return redirect()->away($url);
+    }
+
+    public function verify(Request $request)
+    {
+        $data = Cache::pull("sso_token_" . $request->token);
+        if (!$data) {
+            return response()->json(["error" => "invalid"], 403);
+        }
+
+        return response()->json($data);
+    }
+
 }

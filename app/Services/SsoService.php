@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
@@ -55,5 +56,26 @@ class SsoService
 
             $user->syncPermissions($data['permissions']);
         }
+    }
+
+    public function createToken(User $user): string
+    {
+        $token = Str::random(64);
+
+        DB::table('sso_tokens')->insert([
+            'user_id' => $user->id,
+            'base_id' => $user->base_id,
+            'token' => $token,
+            'expires_at' => now()->addMinutes(5),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return $token;
+    }
+
+    public function cleanupExpired(): void
+    {
+        DB::table('sso_tokens')->where('expires_at', '<', now())->delete();
     }
 }
