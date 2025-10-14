@@ -1,28 +1,11 @@
 <x-layouts.app :title="__('Создать Департамент')">
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
-        <div class="flex items-center justify-between">
-        <nav class="flex px-5 py-3 text-gray-700 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900" aria-label="Breadcrumb">
-            <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                <li class="inline-flex items-center">
-                    <a href="{{route('dashboard')}}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-zinc-800 dark:text-gray-400 dark:hover:text-white">
-                        <x-icon.home-icon/>
-                        Панель управление
-                    </a>
-                </li>
-                <li>
-                    <div class="flex items-center">
-                        <x-icon.arrow-breadcrumb-icon/>
-                        <a href="{{route('admin.departments.index')}}" class="ms-1 text-sm font-medium text-gray-700 hover:text-zinc-800 md:ms-2 dark:text-gray-400 dark:hover:text-white">{{ __('Департамент') }}</a>
-                    </div>
-                </li>
-                <li aria-current="page">
-                    <div class="flex items-center">
-                        <x-icon.arrow-breadcrumb-icon/>
-                        <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2 dark:text-gray-400">Создание Департамента</span>
-                    </div>
-                </li>
-            </ol>
-        </nav>
+        <div class="flex items-center justify-between py-4">
+            <flux:breadcrumbs>
+                <flux:breadcrumbs.item href="{{route('dashboard')}}" icon="home" />
+                <flux:breadcrumbs.item href="{{route('admin.departments.index')}}">Департамент</flux:breadcrumbs.item>
+                <flux:breadcrumbs.item>Создание Департамента</flux:breadcrumbs.item>
+            </flux:breadcrumbs>
         </div>
 
 

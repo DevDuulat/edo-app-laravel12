@@ -42,12 +42,11 @@ Route::middleware(['auth'])->group(function () {
         ->name('two-factor.show');
 });
 
-Route::get('/sso/callback', [SsoController::class, 'callback']);
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
 
-
+    Route::get('/sso/callback', [SsoController::class, 'callback']);
+    Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);

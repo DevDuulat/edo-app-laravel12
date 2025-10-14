@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
     <head>
         @include('partials.head')
     </head>
@@ -25,6 +25,9 @@
                 <flux:sidebar.item icon="home" :href="route('dashboard')" wire:navigate>
                     Главная
                 </flux:sidebar.item>
+            <flux:sidebar.item icon="link" :href="route('sso.base')" target="_blank">
+                Перейти в Кут База
+            </flux:sidebar.item>
             <flux:sidebar.group expandable heading="Менеджмент" class="grid">
 
 
@@ -160,6 +163,8 @@
 
         {{ $slot }}
         @fluxScripts
+        <script src="{{ asset('flux/flux.js') }}"></script>
+
         <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
     </body>
 </html>
