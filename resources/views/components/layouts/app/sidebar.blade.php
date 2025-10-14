@@ -26,7 +26,7 @@
                     Главная
                 </flux:sidebar.item>
             <flux:sidebar.item icon="link" :href="route('sso.base')" target="_blank">
-                Перейти в Base
+                Перейти в Кут База
             </flux:sidebar.item>
             <flux:sidebar.group expandable heading="Менеджмент" class="grid">
 
