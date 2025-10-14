@@ -14,7 +14,8 @@ return [
     |
     */
     'sso' => [
-        'verify_url' => env('SSO_VERIFY_URL', 'http://localhost:8001/api/sso/verify'),
+        'verify_url' => env('SSO_VERIFY_URL'),
+        'url' => env('SSO_URL'),
     ],
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
