@@ -3,6 +3,7 @@
         <div class="flex items-center justify-between">
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item href="{{route('dashboard')}}" icon="home" />
+                <flux:breadcrumbs.item href="{{route('admin.employees.index')}}">Сотрудники</flux:breadcrumbs.item>
                 <flux:breadcrumbs.item>Просмотр</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
