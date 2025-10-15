@@ -20,24 +20,33 @@ class EmployeeService
 
     public function uploadEmployeeFiles(Employee $employee, array $files): void
     {
-        $documents = [
-            'passport_copy' => EmployeeFileType::PASSPORT,
-            'inn_file' => EmployeeFileType::INN,
-            'snils_file' => EmployeeFileType::SNILS,
-        ];
+        foreach ($files as $input => $fileOrFiles) {
+            // Определяем тип файла
+            $type = match ($input) {
+                'passport_copy' => EmployeeFileType::PASSPORT,
+                'files' => EmployeeFileType::OTHER,
+            };
+            // Если пришёл массив (множественные файлы)
+            $fileList = is_array($fileOrFiles) ? $fileOrFiles : [$fileOrFiles];
 
-        foreach ($documents as $input => $typeEnum) {
-            if (isset($files[$input])) {
-                $path = $files[$input]->store("employee_files/{$employee->id}", 'public');
+            foreach ($fileList as $file) {
+                if (!$file instanceof \Illuminate\Http\UploadedFile) {
+                    continue;
+                }
+
+                $path = $file->store("employee_files/{$employee->id}", 'public');
+
                 EmployeeFile::create([
                     'employee_id' => $employee->id,
-                    'file_name' => basename($path),
-                    'file_url' => $path,
-                    'type' => $typeEnum,
+                    'file_name'   => basename($path),
+                    'file_url'    => $path,
+                    'type'        => $type,
                 ]);
             }
         }
     }
+
+
 
     public function handleAvatarUpload(?UploadedFile $file, Employee $employee): ?string
     {
