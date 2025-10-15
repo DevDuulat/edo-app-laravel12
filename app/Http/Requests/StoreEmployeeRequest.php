@@ -25,8 +25,7 @@ class StoreEmployeeRequest extends FormRequest
             'inn' => 'nullable|string|max:12',
             'avatar_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'passport_copy' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
-            'inn_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
-            'snils_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
+            'files.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
         ];
     }
 }
