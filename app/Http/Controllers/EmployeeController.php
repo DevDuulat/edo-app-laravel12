@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EmployeeFileType;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
@@ -26,15 +27,26 @@ class EmployeeController extends Controller
     public function store(StoreEmployeeRequest $request, EmployeeService $employeeService)
     {
         $validated = $request->validated();
+
         $employee = $employeeService->createEmployee(
             $validated,
             $request->file('avatar_url')
         );
 
-        $employeeService->uploadEmployeeFiles($employee, $request->allFiles());
+        $allFiles = [];
+        if ($request->hasFile('passport_copy')) {
+            $allFiles['passport_copy'] = $request->file('passport_copy');
+        }
+        if ($request->hasFile('files')) {
+            $allFiles['files'] = $request->file('files');
+        }
+
+        $employeeService->uploadEmployeeFiles($employee, $allFiles);
+
         return redirect()->route('admin.employees.index')
             ->with('success', 'Сотрудник успешно создан и файлы загружены.');
     }
+
 
     public function show(string $id)
     {
@@ -47,7 +59,13 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
         $departments = Department::all();
-        return view('admin.employees.edit', compact('employee', 'departments'));
+        $passportFile = $employee->files()
+            ->where('type', EmployeeFileType::PASSPORT)
+            ->get();
+        $otherFiles = $employee->files()
+            ->where('type', EmployeeFileType::OTHER)
+            ->get();
+        return view('admin.employees.edit', compact('employee', 'departments', 'otherFiles', 'passportFile'));
     }
 
     public function update(UpdateEmployeeRequest $request, EmployeeService $employeeService, string $id)
@@ -62,10 +80,23 @@ class EmployeeController extends Controller
 
         $employee->update($validated);
 
+        $allFiles = [];
+        if ($request->hasFile('passport_copy')) {
+            $allFiles['passport_copy'] = $request->file('passport_copy');
+        }
+        if ($request->hasFile('files')) {
+            $allFiles['files'] = $request->file('files');
+        }
+
+        if (!empty($allFiles)) {
+            $employeeService->uploadEmployeeFiles($employee, $allFiles);
+        }
+
         return redirect()
             ->route('admin.employees.index')
             ->with('success', 'Сотрудник успешно обновлён.');
     }
+
 
 
     public function destroy(string $id)
