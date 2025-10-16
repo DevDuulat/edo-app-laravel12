@@ -8,7 +8,6 @@ use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Services\EmployeeService;
-use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -50,8 +49,16 @@ class EmployeeController extends Controller
 
     public function show(string $id)
     {
-        $employee = Employee::with(['department', 'files'])->findOrFail($id);
-        return view('admin.employees.show', compact('employee'));
+//        $employee = Employee::with(['department', 'files'])->findOrFail($id);
+        $employee = Employee::findOrFail($id);
+        $passportFiles = $employee->files()
+            ->where('type', EmployeeFileType::PASSPORT)
+            ->get();
+        $otherFiles = $employee->files()
+            ->where('type', EmployeeFileType::OTHER)
+            ->get();
+        return view('admin.employees.show', compact('employee', 'otherFiles', 'passportFiles'));
+
     }
 
 
