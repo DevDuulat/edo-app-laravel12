@@ -6,6 +6,8 @@ use App\Models\EmployeeFile;
 use App\Enums\EmployeeFileType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Spatie\Image\Image;
 
 class EmployeeService
 {
@@ -21,12 +23,11 @@ class EmployeeService
     public function uploadEmployeeFiles(Employee $employee, array $files): void
     {
         foreach ($files as $input => $fileOrFiles) {
-            // Определяем тип файла
             $type = match ($input) {
                 'passport_copy' => EmployeeFileType::PASSPORT,
                 'files' => EmployeeFileType::OTHER,
             };
-            // Если пришёл массив (множественные файлы)
+
             $fileList = is_array($fileOrFiles) ? $fileOrFiles : [$fileOrFiles];
 
             foreach ($fileList as $file) {
@@ -34,12 +35,26 @@ class EmployeeService
                     continue;
                 }
 
-                $path = $file->store("employee_files/{$employee->id}", 'public');
+                $fileName = Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $directory = 'employee_files/' . $employee->id;
+
+                Storage::disk('public')->makeDirectory($directory);
+
+                $fullPath = storage_path('app/public/' . $directory . '/' . $fileName);
+
+                if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    Image::load($file->getRealPath())
+                        ->width(1200)
+                        ->optimize()
+                        ->save($fullPath);
+                } else {
+                    $file->storeAs($directory, $fileName, 'public');
+                }
 
                 EmployeeFile::create([
                     'employee_id' => $employee->id,
-                    'file_name'   => basename($path),
-                    'file_url'    => $path,
+                    'file_name'   => $file->getClientOriginalName(),
+                    'file_url'    => $directory . '/' . $fileName,
                     'type'        => $type,
                 ]);
             }

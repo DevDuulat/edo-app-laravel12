@@ -58,8 +58,8 @@ class EmployeeController extends Controller
         $otherFiles = $employee->files()
             ->where('type', EmployeeFileType::OTHER)
             ->get();
-        return view('admin.employees.show', compact('employee', 'otherFiles', 'passportFiles'));
-
+        return view('admin.employees.show', compact('employee', 'otherFiles', 'passportFiles'))
+            ->with('canDelete', false);
     }
 
 
@@ -67,13 +67,14 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
         $departments = Department::all();
-        $passportFile = $employee->files()
+        $passportFiles = $employee->files()
             ->where('type', EmployeeFileType::PASSPORT)
             ->get();
         $otherFiles = $employee->files()
             ->where('type', EmployeeFileType::OTHER)
             ->get();
-        return view('admin.employees.edit', compact('employee', 'departments', 'otherFiles', 'passportFile'));
+        return view('admin.employees.edit', compact('employee', 'departments', 'passportFiles' ,'otherFiles'))
+            ->with('canDelete', true);
     }
 
     public function update(UpdateEmployeeRequest $request, EmployeeService $employeeService, string $id)
