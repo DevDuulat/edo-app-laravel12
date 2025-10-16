@@ -21,6 +21,7 @@
                     <th scope="col" class="px-6 py-3 text-left">ID</th>
                     <th scope="col" class="px-6 py-3 text-left">Название</th>
                     <th scope="col" class="px-6 py-3 text-left">Локация</th>
+                    <th scope="col" class="px-6 py-3 text-left">Cотрудники</th>
                     <th scope="col" class="px-6 py-3 text-left">Дата создание</th>
                     <th scope="col" class="px-6 py-3 text-left">Действия</th>
                 </tr>
@@ -31,7 +32,14 @@
                         <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $department->id }}</td>
                         <td class="px-6 py-4">{{ $department->name }}</td>
                         <td class="px-6 py-4">{{ $department->location ?? '-' }}</td>
+                        <td class="px-6 py-4">
+                            <a href="{{ route('admin.employees.byDepartment', $department->id) }}"
+                               class="text-blue-600 dark:text-blue-400 hover:underline">
+                                {{ $department->name }}
+                            </a></td>
                         <td class="px-6 py-4">{{ $department->created_at }}</td>
+
+
                         <td class="px-6 py-4 flex gap-2">
 
                             <flux:button
