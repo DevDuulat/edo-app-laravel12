@@ -50,4 +50,13 @@
             <span class="text-[11px] font-medium">Открыть</span>
         </div>
     </div>
+
+        <div class="absolute top-1 right-1">
+            <input type="checkbox"
+                   name="files_to_delete[]"
+                   value="{{ $file->id }}"
+                   class="rounded text-red-600 shadow-sm focus:ring-red-500
+                      dark:bg-zinc-800 dark:border-zinc-700
+                      "/>
+        </div>
 </a>
