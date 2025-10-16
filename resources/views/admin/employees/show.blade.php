@@ -39,33 +39,40 @@
                 <flux:heading size="xl" class="mb-3 text-gray-900 dark:text-gray-100">
                     Паспорта
                 </flux:heading>
-                <div class="flex flex-wrap gap-2 mt-2">
-                @if ($passportFiles->isNotEmpty() )
-                            @foreach ($passportFiles as $file)
-                                <x-file-preview :file="$file" />
-                            @endforeach
+
+                <div id="passport-gallery"
+                     class="flex flex-wrap gap-2 mt-2 pswp-gallery passport-gallery">
+
+                    @if ($passportFiles->isNotEmpty())
+                        @foreach ($passportFiles as $file)
+                            <x-file-preview :file="$file" :can-delete="false" />
+                        @endforeach
                     @else
-                    <flux:text class="text-gray-500 dark:text-gray-400">
-                        Паспорта отсутствуют.
-                    </flux:text>
-                @endif
+                        <flux:text class="text-gray-500 dark:text-gray-400">
+                            Паспорта отсутствуют.
+                        </flux:text>
+                    @endif
                 </div>
             </div>
-                <!-- Документы -->
+
+            <!-- Документы -->
                 <div class="mt-8">
                     <flux:heading size="xl" class="mb-3 text-gray-900 dark:text-gray-100">
                         Документы
                     </flux:heading>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        @if ($otherFiles->isNotEmpty() )
+                    <div id="passport-gallery"
+                         class="flex flex-wrap gap-2 mt-2 pswp-gallery passport-gallery">
+
+                    @if ($otherFiles->isNotEmpty() )
                             @foreach ($otherFiles as $file)
-                                <x-file-preview :file="$file" />
+                                <x-file-preview :file="$file" :can-delete="false" />
                             @endforeach
                         @else
                             <flux:text class="text-gray-500 dark:text-gray-400">
                                 Паспорта отсутствуют.
                             </flux:text>
                         @endif
+                    </div>
                     </div>
             </div>
 
