@@ -7,7 +7,9 @@ use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\EmployeeFile;
 use App\Services\EmployeeService;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeController extends Controller
 {
@@ -49,7 +51,6 @@ class EmployeeController extends Controller
 
     public function show(string $id)
     {
-//        $employee = Employee::with(['department', 'files'])->findOrFail($id);
         $employee = Employee::findOrFail($id);
         $passportFiles = $employee->files()
             ->where('type', EmployeeFileType::PASSPORT)
@@ -83,6 +84,15 @@ class EmployeeController extends Controller
 
         if ($request->hasFile('avatar_url')) {
             $validated['avatar_url'] = $employeeService->handleAvatarUpload($request->file('avatar_url'), $employee);
+        }
+
+        if ($request->has('files_to_delete')) {
+            $filesToDeleteIds = $request->input('files_to_delete');
+            $filesToDelete = EmployeeFile::whereIn('id', $filesToDeleteIds)->get();
+            foreach ($filesToDelete as $file) {
+                Storage::disk('public')->delete($file->file_url);
+                $file->delete();
+            }
         }
 
         $employee->update($validated);
