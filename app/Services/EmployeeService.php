@@ -6,6 +6,8 @@ use App\Models\EmployeeFile;
 use App\Enums\EmployeeFileType;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Spatie\Image\Image;
 
 class EmployeeService
 {
@@ -20,24 +22,46 @@ class EmployeeService
 
     public function uploadEmployeeFiles(Employee $employee, array $files): void
     {
-        $documents = [
-            'passport_copy' => EmployeeFileType::PASSPORT,
-            'inn_file' => EmployeeFileType::INN,
-            'snils_file' => EmployeeFileType::SNILS,
-        ];
+        foreach ($files as $input => $fileOrFiles) {
+            $type = match ($input) {
+                'passport_copy' => EmployeeFileType::PASSPORT,
+                'files' => EmployeeFileType::OTHER,
+            };
 
-        foreach ($documents as $input => $typeEnum) {
-            if (isset($files[$input])) {
-                $path = $files[$input]->store("employee_files/{$employee->id}", 'public');
+            $fileList = is_array($fileOrFiles) ? $fileOrFiles : [$fileOrFiles];
+
+            foreach ($fileList as $file) {
+                if (!$file instanceof \Illuminate\Http\UploadedFile) {
+                    continue;
+                }
+
+                $fileName = Str::random(40) . '.' . $file->getClientOriginalExtension();
+                $directory = 'employee_files/' . $employee->id;
+
+                Storage::disk('public')->makeDirectory($directory);
+
+                $fullPath = storage_path('app/public/' . $directory . '/' . $fileName);
+
+                if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                    Image::load($file->getRealPath())
+                        ->width(1200)
+                        ->optimize()
+                        ->save($fullPath);
+                } else {
+                    $file->storeAs($directory, $fileName, 'public');
+                }
+
                 EmployeeFile::create([
                     'employee_id' => $employee->id,
-                    'file_name' => basename($path),
-                    'file_url' => $path,
-                    'type' => $typeEnum,
+                    'file_name'   => $file->getClientOriginalName(),
+                    'file_url'    => $directory . '/' . $fileName,
+                    'type'        => $type,
                 ]);
             }
         }
     }
+
+
 
     public function handleAvatarUpload(?UploadedFile $file, Employee $employee): ?string
     {

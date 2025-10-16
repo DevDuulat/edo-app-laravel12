@@ -9,7 +9,7 @@
             <div>
                 @if(isset($department))
                     <h2 class="text-xl font-semibold mt-1 text-gray-800 dark:text-gray-200">
-                        Департамент: "{{ $department->name }}"
+                       Сотрудники департамента: "{{ $department->name }}"
                     </h2>
                 @endif
             </div>

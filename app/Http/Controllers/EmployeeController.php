@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\EmployeeFileType;
 use App\Http\Requests\StoreEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\EmployeeFile;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\Storage;
 
@@ -26,20 +28,38 @@ class EmployeeController extends Controller
     public function store(StoreEmployeeRequest $request, EmployeeService $employeeService)
     {
         $validated = $request->validated();
+
         $employee = $employeeService->createEmployee(
             $validated,
             $request->file('avatar_url')
         );
 
-        $employeeService->uploadEmployeeFiles($employee, $request->allFiles());
+        $allFiles = [];
+        if ($request->hasFile('passport_copy')) {
+            $allFiles['passport_copy'] = $request->file('passport_copy');
+        }
+        if ($request->hasFile('files')) {
+            $allFiles['files'] = $request->file('files');
+        }
+
+        $employeeService->uploadEmployeeFiles($employee, $allFiles);
+
         return redirect()->route('admin.employees.index')
             ->with('success', 'Сотрудник успешно создан и файлы загружены.');
     }
 
+
     public function show(string $id)
     {
-        $employee = Employee::with(['department', 'files'])->findOrFail($id);
-        return view('admin.employees.show', compact('employee'));
+        $employee = Employee::findOrFail($id);
+        $passportFiles = $employee->files()
+            ->where('type', EmployeeFileType::PASSPORT)
+            ->get();
+        $otherFiles = $employee->files()
+            ->where('type', EmployeeFileType::OTHER)
+            ->get();
+        return view('admin.employees.show', compact('employee', 'otherFiles', 'passportFiles'))
+            ->with('canDelete', false);
     }
 
 
@@ -47,7 +67,14 @@ class EmployeeController extends Controller
     {
         $employee = Employee::findOrFail($id);
         $departments = Department::all();
-        return view('admin.employees.edit', compact('employee', 'departments'));
+        $passportFiles = $employee->files()
+            ->where('type', EmployeeFileType::PASSPORT)
+            ->get();
+        $otherFiles = $employee->files()
+            ->where('type', EmployeeFileType::OTHER)
+            ->get();
+        return view('admin.employees.edit', compact('employee', 'departments', 'passportFiles' ,'otherFiles'))
+            ->with('canDelete', true);
     }
 
     public function update(UpdateEmployeeRequest $request, EmployeeService $employeeService, string $id)
@@ -60,12 +87,34 @@ class EmployeeController extends Controller
             $validated['avatar_url'] = $employeeService->handleAvatarUpload($request->file('avatar_url'), $employee);
         }
 
+        if ($request->has('files_to_delete')) {
+            $filesToDeleteIds = $request->input('files_to_delete');
+            $filesToDelete = EmployeeFile::whereIn('id', $filesToDeleteIds)->get();
+            foreach ($filesToDelete as $file) {
+                Storage::disk('public')->delete($file->file_url);
+                $file->delete();
+            }
+        }
+
         $employee->update($validated);
+
+        $allFiles = [];
+        if ($request->hasFile('passport_copy')) {
+            $allFiles['passport_copy'] = $request->file('passport_copy');
+        }
+        if ($request->hasFile('files')) {
+            $allFiles['files'] = $request->file('files');
+        }
+
+        if (!empty($allFiles)) {
+            $employeeService->uploadEmployeeFiles($employee, $allFiles);
+        }
 
         return redirect()
             ->route('admin.employees.index')
             ->with('success', 'Сотрудник успешно обновлён.');
     }
+
 
 
     public function destroy(string $id)
