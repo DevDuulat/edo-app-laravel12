@@ -35,27 +35,27 @@
         </flux:sidebar.item>
     </flux:sidebar.group>
 
-    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
-        <flux:sidebar.item icon="document" :href="route('admin.documents.index')" wire:navigate class="py-1">
-            Все документы
-        </flux:sidebar.item>
+{{--    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">--}}
+{{--        <flux:sidebar.item icon="document" :href="route('admin.documents.index')" wire:navigate class="py-1">--}}
+{{--            Все документы--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate class="py-1">
-            Создать документ
-        </flux:sidebar.item>
+{{--        <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate class="py-1">--}}
+{{--            Создать документ--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">
-            Входящие
-        </flux:sidebar.item>
+{{--        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">--}}
+{{--            Входящие--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">
-            Исходящие
-        </flux:sidebar.item>
+{{--        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">--}}
+{{--            Исходящие--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">
-            Архив
-        </flux:sidebar.item>
-    </flux:sidebar.group>
+{{--        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">--}}
+{{--            Архив--}}
+{{--        </flux:sidebar.item>--}}
+{{--    </flux:sidebar.group>--}}
     </flux:sidebar.nav>
     <flux:spacer />
 
