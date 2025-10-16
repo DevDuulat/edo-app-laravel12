@@ -31,17 +31,11 @@ class DocumentController extends Controller
     public function store(StoreDocumentRequest $request)
     {
         $data = $request->validated();
-
-        // конвертируем дату из d/m/Y в Y-m-d
         $data['due_date'] = Carbon::createFromFormat('d/m/Y', $data['due_date'])->format('Y-m-d');
-
-        // добавляем автора и статусы документа
         $data['user_id'] = auth()->id();
         $data['document_type'] = DocumentType::internal->value;
         $data['workflow_status'] = WorkflowStatus::draft->value;
         $data['slug'] = Str::slug($data['title']);
-
-        // создаём документ
         Document::create($data);
 
         return redirect()
@@ -67,6 +61,7 @@ class DocumentController extends Controller
 
     public function destroy(Document $document)
     {
-
+        $document->delete();
+        return redirect()->route('admin.documents.index')->with('success', 'Department deleted successfully.');
     }
 }
