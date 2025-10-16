@@ -35,27 +35,27 @@
         </flux:sidebar.item>
     </flux:sidebar.group>
 
-    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
-        <flux:sidebar.item icon="document" :href="route('admin.documents.index')" wire:navigate class="py-1">
-            Все документы
-        </flux:sidebar.item>
+{{--    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">--}}
+{{--        <flux:sidebar.item icon="document" :href="route('admin.documents.index')" wire:navigate class="py-1">--}}
+{{--            Все документы--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate class="py-1">
-            Создать документ
-        </flux:sidebar.item>
+{{--        <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate class="py-1">--}}
+{{--            Создать документ--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">
-            Входящие
-        </flux:sidebar.item>
+{{--        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">--}}
+{{--            Входящие--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">
-            Исходящие
-        </flux:sidebar.item>
+{{--        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">--}}
+{{--            Исходящие--}}
+{{--        </flux:sidebar.item>--}}
 
-        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">
-            Архив
-        </flux:sidebar.item>
-    </flux:sidebar.group>
+{{--        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">--}}
+{{--            Архив--}}
+{{--        </flux:sidebar.item>--}}
+{{--    </flux:sidebar.group>--}}
     </flux:sidebar.nav>
     <flux:spacer />
 
@@ -166,26 +166,9 @@
 <link rel="stylesheet" href="https://unpkg.com/photoswipe@5.4.4/dist/photoswipe.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 
-<script type="module">
-    import PhotoSwipeLightbox from 'https://unpkg.com/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.js';
-    import PhotoSwipeDynamicCaption from 'https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.esm.js';
-
-    // Поддержка всех галерей на странице
-    const galleries = document.querySelectorAll('.pswp-gallery');
-
-    if (galleries.length > 0) {
-        galleries.forEach(gallery => {
-            const lightbox = new PhotoSwipeLightbox({
-                gallery: gallery,
-                children: 'a[data-pswp-width]',
-                pswpModule: () => import('https://unpkg.com/photoswipe@5.4.4/dist/photoswipe.esm.js'),
-            });
-
-            new PhotoSwipeDynamicCaption(lightbox, { type: 'auto' });
-            lightbox.init();
-        });
-    }
-</script>
+@if (Route::is('admin.employees.show') || Route::is('admin.employees.edit'))
+    @vite('resources/js/photoswipe-init.js')
+@endif
 
 </body>
 </html>
