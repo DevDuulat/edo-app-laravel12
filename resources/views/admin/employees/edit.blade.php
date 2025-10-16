@@ -118,9 +118,11 @@
                             <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
                         </div>
                     </template>
-                    @foreach($passportFile as $file)
-                        <x-file-preview :file="$file" />
-                    @endforeach
+                        <div id="passport-gallery" class="pswp-gallery flex flex-wrap gap-2 mt-2">
+                            @foreach($passportFiles as $file)
+                                <x-file-preview :file="$file" :can-delete="true" />
+                            @endforeach
+                        </div>
                 </div>
                 </div>
 
@@ -135,9 +137,11 @@
                                 <button type="button" @click="removeFile(index)" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
                             </div>
                         </template>
+                        <div id="passport-gallery" class="pswp-gallery flex flex-wrap gap-2 mt-2">
                         @foreach($otherFiles as $file)
-                            <x-file-preview :file="$file" />
+                            <x-file-preview :file="$file" :can-delete="true" />
                         @endforeach
+                    </div>
                     </div>
                     @error('files.*')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
