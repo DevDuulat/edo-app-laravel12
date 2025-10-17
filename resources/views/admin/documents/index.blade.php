@@ -5,9 +5,10 @@
                 <flux:breadcrumbs.item href="#" icon="home" />
                 <flux:breadcrumbs.item>{{ __('Документы') }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <a href="{{ route('admin.documents.create') }}"  class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
-                {{ __('Добавить Документ') }}
-            </a>
+            <flux:button href="{{ route('admin.documents.create') }}" icon="plus" variant="primary">
+                {{ __('Добавить документ') }}
+            </flux:button>
+
         </div>
         <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
             Документы

@@ -8,12 +8,10 @@
                 <flux:breadcrumbs.item>{{ __('Департамент') }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
 
-
-
-
-            <a href="{{ route('admin.departments.create') }}"  class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
+            <flux:button href="{{ route('admin.departments.create') }}" icon="plus" variant="primary">
                 {{ __('Добавить департамент') }}
-            </a>
+            </flux:button>
+
         </div>
         <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
             Департамент
