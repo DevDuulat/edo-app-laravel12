@@ -1,18 +1,17 @@
 <x-layouts.app :title="__('Departments')">
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between">
-            <!-- Breadcrumb -->
-
             <flux:breadcrumbs>
                 <flux:breadcrumbs.item href="#" icon="home" />
                 <flux:breadcrumbs.item>{{ __('Документы') }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-
-
             <a href="{{ route('admin.documents.create') }}"  class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
                 {{ __('Добавить Документ') }}
             </a>
         </div>
+        <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
+            Документы
+        </h3>
 
         <div class="relative overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <table class="min-w-full overflow-hidden">
