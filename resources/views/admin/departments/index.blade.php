@@ -8,12 +8,10 @@
                 <flux:breadcrumbs.item>{{ __('Департамент') }}</flux:breadcrumbs.item>
             </flux:breadcrumbs>
 
-
-
-
-            <a href="{{ route('admin.departments.create') }}"  class="px-4 py-2 bg-gray-600 dark:bg-gray-700 text-white rounded-lg hover:bg-gray-500 dark:hover:bg-gray-600 transition-all duration-200">
+            <flux:button href="{{ route('admin.departments.create') }}" icon="plus" variant="primary">
                 {{ __('Добавить департамент') }}
-            </a>
+            </flux:button>
+
         </div>
         <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
             Департамент
@@ -38,9 +36,26 @@
                         <td class="px-6 py-4">{{ $department->location ?? '-' }}</td>
                         <td class="px-6 py-4">
                             <a href="{{ route('admin.employees.byDepartment', $department->id) }}"
-                               class="text-blue-600 dark:text-blue-400 hover:underline">
+                               class="text-blue-600 dark:text-blue-400 hover:underline block mb-2">
                                 {{ $department->name }}
-                            </a></td>
+                            </a>
+
+                            <div class="flex -space-x-4 rtl:space-x-reverse">
+                                @foreach($department->employees as $employee)
+                                    <img class="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                                         src="{{ asset('storage/' . $employee->avatar_url) }} "
+                                         alt="{{ $employee->name }}">
+                                @endforeach
+
+                                @if($department->employees()->count() > 4)
+                                    <a class="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
+                                       href="{{ route('admin.employees.byDepartment', $department->id) }}">
+                                        +{{ $department->employees()->count() - 4 }}
+                                    </a>
+                                @endif
+                            </div>
+                        </td>
+
                         <td class="px-6 py-4">{{ $department->created_at }}</td>
 
 

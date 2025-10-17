@@ -3,6 +3,7 @@
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\FolderController;
 use App\Http\Controllers\SsoController;
 use App\Http\Controllers\UserController;
 use App\Livewire\Settings\Appearance;
@@ -51,11 +52,16 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->name('admin.')->group(function() {
         Route::resource('departments', DepartmentController::class);
         Route::resource('employees', EmployeeController::class);
+        Route::resource('folders', FolderController::class);
         Route::resource('documents', DocumentController::class);
-
         Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
             ->name('employees.byDepartment');
+
+        Route::post('/folders/update-order', [FolderController::class, 'updateOrder'])->name('folders.updateOrder');
+
     });
+
+
 
 });
 require __DIR__.'/auth.php';
