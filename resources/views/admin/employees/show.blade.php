@@ -7,6 +7,9 @@
                 <flux:breadcrumbs.item>Просмотр</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
+        <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
+            Страница сотрудника
+        </h3>
         <div class="p-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <!-- Аватар -->
             <div class="flex justify-left mb-4">

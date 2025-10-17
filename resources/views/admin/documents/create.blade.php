@@ -7,6 +7,9 @@
                 <flux:breadcrumbs.item>Создание Документа</flux:breadcrumbs.item>
             </flux:breadcrumbs>
         </div>
+        <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
+            Создание документа
+        </h3>
         <div class="px-5 py-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <form action="{{ route('admin.documents.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-5 max-w-5xl md:grid-cols-2">
                 @csrf
