@@ -38,9 +38,26 @@
                         <td class="px-6 py-4">{{ $department->location ?? '-' }}</td>
                         <td class="px-6 py-4">
                             <a href="{{ route('admin.employees.byDepartment', $department->id) }}"
-                               class="text-blue-600 dark:text-blue-400 hover:underline">
+                               class="text-blue-600 dark:text-blue-400 hover:underline block mb-2">
                                 {{ $department->name }}
-                            </a></td>
+                            </a>
+
+                            <div class="flex -space-x-4 rtl:space-x-reverse">
+                                @foreach($department->employees as $employee)
+                                    <img class="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
+                                         src="{{ asset('storage/' . $employee->avatar_url) }} "
+                                         alt="{{ $employee->name }}">
+                                @endforeach
+
+                                @if($department->employees()->count() > 4)
+                                    <a class="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
+                                       href="{{ route('admin.employees.byDepartment', $department->id) }}">
+                                        +{{ $department->employees()->count() - 4 }}
+                                    </a>
+                                @endif
+                            </div>
+                        </td>
+
                         <td class="px-6 py-4">{{ $department->created_at }}</td>
 
 
