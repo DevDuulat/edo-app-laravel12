@@ -16,7 +16,7 @@ class DocumentController extends Controller
 {
     public function index()
     {
-        $documents = Document::query()->paginate();
+        $documents = Document::query()->paginate('10');
         return view('admin.documents.index', compact('documents'));
     }
 
