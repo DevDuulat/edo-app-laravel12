@@ -118,14 +118,25 @@
                 </div>
 
                 <!-- Копия паспорта -->
-                <div class="flex flex-col gap-2">
+                <div class="flex flex-col gap-2" x-data="passportCopyPreview()">
                     <label for="passport_copy" class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Копия паспорта') }}</label>
-                    <input type="file" name="passport_copy" id="passport_copy" accept="image/*"
+                    <input type="file" name="passport_copy[]" id="passport_copy" accept="image/*" multiple
+                           @change="handleFiles($event)"
                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-                    @error('passport_copy')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    @error('passport_copy.*')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
 
                     <!-- Статус распознавания -->
-                    <p id="ocrStatus" class="text-sm text-gray-500 mt-1">Выберите файл для распознавания</p>
+                    <p id="ocrStatus" class="text-sm text-gray-500 mt-1">Выберите файл(ы) для распознавания</p>
+
+                    <!-- Галерея превью -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <template x-for="(file, index) in files" :key="index">
+                            <div class="relative w-32 h-32 border border-gray-300 rounded-lg overflow-hidden flex items-center justify-center">
+                                <img :src="file.preview" class="w-full h-full object-cover">
+                                <button type="button" @click="removeFile(index)" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
+                            </div>
+                        </template>
+                    </div>
                 </div>
 
                 <!-- Множественные файлы -->
@@ -153,6 +164,59 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
+    <script>
+        function passportCopyPreview() {
+            return {
+                files: [],
+
+                handleFiles(event) {
+                    const selectedFiles = Array.from(event.target.files);
+                    const statusEl = document.getElementById('ocrStatus');
+                    const passportEl = document.getElementById('passport_number');
+                    const innEl = document.getElementById('inn');
+
+                    selectedFiles.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            this.files.push({ file, preview: e.target.result });
+
+                            // Запуск OCR для каждого выбранного файла
+                            statusEl.textContent = 'Распознавание...';
+                            Tesseract.recognize(file, 'rus+eng+kir', { logger: m => console.log(m) })
+                                .then(({ data: { text } }) => {
+                                    // Автозаполнение полей, если найдены данные
+                                    const innMatch = text.match(/\d{14}/);
+                                    if (innMatch && !innEl.value) innEl.value = innMatch[0];
+
+                                    const docIdMatch = text.match(/[A-ZА-Я]{2}\d{7}/i);
+                                    if (docIdMatch && !passportEl.value) passportEl.value = docIdMatch[0];
+
+                                    statusEl.textContent = 'Распознавание завершено';
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    statusEl.textContent = 'Ошибка распознавания';
+                                });
+                        };
+                        reader.readAsDataURL(file);
+                    });
+
+                    this.updateInputFiles();
+                },
+
+                removeFile(index) {
+                    this.files.splice(index, 1);
+                    this.updateInputFiles();
+                },
+
+                updateInputFiles() {
+                    const dt = new DataTransfer();
+                    this.files.forEach(f => dt.items.add(f.file));
+                    document.getElementById('passport_copy').files = dt.files;
+                }
+            }
+        }
+    </script>
     <script>
         document.getElementById('passport_copy').addEventListener('change', async (e) => {
             const file = e.target.files[0];
