@@ -35,9 +35,11 @@ class EmployeeController extends Controller
         );
 
         $allFiles = [];
+
         if ($request->hasFile('passport_copy')) {
             $allFiles['passport_copy'] = $request->file('passport_copy');
         }
+
         if ($request->hasFile('files')) {
             $allFiles['files'] = $request->file('files');
         }
@@ -47,6 +49,7 @@ class EmployeeController extends Controller
         return redirect()->route('admin.employees.index')
             ->with('success', 'Сотрудник успешно создан и файлы загружены.');
     }
+
 
 
     public function show(string $id)
