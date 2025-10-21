@@ -4,6 +4,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\OcrController;
 use App\Http\Controllers\SsoController;
 use App\Http\Controllers\UserController;
 use App\Livewire\Settings\Appearance;
@@ -57,12 +58,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
             ->name('employees.byDepartment');
 
-        Route::post('/folders/update-order', [FolderController::class, 'updateOrder'])->name('folders.updateOrder');
-
     });
+    Route::view('/test-page', 'test-page');
 
-
-
+    Route::get('/ocr', [OcrController::class, 'index'])->name('ocr.index');
+    Route::post('/ocr', [OcrController::class, 'process'])->name('ocr.process');
 });
 require __DIR__.'/auth.php';
 
