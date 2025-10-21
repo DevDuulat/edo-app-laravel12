@@ -13,7 +13,9 @@
         </h3>
 
         <div class="px-5 py-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <form action="{{ route('admin.employees.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-5 max-w-5xl md:grid-cols-2" x-data="employeeForm()">
+            <form action="{{ route('admin.employees.store') }}" method="POST" enctype="multipart/form-data"
+                  class="grid gap-5 max-w-5xl md:grid-cols-2"
+                  x-data="employeeForm()">
                 @csrf
 
                 <!-- Имя -->
@@ -97,7 +99,7 @@
                 <div class="flex flex-col gap-2 md:col-span-2">
                     <label class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Фото сотрудника') }}</label>
                     <div class="relative flex flex-col items-center justify-center w-full p-6 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300
-                                border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                          @dragover.prevent="dragging=true"
                          @dragleave.prevent="dragging=false"
                          @drop.prevent="handleAvatarDrop($event)"
@@ -110,7 +112,7 @@
                         <template x-if="avatar">
                             <div class="relative">
                                 <img :src="avatar" class="w-32 h-32 object-cover rounded-lg shadow">
-                                <button type="button" @click="removeAvatar">&times;</button>
+                                <button type="button" @click="removeAvatar" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
                             </div>
                         </template>
                     </div>
@@ -118,22 +120,20 @@
                 </div>
 
                 <!-- Копия паспорта -->
-                <div class="flex flex-col gap-2" x-data="passportCopyPreview()">
+                <div class="flex flex-col gap-2 md:col-span-2">
                     <label for="passport_copy" class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Копия паспорта') }}</label>
-                    <input type="file" name="passport_copy[]" id="passport_copy" accept="image/*" multiple
-                           @change="handleFiles($event)"
+                    <input type="file" name="passport_copy[]" multiple id="passport_copy" accept="image/*"
+                           @change="handlePassportFiles($event)"
                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                     @error('passport_copy.*')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
 
-                    <!-- Статус распознавания -->
-                    <p id="ocrStatus" class="text-sm text-gray-500 mt-1">Выберите файл(ы) для распознавания</p>
+                    <p id="ocrStatus" class="text-sm text-gray-500 mt-1" x-text="ocrStatus"></p>
 
-                    <!-- Галерея превью -->
                     <div class="flex flex-wrap gap-2 mt-2">
-                        <template x-for="(file, index) in files" :key="index">
+                        <template x-for="(file, index) in passportFiles" :key="index">
                             <div class="relative w-32 h-32 border border-gray-300 rounded-lg overflow-hidden flex items-center justify-center">
                                 <img :src="file.preview" class="w-full h-full object-cover">
-                                <button type="button" @click="removeFile(index)" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
+                                <button type="button" @click="removePassportFile(index)" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
                             </div>
                         </template>
                     </div>
@@ -154,7 +154,6 @@
                     @error('files.*')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
-
                 <!-- Buttons -->
                 <div class="flex gap-3 mt-4 md:col-span-2">
                     <button type="submit" class="px-6 py-2 bg-gray-600 dark:bg-gray-700 hover:bg-gray-500 dark:hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200">{{ __('Сохранить') }}</button>
@@ -165,113 +164,27 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
     <script>
-        function passportCopyPreview() {
-            return {
-                files: [],
-
-                handleFiles(event) {
-                    const selectedFiles = Array.from(event.target.files);
-                    const statusEl = document.getElementById('ocrStatus');
-                    const passportEl = document.getElementById('passport_number');
-                    const innEl = document.getElementById('inn');
-
-                    selectedFiles.forEach(file => {
-                        const reader = new FileReader();
-                        reader.onload = e => {
-                            this.files.push({ file, preview: e.target.result });
-
-                            // Запуск OCR для каждого выбранного файла
-                            statusEl.textContent = 'Распознавание...';
-                            Tesseract.recognize(file, 'rus+eng+kir', { logger: m => console.log(m) })
-                                .then(({ data: { text } }) => {
-                                    // Автозаполнение полей, если найдены данные
-                                    const innMatch = text.match(/\d{14}/);
-                                    if (innMatch && !innEl.value) innEl.value = innMatch[0];
-
-                                    const docIdMatch = text.match(/[A-ZА-Я]{2}\d{7}/i);
-                                    if (docIdMatch && !passportEl.value) passportEl.value = docIdMatch[0];
-
-                                    statusEl.textContent = 'Распознавание завершено';
-                                })
-                                .catch(err => {
-                                    console.error(err);
-                                    statusEl.textContent = 'Ошибка распознавания';
-                                });
-                        };
-                        reader.readAsDataURL(file);
-                    });
-
-                    this.updateInputFiles();
-                },
-
-                removeFile(index) {
-                    this.files.splice(index, 1);
-                    this.updateInputFiles();
-                },
-
-                updateInputFiles() {
-                    const dt = new DataTransfer();
-                    this.files.forEach(f => dt.items.add(f.file));
-                    document.getElementById('passport_copy').files = dt.files;
-                }
-            }
-        }
-    </script>
-    <script>
-        document.getElementById('passport_copy').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const statusEl = document.getElementById('ocrStatus');
-            const passportEl = document.getElementById('passport_number');
-            const innEl = document.getElementById('inn');
-
-            statusEl.textContent = 'Распознавание...';
-
-            try {
-                const { data: { text } } = await Tesseract.recognize(file, 'rus+eng+kir', {
-                    logger: m => console.log(m)
-                });
-
-                statusEl.textContent = 'Распознавание завершено';
-
-                // ==== Ищем ИНН ====
-                const innMatch = text.match(/\d{14}/);
-                if (innMatch) innEl.value = innMatch[0];
-
-                // ==== Ищем номер паспорта (2 буквы + 7 цифр) ====
-                const docIdMatch = text.match(/[A-ZА-Я]{2}\d{7}/i);
-                if (docIdMatch) passportEl.value = docIdMatch[0];
-
-            } catch (err) {
-                console.error(err);
-                statusEl.textContent = 'Ошибка распознавания';
-            }
-        });
-    </script>
-    <script>
         function employeeForm() {
             return {
                 avatar: null,
                 dragging: false,
                 files: [],
+                passportFiles: [],
+                ocrStatus: 'Выберите файл(ы) для распознавания',
 
-                // Превью аватара
                 previewAvatar(event) {
                     const file = event.target.files[0];
                     if (!file) return;
                     const reader = new FileReader();
-                    reader.onload = e => { this.avatar = e.target.result; };
+                    reader.onload = e => this.avatar = e.target.result;
                     reader.readAsDataURL(file);
                 },
 
-                // Удалить аватар
                 removeAvatar() {
                     this.avatar = null;
                     document.getElementById('avatar_url').value = '';
                 },
 
-                // Drag & Drop аватара
                 handleAvatarDrop(event) {
                     const file = event.dataTransfer.files[0];
                     document.getElementById('avatar_url').files = event.dataTransfer.files;
@@ -279,28 +192,59 @@
                     this.dragging = false;
                 },
 
-                // Превью и добавление множественных файлов
-                previewFiles(event) {
-                    const selectedFiles = Array.from(event.target.files);
+                handlePassportFiles(event) {
+                    const selected = Array.from(event.target.files);
+                    const passportEl = document.getElementById('passport_number');
+                    const innEl = document.getElementById('inn');
+                    this.ocrStatus = 'Распознавание...';
 
-                    selectedFiles.forEach(file => {
+                    selected.forEach(file => {
                         const reader = new FileReader();
                         reader.onload = e => {
-                            this.files.push({ file, preview: e.target.result });
-                            this.updateInputFiles();
+                            this.passportFiles.push({ file, preview: e.target.result });
+
+                            Tesseract.recognize(file, 'rus+eng+kir')
+                                .then(({ data: { text } }) => {
+                                    const innMatch = text.match(/\d{14}/);
+                                    if (innMatch && !innEl.value) innEl.value = innMatch[0];
+
+                                    const docIdMatch = text.match(/[A-ZА-Я]{2}\d{7}/i);
+                                    if (docIdMatch && !passportEl.value) passportEl.value = docIdMatch[0];
+
+                                    this.ocrStatus = 'Распознавание завершено';
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    this.ocrStatus = 'Ошибка распознавания';
+                                });
                         };
                         reader.readAsDataURL(file);
                     });
                 },
 
-                // Удаление файла
-                removeFile(index) {
-                    this.files.splice(index, 1);
-                    this.updateInputFiles();
+                removePassportFile(i) {
+                    this.passportFiles.splice(i, 1);
                 },
 
-                // Синхронизация input.files с массивом this.files
-                updateInputFiles() {
+
+                previewFiles(event) {
+                    const selected = Array.from(event.target.files);
+                    selected.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            this.files.push({ file, preview: e.target.result });
+                            this.updateFilesInput();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                },
+
+                removeFile(i) {
+                    this.files.splice(i, 1);
+                    this.updateFilesInput();
+                },
+
+                updateFilesInput() {
                     const dt = new DataTransfer();
                     this.files.forEach(f => dt.items.add(f.file));
                     document.getElementById('files').files = dt.files;
@@ -308,4 +252,5 @@
             }
         }
     </script>
+
 </x-layouts.app>
