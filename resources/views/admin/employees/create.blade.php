@@ -120,9 +120,12 @@
                 <!-- Копия паспорта -->
                 <div class="flex flex-col gap-2">
                     <label for="passport_copy" class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Копия паспорта') }}</label>
-                    <input type="file" name="passport_copy" id="passport_copy"
+                    <input type="file" name="passport_copy" id="passport_copy" accept="image/*"
                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                     @error('passport_copy')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+
+                    <!-- Статус распознавания -->
+                    <p id="ocrStatus" class="text-sm text-gray-500 mt-1">Выберите файл для распознавания</p>
                 </div>
 
                 <!-- Множественные файлы -->
@@ -149,6 +152,39 @@
             </form>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.2/dist/tesseract.min.js"></script>
+    <script>
+        document.getElementById('passport_copy').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const statusEl = document.getElementById('ocrStatus');
+            const passportEl = document.getElementById('passport_number');
+            const innEl = document.getElementById('inn');
+
+            statusEl.textContent = 'Распознавание...';
+
+            try {
+                const { data: { text } } = await Tesseract.recognize(file, 'rus+eng+kir', {
+                    logger: m => console.log(m)
+                });
+
+                statusEl.textContent = 'Распознавание завершено';
+
+                // ==== Ищем ИНН ====
+                const innMatch = text.match(/\d{14}/);
+                if (innMatch) innEl.value = innMatch[0];
+
+                // ==== Ищем номер паспорта (2 буквы + 7 цифр) ====
+                const docIdMatch = text.match(/[A-ZА-Я]{2}\d{7}/i);
+                if (docIdMatch) passportEl.value = docIdMatch[0];
+
+            } catch (err) {
+                console.error(err);
+                statusEl.textContent = 'Ошибка распознавания';
+            }
+        });
+    </script>
     <script>
         function employeeForm() {
             return {
