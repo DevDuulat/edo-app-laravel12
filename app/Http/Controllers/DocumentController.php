@@ -31,7 +31,7 @@ class DocumentController extends Controller
     public function store(StoreDocumentRequest $request)
     {
         $data = $request->validated();
-        $data['due_date'] = Carbon::createFromFormat('d/m/Y', $data['due_date'])->format('Y-m-d');
+        $data['due_date'] = $request->due_date;
         $data['user_id'] = auth()->id();
         $data['document_type'] = DocumentType::internal->value;
         $data['workflow_status'] = WorkflowStatus::draft->value;
