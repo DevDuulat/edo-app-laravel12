@@ -72,7 +72,6 @@
             </div>
 
             <!-- Сетка -->
-            <!-- Сетка -->
             <div id="gridView" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 @foreach($folders as $folder)
                     <div class="group folder-card bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 flex flex-col items-center justify-between border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition" data-folder-id="{{ $folder->id }}">
@@ -102,115 +101,5 @@
 
         </div>
     </div>
-
-
-
-    <!-- Modal Create Document -->
-    <div id="createDocumentModal" class="hidden fixed inset-0 bg-white/30 backdrop-blur-sm flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl w-full max-w-md p-6 shadow-lg relative border border-gray-200">
-            <!-- Кнопка закрытия -->
-            <button id="closeCreateDocumentModal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700">✕</button>
-
-            <h2 class="text-xl font-semibold mb-2 text-gray-900">Создать документ</h2>
-            <p class="text-gray-600 mb-4">Введите данные для нового документа.</p>
-
-            <form method="POST" action="{{ route('admin.documents.store') }}" class="space-y-4">
-                @csrf
-                <input type="hidden" name="folder_id" id="document_folder_id">
-
-                <!-- Название документа -->
-                <input type="text" name="title" placeholder="Название документа" required
-                       class="w-full px-3 py-2 border rounded-md border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-                <!-- Срок выполнения -->
-                <input type="date" name="due_date" required
-                       class="w-full px-3 py-2 border rounded-md border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
-
-                <!-- Комментарий / описание -->
-                <textarea name="comment" placeholder="Описание" rows="3"
-                          class="w-full px-3 py-2 border rounded-md border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
-                <div class="flex justify-end">
-                    <button type="submit"
-                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        Создать
-                    </button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-
-
-    <script>
-        const listBtn = document.getElementById('listViewBtn');
-        const gridBtn = document.getElementById('gridViewBtn');
-        const listView = document.getElementById('listView');
-        const gridView = document.getElementById('gridView');
-        const container = document.getElementById("foldersContainer");
-        const dropdown = document.getElementById("dropdown");
-        const modal = document.getElementById("createDocumentModal");
-        const closeModal = document.getElementById("closeCreateDocumentModal");
-        const folderInput = document.getElementById('document_folder_id');
-
-        // Переключение списка/сетки
-        listBtn.addEventListener('click', () => {
-            listView.classList.remove('hidden');
-            gridView.classList.add('hidden');
-        });
-        gridBtn.addEventListener('click', () => {
-            listView.classList.add('hidden');
-            gridView.classList.remove('hidden');
-        });
-
-        // Клики по папкам
-        container.addEventListener("mouseup", (e) => {
-            const folderEl = e.target.closest("[data-folder-id]");
-            if (!folderEl) return;
-            const folderId = folderEl.dataset.folderId;
-
-            switch(e.button) {
-                case 0:
-                case 1:
-                    dropdown.style.display = "none";
-                    break;
-                case 2:
-                    e.preventDefault();
-                    dropdown.dataset.folderId = folderId;
-                    dropdown.style.left = e.pageX + "px";
-                    dropdown.style.top = e.pageY + "px";
-                    dropdown.style.display = "block";
-                    break;
-            }
-        });
-
-        container.addEventListener("contextmenu", (e) => e.preventDefault());
-
-        document.addEventListener("click", (e) => {
-            if (!dropdown.contains(e.target)) dropdown.style.display = "none";
-        });
-
-        // Dropdown действия
-        document.getElementById("createDocBtn").addEventListener("click", () => {
-            folderInput.value = dropdown.dataset.folderId;
-            modal.classList.remove('hidden');
-            dropdown.style.display = "none";
-        });
-
-        document.getElementById("renameBtn").addEventListener("click", () => {
-            console.log("Переименовываем папку:", dropdown.dataset.folderId);
-            dropdown.style.display = "none";
-        });
-        document.getElementById("deleteBtn").addEventListener("click", () => {
-            console.log("Удаляем папку:", dropdown.dataset.folderId);
-            dropdown.style.display = "none";
-        });
-
-        // Закрытие модалки
-        closeModal.addEventListener('click', () => modal.classList.add('hidden'));
-        modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('hidden'); });
-        document.addEventListener('keydown', (e) => { if(e.key === 'Escape') modal.classList.add('hidden'); });
-
-        window.addEventListener("scroll", () => { dropdown.style.display = "none"; });
-    </script>
+<x-modal-create-folder/>
 </x-layouts.app>
