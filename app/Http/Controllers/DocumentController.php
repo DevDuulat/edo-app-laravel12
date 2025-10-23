@@ -39,7 +39,7 @@ class DocumentController extends Controller
         Document::create($data);
 
         return redirect()
-            ->route('admin.documents.index')
+            ->route('admin.folders.index')
             ->with('success', 'Документ успешно создан.');
     }
 
