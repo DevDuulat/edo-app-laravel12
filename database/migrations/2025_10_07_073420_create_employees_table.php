@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('hire_date');
             $table->unsignedBigInteger('department_id');
             $table->string('passport_number', 20)->nullable();
-            $table->string('inn', 14)->nullable();
+            $table->string('inn', 20)->nullable();
             $table->string('avatar_url', 255)->nullable();
             $table->timestamps();
             $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');

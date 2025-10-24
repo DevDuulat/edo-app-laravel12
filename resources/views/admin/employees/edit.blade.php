@@ -110,23 +110,24 @@
                     @error('avatar_url')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                <div class="flex flex-col gap-2" x-data="filePreview('{{ $employee->passport_copy_url ? asset('storage/' . $employee->passport_copy_url) : '' }}')">
+                <div class="flex flex-col gap-2 md:col-span-2" x-data="passportFilesPreview({{ $passportFilesJson ?? '[]' }})">
                     <label for="passport_copy" class="text-sm font-medium text-gray-700 dark:text-gray-300">Копия паспорта</label>
-                    <input type="file" name="passport_copy" id="passport_copy" accept="image/*" @change="previewFile($event)"
+                    <input type="file" name="passport_copy[]" id="passport_copy" accept="image/*" multiple @change="previewFiles($event)"
                            class="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+
                     <div class="flex flex-wrap gap-2 mt-2">
-                    <template x-if="preview">
-                        <div class="relative">
-                            <img :src="preview" class="w-32 h-32 object-cover rounded-lg shadow mt-2">
-                            <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
-                        </div>
-                    </template>
+                        <template x-for="(file, index) in files" :key="index">
+                            <div class="relative w-32 h-32 border border-gray-300 rounded-lg overflow-hidden flex items-center justify-center text-xs text-center p-1">
+                                <img :src="file.preview" class="w-full h-full object-cover">
+                                <button type="button" @click="removeFile(index)" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-700">&times;</button>
+                            </div>
+                        </template>
                         <div id="passport-gallery" class="pswp-gallery flex flex-wrap gap-2 mt-2">
                             @foreach($passportFiles as $file)
                                 <x-file-preview :file="$file" :can-delete="true" />
                             @endforeach
                         </div>
-                </div>
+                    </div>
                 </div>
 
                 <div class="flex flex-col gap-2 md:col-span-2" x-data="multiFilesPreview()">
@@ -192,6 +193,37 @@
             }
         }
     </script>
+    <script>
+        function passportFilesPreview(existingFiles = []) {
+            return {
+                files: existingFiles.map(url => ({ preview: url, file: null })),
+                previewFiles(event) {
+                    const selectedFiles = Array.from(event.target.files);
+
+                    selectedFiles.forEach(file => {
+                        const reader = new FileReader();
+                        reader.onload = e => {
+                            this.files.push({ file, preview: e.target.result });
+                            this.updateInputFiles();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                },
+                removeFile(index) {
+                    this.files.splice(index, 1);
+                    this.updateInputFiles();
+                },
+                updateInputFiles() {
+                    const dt = new DataTransfer();
+                    this.files.forEach(f => {
+                        if (f.file) dt.items.add(f.file);
+                    });
+                    document.getElementById('passport_copy').files = dt.files;
+                }
+            }
+        }
+    </script>
+    
     <script>
 
         function avatarPreview() {

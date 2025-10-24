@@ -25,7 +25,7 @@ class UpdateEmployeeRequest extends FormRequest
             'passport_number' => 'nullable|string|max:20',
             'inn' => 'nullable|string|max:14',
             'avatar_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'passport_copy' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
+            'passport_copy.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
             'files.*' => 'nullable|file|mimes:pdf,jpg,jpeg,png,webp|max:4096',
         ];
     }

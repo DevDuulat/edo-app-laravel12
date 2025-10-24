@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Document;
 use App\Models\Folder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -23,7 +24,9 @@ class FolderController extends Controller
             ->orderBy('order_index')
             ->get();
 
-        return view('admin.folders.index', compact('folders', 'currentFolder'));
+        $documents = Document::where('folder_id', $parentId)->get();
+
+        return view('admin.folders.index', compact('folders', 'currentFolder', 'documents'));
     }
 
 

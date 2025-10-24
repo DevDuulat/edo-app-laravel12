@@ -25,15 +25,21 @@
         Перейти в Кут База
     </flux:sidebar.item>
 
+   @canany(['edo-hr-department', 'edo-employee-list'])
     <flux:sidebar.group expandable heading="Менеджмент" class="grid gap-1">
-        <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate class="py-1">
-            Департаменты
-        </flux:sidebar.item>
-
-        <flux:sidebar.item icon="users" :href="route('admin.employees.index')" wire:navigate class="py-1">
-            Сотрудники
-        </flux:sidebar.item>
+        @can('edo-hr-department')
+            <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate class="py-1">
+                Департаменты
+            </flux:sidebar.item>
+        @endcan
+        @can('edo-employee-list')
+            <flux:sidebar.item icon="users" :href="route('admin.employees.index')" wire:navigate class="py-1">
+                Сотрудники
+            </flux:sidebar.item>
+        @endcan
     </flux:sidebar.group>
+    @endcanany
+
 
 {{--    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">--}}
 {{--        <flux:sidebar.item icon="document" :href="route('admin.documents.index')" wire:navigate class="py-1">--}}

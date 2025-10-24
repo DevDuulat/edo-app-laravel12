@@ -18,6 +18,7 @@ class Document extends Model
         'document_type',
         'comment',
         'due_date',
+        'folder_id',
         'approved_at',
         'workflow_status',
         'user_id',
