@@ -50,15 +50,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
 
 
-    Route::prefix('admin')->name('admin.')->group(function() {
-        Route::resource('departments', DepartmentController::class);
-        Route::resource('employees', EmployeeController::class);
-        Route::resource('folders', FolderController::class);
-        Route::resource('documents', DocumentController::class);
-        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
-            ->name('employees.byDepartment');
+   Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
-    });
+    Route::resource('departments', DepartmentController::class)
+        ->middleware('permission:edo-hr-department');
+
+    Route::resource('employees', EmployeeController::class);
+    Route::resource('folders', FolderController::class);
+    Route::resource('documents', DocumentController::class);
+
+    Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
+        ->name('employees.byDepartment');
+});
+
     Route::view('/test-page', 'test-page');
 
     Route::get('/ocr', [OcrController::class, 'index'])->name('ocr.index');
