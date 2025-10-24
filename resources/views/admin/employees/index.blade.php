@@ -6,9 +6,11 @@
                 <flux:breadcrumbs.item href="{{route('dashboard')}}" icon="home" />
                 <flux:breadcrumbs.item>Сотрудники</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-            <flux:button href="{{ route('admin.employees.create') }}" icon="plus" variant="primary">
-                {{ __('Добавить сотрудников') }}
-            </flux:button>
+            @can('edo-employee-add')
+                <flux:button href="{{ route('admin.employees.create') }}" icon="plus" variant="primary">
+                    {{ __('Добавить сотрудников') }}
+                </flux:button>
+            @endcan
 
         </div>
         @if(isset($department))
@@ -65,7 +67,7 @@
                                 href="{{ route('admin.employees.edit', $employee) }}"
                                 icon="pencil-square">
                         </flux:button>
-
+                        @can('edo-employee-delete')
                         <flux:button
                                 icon="trash"
                                 icon-only
@@ -83,6 +85,7 @@
                                     }).then(() => location.reload());
                                 "
                         />
+                        @endcan
                     </td>
                 </tr>
             @endforeach
