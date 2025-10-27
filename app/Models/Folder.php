@@ -52,4 +52,10 @@ class Folder extends Model
         return $this->hasMany(Document::class);
     }
 
+    public function ancestors()
+    {
+        return $this->parent()->with('ancestors');
+    }
+
+
 }
