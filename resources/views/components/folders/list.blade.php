@@ -1,15 +1,19 @@
 @props(['folders', 'documents'])
 
 <div id="listView">
-    <div x-data="{ selected: [] }">
+    <div x-data="{
+            selectedFolders: [],
+            selectedDocuments: []
+        }">
         <table class="min-w-full rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
             <tr>
                 <th scope="col" class="p-4">
+                    <!-- master checkbox: отмечает/снимает ВСЕ папки и документы -->
                     <input
                             type="checkbox"
-                            x-model="selectAll"
-                            @click="selected = selected.length === {{ count($folders) }} ? [] : @js($folders->pluck('id'))"
+                            :checked="(selectedFolders.length + selectedDocuments.length) === {{ $folders->count() + $documents->count() }}"
+                            @click="if ((selectedFolders.length + selectedDocuments.length) === {{ $folders->count() + $documents->count() }}) { selectedFolders = []; selectedDocuments = []; } else { selectedFolders = @js($folders->pluck('id')); selectedDocuments = @js($documents->pluck('id')); }"
                             class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                     />
                 </th>
@@ -26,7 +30,7 @@
                                 type="checkbox"
                                 name="folder_ids[]"
                                 value="{{ $folder->id }}"
-                                x-model="selected"
+                                x-model="selectedFolders"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                         />
                     </td>
@@ -52,7 +56,7 @@
                                 type="checkbox"
                                 name="document_ids[]"
                                 value="{{ $document->id }}"
-                                x-model="selected"
+                                x-model="selectedDocuments"
                                 class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                         />
                     </td>
