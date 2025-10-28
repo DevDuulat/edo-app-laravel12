@@ -6,7 +6,7 @@
 
                     <li class="inline-flex items-center">
                         <a href="{{ route('admin.folders.index') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
-                            Корневые папки
+                            Домашняя папка
                         </a>
                     </li>
 
