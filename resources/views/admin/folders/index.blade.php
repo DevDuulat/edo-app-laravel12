@@ -4,14 +4,12 @@
             <nav class="flex px-5 py-3 text-gray-700 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
 
-                    {{-- Корневая папка --}}
                     <li class="inline-flex items-center">
                         <a href="{{ route('admin.folders.index') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
                             Корневые папки
                         </a>
                     </li>
 
-                    {{-- Динамические папки --}}
                     @if($currentFolder)
                         @php
                             $ancestors = $currentFolder->ancestors()->get(); // Используем пакет или рекурсивный метод в модели Folder
@@ -30,7 +28,6 @@
                             </li>
                         @endforeach
 
-                        {{-- Текущая папка --}}
                         <li aria-current="page" class="inline-flex items-center">
                             <div class="flex items-center">
                                 <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
