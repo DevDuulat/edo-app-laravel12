@@ -18,7 +18,7 @@ class WorkflowController extends Controller
     }
     public function create()
     {
-        return view('admin.workflow.create');
+//        return view('admin.workflow.create');
     }
 
     public function store(StoreWorkflowRequest $request, WorkflowService $workflowService)
