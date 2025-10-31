@@ -18,7 +18,8 @@
         "livewire/volt": "^1.7.0",
         "spatie/image": "^3.8",
         "spatie/laravel-permission": "^6.21",
-        "thiagoalessio/tesseract_ocr": "^2.13"
+        "thiagoalessio/tesseract_ocr": "^2.13",
+        "tonysm/rich-text-laravel": "^3.3"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",

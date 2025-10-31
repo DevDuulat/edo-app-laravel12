@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\DocumentTemplateController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\OcrController;
@@ -44,29 +45,32 @@ Route::middleware(['auth'])->group(function () {
         )
         ->name('two-factor.show');
 });
-Route::get('/sso/callback', [SsoController::class, 'callback']);
-Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
+    Route::get('/sso/callback', [SsoController::class, 'callback']);
+    Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
 
 
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-
-    Route::resource('departments', DepartmentController::class)
+       Route::resource('departments', DepartmentController::class)
         ->middleware('permission:edo-hr-department');
-
-    Route::resource('employees', EmployeeController::class);
-    Route::resource('folders', FolderController::class);
-    Route::resource('documents', DocumentController::class);
-    Route::post('/workflow', [WorkflowController::class, 'store'])->name('workflow.store');
-
+//       Route::resource('departments', DepartmentController::class);
+       Route::resource('employees', EmployeeController::class);
+       Route::resource('folders', FolderController::class);
+       Route::resource('documents', DocumentController::class);
+       Route::resource('workflows', WorkflowController::class);
+       Route::post('/workflows/{workflow}/approve', [WorkflowController::class, 'approve'])->name('workflows.approve');
+       Route::post('/workflows/{workflow}/reject', [WorkflowController::class, 'reject'])->name('workflows.reject');
+       Route::post('/workflows/{workflow}/redirect', [WorkflowController::class, 'redirect'])->name('workflows.redirect');
+       Route::resource('document-templates', DocumentTemplateController::class);
+//       Route::post('/workflow', [WorkflowController::class, 'store'])->name('workflow.store');
        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
         ->name('employees.byDepartment');
 });
 
+    //debug
     Route::view('/test-page', 'test-page');
-
     Route::get('/ocr', [OcrController::class, 'index'])->name('ocr.index');
     Route::post('/ocr', [OcrController::class, 'process'])->name('ocr.process');
 });

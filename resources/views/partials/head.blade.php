@@ -18,4 +18,9 @@
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 @vite(['resources/css/dropdown.css'])
 @vite(['resources/js/folder-interactions.js'])
+@vite('resources/js/folders.js')
+
+@if (Route::is('admin.employees.show') || Route::is('admin.employees.edit'))
+    @vite('resources/js/photoswipe-init.js')
+@endif
 {{--@fluxAppearance--}}

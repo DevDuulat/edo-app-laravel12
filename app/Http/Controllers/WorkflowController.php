@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\WorkflowUserRole;
 use App\Enums\WorkflowUserStatus;
-use App\Models\Document;
+use App\Http\Requests\StoreWorkflowRequest;
 use App\Models\Workflow;
 use App\Models\WorkflowUser;
+use App\Services\WorkflowService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 class WorkflowController extends Controller
 {
     public function index()
@@ -19,59 +18,126 @@ class WorkflowController extends Controller
     }
     public function create()
     {
-        return view('admin.workflow.create');
+//        return view('admin.workflow.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreWorkflowRequest $request, WorkflowService $workflowService)
     {
-        $validated = $request->validate([
-            'due_date' => ['required', 'date'],
-            'comment' => ['nullable', 'string'],
-            'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
-            'user_ids' => ['required', 'array'],
-            'user_ids.*' => ['exists:users,id'],
-        ]);
+        $validated = $request->validated();
 
-        DB::transaction(function () use ($validated, $request) {
-
-            $workflow = Workflow::create([
-                'title' => 'Рабочий процесс — ' . now()->format('d.m.Y'),
-                'slug' => Str::uuid(),
+        DB::transaction(function () use ($validated, $workflowService) {
+            $workflowService->createFullWorkflow([
                 'note' => $validated['comment'] ?? null,
                 'due_date' => $validated['due_date'],
-                'workflow_status' => 0,
                 'user_id' => auth()->id(),
-            ]);
-
-            if (!empty($validated['folder_id'])) {
-                $documents = Document::where('folder_id', $validated['folder_id'])->pluck('id');
-
-                if ($documents->isNotEmpty()) {
-                    $workflow->documents()->attach($documents);
-                }
-            }
-
-            foreach ($validated['user_ids'] as $index => $userId) {
-                WorkflowUser::create([
-                    'workflow_id' => $workflow->id,
-                    'user_id' => $userId,
-                    'role' => WorkflowUserRole::Participant->value,
-                    'order_index' => $index + 1,
-                    'status' => WorkflowUserStatus::Pending->value,
-                ]);
-            }
-
-            WorkflowUser::create([
-                'workflow_id' => $workflow->id,
-                'user_id' => auth()->id(),
-                'role' => WorkflowUserRole::Initiator->value,
-                'order_index' => 0,
-                'status' => WorkflowUserStatus::Approved->value,
-                'acted_at' => now(),
+                'folder_ids' => $validated['folder_ids'] ?? [],
+                'document_ids' => $validated['document_ids'] ?? [],
+                'user_ids' => $validated['user_ids'] ?? [],
             ]);
         });
 
-        return redirect()->back()->with('success', 'Рабочий процесс успешно создан.');
+        return redirect()->back()->with('alert', [
+            'type' => 'success',
+            'message' => 'Рабочий процесс успешно создан.'
+        ]);
     }
+
+    public function show(Workflow $workflow)
+    {
+        $documents = $workflow->documents()
+            ->with('files')
+            ->get();
+
+        $users = $workflow->users()
+            ->with('user')
+            ->orderBy('order_index')
+            ->get();
+
+        $initiator = $workflow->user;
+
+        $currentUserWorkflow = $workflow->users()
+            ->where('user_id', auth()->id())
+            ->first();
+
+        return view('admin.workflow.show', [
+            'workflow' => $workflow,
+            'documents' => $documents,
+            'users' => $users,
+            'initiator' => $initiator,
+            'currentUserWorkflow' => $currentUserWorkflow,
+        ]);
+    }
+
+
+    public function approve(Request $request, Workflow $workflow)
+    {
+        $workflowUser = $this->getWorkflowUser($workflow);
+        if (!$workflowUser) abort(403, 'Нет доступа к этому процессу.');
+
+        $workflowUser->update([
+            'status' => WorkflowUserStatus::Approved,
+            'acted_at' => now(),
+        ]);
+
+        return back()->with('alert', [
+            'type' => 'success',
+            'message' => 'Вы утвердили документ.',
+        ]);
+    }
+
+    public function reject(Request $request, Workflow $workflow)
+    {
+        $workflowUser = $this->getWorkflowUser($workflow);
+        if (!$workflowUser) abort(403, 'Нет доступа к этому процессу.');
+
+        $workflowUser->update([
+            'status' => WorkflowUserStatus::Rejected,
+            'acted_at' => now(),
+        ]);
+
+        return back()->with('alert', [
+            'type' => 'error',
+            'message' => 'Вы отклонили документ.',
+        ]);
+    }
+
+    public function redirect(Request $request, Workflow $workflow)
+    {
+        $workflowUser = $this->getWorkflowUser($workflow);
+        if (!$workflowUser) abort(403, 'Нет доступа к этому процессу.');
+
+        $request->validate([
+            'redirect_to' => 'required|exists:users,id',
+        ]);
+
+        DB::transaction(function () use ($workflowUser, $request, $workflow) {
+            $workflowUser->update([
+                'status' => WorkflowUserStatus::Redirected,
+                'acted_at' => now(),
+            ]);
+
+            WorkflowUser::create([
+                'workflow_id' => $workflow->id,
+                'user_id' => $request->input('redirect_to'),
+                'role' => $workflowUser->role,
+                'order_index' => $workflowUser->order_index + 0.1,
+                'status' => WorkflowUserStatus::Pending,
+            ]);
+        });
+
+        return back()->with('alert', [
+            'type' => 'info',
+            'message' => 'Вы перенаправили документ другому пользователю.',
+        ]);
+    }
+
+    private function getWorkflowUser(Workflow $workflow): ?WorkflowUser
+    {
+        return WorkflowUser::where('workflow_id', $workflow->id)
+            ->where('user_id', auth()->id())
+            ->first();
+    }
+
+
 
 }

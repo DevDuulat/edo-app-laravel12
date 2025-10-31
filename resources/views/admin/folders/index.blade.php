@@ -1,5 +1,10 @@
 <x-layouts.app :title="__('Departments')">
-    <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
+    @if(session('alert'))
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
+            <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
+        </div>
+    @endif
+    <div class="flex flex-col flex-1 w-full h-full gap-4">
         <div class="flex items-center justify-between mb-4">
             <nav class="flex px-5 py-3 text-gray-700 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
@@ -12,7 +17,7 @@
 
                     @if($currentFolder)
                         @php
-                            $ancestors = $currentFolder->ancestors()->get(); // Используем пакет или рекурсивный метод в модели Folder
+                            $ancestors = $currentFolder->ancestors()->get();
                         @endphp
 
                         @foreach($ancestors as $ancestor)
@@ -41,25 +46,33 @@
                 </ol>
             </nav>
 
-
             <div class="flex gap-2 items-center">
                 <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />
                 <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />
-                <flux:modal.trigger name="create-root-folder">
-                    <flux:button>Создать папку</flux:button>
-                </flux:modal.trigger>
-                <flux:modal.trigger name="create-document">
-                    <flux:button>Создать документ</flux:button>
-                </flux:modal.trigger>
+                @if (!$currentFolder)
+                    <flux:modal.trigger name="create-root-folder">
+                        <flux:button>Создать папку</flux:button>
+                    </flux:modal.trigger>
+                    <flux:modal.trigger name="create-root-document">
+                        <flux:button>Создать документ</flux:button>
+                    </flux:modal.trigger>
+                @endif
             </div>
+
         </div>
-        <div id="foldersContainer" class="transition-all relative overflow-x-auto shadow-md sm:rounded-lg">
-            <x-folders.list :folders="$folders" :documents="$documents" />
+        <div id="foldersContainer" class="transition-all relative overflow-x-auto">
+            <div x-data="{
+                    selectedFolders: [],
+                    selectedDocuments: [],
+                    users: @js($users),
+                    folders: @js($folders) }">
+                <x-folders.list :folders="$folders" :documents="$documents" />
+                <x-modals.modal-create-workflow :users="$users" />
+            </div>
             <x-folders.grid :folders="$folders" :documents="$documents" />
         </div>
     </div>
 
-    <x-modals.modal-create-workflow :users="$users" />
     <x-modals.modal-create-root-folder/>
     <x-modals.modal-create-folder/>
     <x-modals.modal-create-root-document/>

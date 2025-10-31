@@ -2,46 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Document;
+use App\Http\Requests\StoreFolderRequest;
 use App\Models\Folder;
-use App\Models\User;
+use App\Services\FolderDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class FolderController extends Controller
 {
+    public function __construct(
+        protected FolderDocumentService $folderDocumentService
+    ) {}
+
     public function index(Request $request)
     {
-        $users = User::select('id', 'name')->get();
         $parentId = $request->query('parent_id');
+        $data = $this->folderDocumentService->getFolderData($parentId);
 
-        $currentFolder = null;
-        if ($parentId) {
-            $currentFolder = Folder::with('parent')->findOrFail($parentId);
-        }
-
-        $folders = Folder::where('parent_id', $parentId)
-            ->with('children')
-            ->orderBy('order_index')
-            ->get();
-
-        $documents = Document::where('folder_id', $parentId)->get();
-
-        return view('admin.folders.index', compact('folders', 'currentFolder', 'documents', 'users'));
+        return view('admin.folders.index', $data);
     }
 
-
-
-
-    public function store(Request $request)
+    public function store(StoreFolderRequest $request)
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'parent_id' => ['nullable', 'exists:folders,id'],
-            'retention_period' => ['nullable', 'integer', 'min:1'],
-        ]);
-
         $parentPath = null;
         if ($request->parent_id) {
             $parentFolder = Folder::find($request->parent_id);
@@ -57,7 +40,7 @@ class FolderController extends Controller
             'path' => $path,
             'parent_id' => $request->parent_id,
             'order_index' => 0,
-            'status' => 1, // активна
+            'status' => 1,
             'retention_period' => $request->retention_period,
             'created_by' => auth()->id(),
             'updated_by' => auth()->id(),
@@ -66,8 +49,10 @@ class FolderController extends Controller
 
         Storage::disk('local')->makeDirectory($path);
 
-        return redirect()->route('admin.folders.index')
-            ->with('success', 'Папка успешно создана!');
+        return redirect()->route('admin.folders.index')->with('alert', [
+            'type' => 'success',
+            'message' => 'Папка успешно создана!'
+        ]);
     }
 
     public function show(Folder $folder)
@@ -78,6 +63,20 @@ class FolderController extends Controller
 
         return view('admin.folders.show', compact('folder', 'subfolders', 'files'));
     }
+
+    public function destroy(Folder $folder)
+    {
+        if ($folder->is_root ?? false) {
+            return redirect()->back()->with('error', 'Нельзя удалить корневую папку.');
+        }
+
+        $folder->delete();
+
+        return redirect()
+            ->route('admin.folders.index')
+            ->with('success', 'Папка успешно удалена.');
+    }
+
 
 
 

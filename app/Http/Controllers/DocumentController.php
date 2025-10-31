@@ -9,14 +9,20 @@ use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use App\Services\FolderDocumentService;
 
 class DocumentController extends Controller
 {
-    public function index()
+    public function __construct(
+        protected FolderDocumentService $folderDocumentService
+    ) {}
+
+    public function index(Request $request)
     {
-        $documents = Document::with('workflows')->paginate(10);
-        return view('admin.documents.index', compact('documents'));
+        $parentId = $request->query('parent_id');
+        $data = $this->folderDocumentService->getFolderData($parentId);
+
+        return view('admin.documents.index', $data);
     }
 
     public function create()
