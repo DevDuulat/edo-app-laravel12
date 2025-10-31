@@ -1,4 +1,9 @@
 <x-layouts.app :title="__('Departments')">
+    @if(session('alert'))
+        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
+            <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
+        </div>
+    @endif
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between">
             <!-- Breadcrumb -->
