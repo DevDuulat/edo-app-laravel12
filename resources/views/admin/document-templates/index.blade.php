@@ -12,8 +12,6 @@
             <flux:button>Создать шаблон</flux:button>
         </flux:modal.trigger>
     </div>
-
-
     <table class="min-w-full rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
         <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
         <tr>
@@ -52,7 +50,7 @@
                 </td>
                 <td class="px-6 py-4">
                     {{ $template->active ? 'Активен' : 'Не активен' }}
-                </td>W
+                </td>
                 <td class="px-6 py-4">{{ $template->created_at->format('d.m.Y') }}</td>
                 <td class="px-6 py-4">
                     <a href="{{ route('admin.document-templates.edit', $template->id) }}"
