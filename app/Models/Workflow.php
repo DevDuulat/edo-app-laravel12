@@ -17,8 +17,16 @@ class Workflow extends Model
         return $this->hasMany(WorkflowUser::class);
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
     public function documents() {
-        return $this->belongsToMany(Document::class, 'workflow_document');
+        return $this->belongsToMany(Document::class, 'workflow_document')
+            ->using(WorkflowDocument::class)
+            ->withTimestamps();
     }
 
     public function initiator() {
