@@ -41,27 +41,31 @@
     @endcanany
 
 
-{{--    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">--}}
-{{--        <flux:sidebar.item icon="document" :href="route('admin.documents.index')" wire:navigate class="py-1">--}}
-{{--            Все документы--}}
-{{--        </flux:sidebar.item>--}}
+    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
+        <flux:sidebar.item icon="document-text" :href="route('admin.document-templates.index')" wire:navigate class="py-1">
+            Шаблоны
+        </flux:sidebar.item>
+        {{--Все документы--}}
+        {{--Это “база” всех созданных документов — черновики, утверждённые, в процессе и т.д.--}}
+        <flux:sidebar.item icon="document-duplicate" :href="route('admin.documents.index')" wire:navigate class="py-1">
+            Все документы
+        </flux:sidebar.item>
 
-{{--        <flux:sidebar.item icon="document-plus" :href="route('admin.documents.create')" wire:navigate class="py-1">--}}
-{{--            Создать документ--}}
-{{--        </flux:sidebar.item>--}}
+        {{--Входяище рабочие процессы--}}
+        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">
+            Входящие
+        </flux:sidebar.item>
 
-{{--        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">--}}
-{{--            Входящие--}}
-{{--        </flux:sidebar.item>--}}
+        {{--Входяище рабочие процессы--}}
+        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">
+            Исходящие
+        </flux:sidebar.item>
 
-{{--        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">--}}
-{{--            Исходящие--}}
-{{--        </flux:sidebar.item>--}}
-
-{{--        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">--}}
-{{--            Архив--}}
-{{--        </flux:sidebar.item>--}}
-{{--    </flux:sidebar.group>--}}
+        {{--Завершенные рабочие процессы--}}
+        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">
+            Архив
+        </flux:sidebar.item>
+    </flux:sidebar.group>
     </flux:sidebar.nav>
     <flux:spacer />
 
@@ -165,16 +169,12 @@
 
 {{ $slot }}
 @fluxScripts
-<script src="{{ asset('flux/flux.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/photoswipe@5.4.4/dist/photoswipe.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe@5.4.4/dist/photoswipe.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 
-@if (Route::is('admin.employees.show') || Route::is('admin.employees.edit'))
-    @vite('resources/js/photoswipe-init.js')
-@endif
-@vite('resources/js/folders.js')
+<script src="{{ asset('flux/flux.js') }}"></script>
 </body>
 </html>
