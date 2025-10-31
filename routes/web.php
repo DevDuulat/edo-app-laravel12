@@ -7,6 +7,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\OcrController;
 use App\Http\Controllers\SsoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WorkflowController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -58,8 +59,9 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('employees', EmployeeController::class);
     Route::resource('folders', FolderController::class);
     Route::resource('documents', DocumentController::class);
+    Route::post('/workflow', [WorkflowController::class, 'store'])->name('workflow.store');
 
-    Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
+       Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
         ->name('employees.byDepartment');
 });
 

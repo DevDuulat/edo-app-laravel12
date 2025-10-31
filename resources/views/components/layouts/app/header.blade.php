@@ -2,9 +2,11 @@
     <flux:sidebar.toggle class="lg:hidden" icon="bars-2" />
 
     <flux:navbar class="flex-1">
-        <flux:navbar.item icon="home" href="#" current>Главная</flux:navbar.item>
+        <flux:navbar.item icon="home" href="{{route('dashboard')}}">Главная</flux:navbar.item>
         <flux:navbar.item icon="folder" href="{{route('admin.folders.index')}}">Папки</flux:navbar.item>
-        <flux:navbar.item icon="arrow-path-rounded-square" href="#">Рабочий процесс</flux:navbar.item>
+        <flux:modal.trigger name="workflow-modal">
+            <flux:navbar.item icon="arrow-path-rounded-square" href="#">Рабочий процесс</flux:navbar.item>
+        </flux:modal.trigger>
         <flux:navbar.item icon="document-text" href="#">Аудит лог</flux:navbar.item>
 {{--        <flux:navbar.item icon="share" href="#">Поделиться</flux:navbar.item>--}}
 {{--        <flux:navbar.item icon="inbox-arrow-down" href="#">Скачать</flux:navbar.item>--}}

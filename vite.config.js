@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/css/dropdown.css',
                 'resources/js/photoswipe-init.js',
                 'resources/js/folder-interactions.js',
+                'resources/js/folders.js',
             ],
             refresh: true,
         }),

@@ -7,7 +7,6 @@ use App\Enums\WorkflowStatus;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Models\Document;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -16,7 +15,7 @@ class DocumentController extends Controller
 {
     public function index()
     {
-        $documents = Document::query()->paginate('10');
+        $documents = Document::with('workflows')->paginate(10);
         return view('admin.documents.index', compact('documents'));
     }
 
@@ -36,13 +35,20 @@ class DocumentController extends Controller
         $data['document_type'] = DocumentType::internal->value;
         $data['workflow_status'] = WorkflowStatus::draft->value;
         $data['slug'] = Str::slug($data['title']);
-        Document::create($data);
+
+        $document = Document::create($data);
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('documents', 'public');
+                $document->files()->create(['file_path' => $path]);
+            }
+        }
 
         return redirect()
             ->route('admin.folders.index')
             ->with('success', 'Документ успешно создан.');
     }
-
 
 
     public function show(Document $document)

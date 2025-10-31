@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Document;
 use App\Models\Folder;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -12,6 +13,7 @@ class FolderController extends Controller
 {
     public function index(Request $request)
     {
+        $users = User::select('id', 'name')->get();
         $parentId = $request->query('parent_id');
 
         $currentFolder = null;
@@ -26,7 +28,7 @@ class FolderController extends Controller
 
         $documents = Document::where('folder_id', $parentId)->get();
 
-        return view('admin.folders.index', compact('folders', 'currentFolder', 'documents'));
+        return view('admin.folders.index', compact('folders', 'currentFolder', 'documents', 'users'));
     }
 
 

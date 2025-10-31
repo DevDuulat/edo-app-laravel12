@@ -17,26 +17,32 @@ gridBtn.addEventListener('click', () => {
     gridView.classList.remove('hidden');
 });
 
-// Клики по папкам
 container.addEventListener("mouseup", (e) => {
     const folderEl = e.target.closest("[data-folder-id]");
     if (!folderEl) return;
+
     const folderId = folderEl.dataset.folderId;
 
-    switch(e.button) {
+    switch (e.button) {
         case 0:
         case 1:
             dropdown.style.display = "none";
             break;
         case 2:
             e.preventDefault();
+
+            const rect = container.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top + container.scrollTop;
+
             dropdown.dataset.folderId = folderId;
-            dropdown.style.left = e.pageX + "px";
-            dropdown.style.top = e.pageY + "px";
+            dropdown.style.left = `${x}px`;
+            dropdown.style.top = `${y}px`;
             dropdown.style.display = "block";
             break;
     }
 });
+
 
 container.addEventListener("contextmenu", (e) => e.preventDefault());
 
@@ -44,7 +50,6 @@ document.addEventListener("click", (e) => {
     if (!dropdown.contains(e.target)) dropdown.style.display = "none";
 });
 
-// Dropdown действия
 document.getElementById("createDocBtn").addEventListener("click", () => {
     folderInput.value = dropdown.dataset.folderId;
     modal.classList.remove('hidden');
@@ -60,7 +65,6 @@ document.getElementById("deleteBtn").addEventListener("click", () => {
     dropdown.style.display = "none";
 });
 
-// Закрытие модалки
 closeModal.addEventListener('click', () => modal.classList.add('hidden'));
 modal.addEventListener('click', (e) => { if(e.target === modal) modal.classList.add('hidden'); });
 document.addEventListener('keydown', (e) => { if(e.key === 'Escape') modal.classList.add('hidden'); });

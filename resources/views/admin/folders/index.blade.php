@@ -1,105 +1,69 @@
 <x-layouts.app :title="__('Departments')">
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-                @if($currentFolder)
-                    <a href="{{ route('admin.folders.index', ['parent_id' => $currentFolder->parent_id]) }}" class="text-blue-600 hover:underline">
-                        ← Назад
-                    </a>
-                    <span>/ {{ $currentFolder->name }}</span>
-                @else
-                    <span>Корневые папки</span>
-                @endif
-            </div>
+            <nav class="flex px-5 py-3 text-gray-700 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-3">
+
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('admin.folders.index') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
+                            Домашняя папка
+                        </a>
+                    </li>
+
+                    @if($currentFolder)
+                        @php
+                            $ancestors = $currentFolder->ancestors()->get(); // Используем пакет или рекурсивный метод в модели Folder
+                        @endphp
+
+                        @foreach($ancestors as $ancestor)
+                            <li class="inline-flex items-center">
+                                <div class="flex items-center">
+                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path>
+                                    </svg>
+                                    <a href="{{ route('admin.folders.index', ['parent_id' => $ancestor->id]) }}" class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400 hover:text-blue-600">
+                                        {{ $ancestor->name }}
+                                    </a>
+                                </div>
+                            </li>
+                        @endforeach
+
+                        <li aria-current="page" class="inline-flex items-center">
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path>
+                                </svg>
+                                <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">{{ $currentFolder->name }}</span>
+                            </div>
+                        </li>
+                    @endif
+
+                </ol>
+            </nav>
+
 
             <div class="flex gap-2 items-center">
                 <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />
                 <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />
-                <flux:modal.trigger name="create-folder">
-                    <flux:button icon="plus" variant="primary">Создать папку</flux:button>
+                <flux:modal.trigger name="create-root-folder">
+                    <flux:button>Создать папку</flux:button>
+                </flux:modal.trigger>
+                <flux:modal.trigger name="create-document">
+                    <flux:button>Создать документ</flux:button>
                 </flux:modal.trigger>
             </div>
         </div>
-
-        <x-modal-create-folder/>
-        <x-modal-share-folder/>
-
-        <!-- Контейнер папок -->
-        <div id="foldersContainer" class="transition-all">
-            <!-- Список -->
-            <div id="listView" class="">
-                <table class="min-w-full rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-                    <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
-                    <tr>
-                        <th class="px-6 py-3 text-left">Название</th>
-                        <th class="px-6 py-3 text-left">Дата создания</th>
-                        <th class="px-6 py-3 text-left">Действия</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach($folders as $folder)
-                        <tr class="border-b dark:border-zinc-700" data-folder-id="{{ $folder->id }}">
-                            <td class="px-6 py-4 flex items-center gap-2">
-                                <x-icon.folder-icon/>
-                                <a href="{{ route('admin.folders.index', ['parent_id' => $folder->id]) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
-                                    {{ $folder->name }}
-                                </a>
-                            </td>
-                            <td class="px-6 py-4">{{ $folder->created_at->format('d.m.Y') }}</td>
-                            <td class="px-6 py-4">
-                                <x-actions.folder-dropdown :folder="$folder" />
-                            </td>
-                        </tr>
-                        <x-actions.folder-context-menu :folder="$folder"/>
-                    @endforeach
-
-                    @foreach($documents as $document)
-                        <tr class="border-b dark:border-zinc-700" data-document-id="{{ $document->id }}">
-                            <td class="px-6 py-4 flex items-center gap-2">
-                                <x-icon.document-icon />
-                                <a href="{{ route('admin.documents.show', $document->id) }}" class="text-blue-600 dark:text-blue-400 hover:underline">
-                                    {{ $document->title }}
-                                </a>
-                            </td>
-                            <td class="px-6 py-4">{{ $document->created_at->format('d.m.Y') }}</td>
-                            <td class="px-6 py-4">
-{{--                                <button class="text-blue-600 hover:underline">Открыть</button>--}}
-                            </td>
-                        </tr>
-                    @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Сетка -->
-            <div id="gridView" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                @foreach($folders as $folder)
-                    <div class="group folder-card bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 flex flex-col items-center justify-between border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition" data-folder-id="{{ $folder->id }}">
-                        <a href="{{ route('admin.folders.index', ['parent_id' => $folder->id]) }}" class="flex flex-col items-center folder-link">
-                            <x-icon.folder-icon/>
-                            <span class="text-sm text-gray-900 dark:text-gray-100 truncate max-w-full text-center">{{ $folder->name }}</span>
-                        </a>
-                        <div class="flex items-center justify-between w-full mt-2">
-                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $folder->created_at->format('d.m.Y') }}</span>
-                            <x-actions.folder-dropdown :folder="$folder" />
-                        </div>
-                    </div>
-                    <x-actions.folder-context-menu :folder="$folder"/>
-                @endforeach
-
-                <!-- Вывод документов -->
-                @foreach($documents as $document)
-                    <div class="document-card bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 flex flex-col items-center justify-between border border-zinc-200 dark:border-zinc-700 hover:shadow-lg transition" data-document-id="{{ $document->id }}">
-                        <span class="text-sm text-gray-900 dark:text-gray-100 truncate max-w-full text-center">{{ $document->title }}</span>
-                        <div class="flex items-center justify-between w-full mt-2">
-                            <span class="text-xs text-gray-500 dark:text-gray-400">{{ $document->created_at->format('d.m.Y') }}</span>
-                            <button class="text-blue-600 hover:underline text-xs">Открыть</button>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-
+        <div id="foldersContainer" class="transition-all relative overflow-x-auto shadow-md sm:rounded-lg">
+            <x-folders.list :folders="$folders" :documents="$documents" />
+            <x-folders.grid :folders="$folders" :documents="$documents" />
         </div>
     </div>
-<x-modal-create-folder/>
+
+    <x-modals.modal-create-workflow :users="$users" />
+    <x-modals.modal-create-root-folder/>
+    <x-modals.modal-create-folder/>
+    <x-modals.modal-create-root-document/>
+    <x-modals.modal-create-document/>
+    <x-modals.modal-share-folder/>
+
 </x-layouts.app>

@@ -175,6 +175,6 @@
 @if (Route::is('admin.employees.show') || Route::is('admin.employees.edit'))
     @vite('resources/js/photoswipe-init.js')
 @endif
-
+@vite('resources/js/folders.js')
 </body>
 </html>
