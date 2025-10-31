@@ -27,4 +27,17 @@ class Document extends Model
         'document_type' => DocumentType::class,
         'workflow_status' => WorkflowStatus::class,
     ];
+
+    public function workflows()
+    {
+        return $this->belongsToMany(Workflow::class, 'workflow_document')
+            ->using(WorkflowDocument::class)
+            ->withTimestamps()
+            ->orderBy('workflow_document.created_at', 'desc');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(DocumentFile::class);
+    }
 }
