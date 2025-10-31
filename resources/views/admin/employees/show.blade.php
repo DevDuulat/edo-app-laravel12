@@ -11,7 +11,6 @@
             Страница сотрудника
         </h3>
         <div class="p-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <!-- Аватар -->
             <div class="flex justify-left mb-4">
                 @if ($employee->avatar_url)
                     <img src="{{ asset('storage/' . $employee->avatar_url) }}"
@@ -23,12 +22,10 @@
                     </div>
                 @endif
             </div>
-            <!-- Имя -->
             <flux:heading size="2xl" class="mt-4 mb-4 text-gray-900 dark:text-gray-100">
                 {{ $employee->full_name }}
             </flux:heading>
 
-            <!-- Информация -->
             <div class="space-y-2">
                 <flux:text><strong>Должность:</strong> {{ $employee->position }}</flux:text>
                 <flux:text><strong>Заработная плата:</strong> {{ $employee->salary }}</flux:text>
@@ -37,7 +34,6 @@
                 <flux:text><strong>Номер паспорта:</strong> {{ $employee->passport_number ?? '-' }}</flux:text>
                 <flux:text><strong>ИНН:</strong> {{ $employee->inn ?? '-' }}</flux:text>
             </div>
-            <!-- Паспорта -->
             <div class="mt-8">
                 <flux:heading size="xl" class="mb-3 text-gray-900 dark:text-gray-100">
                     Паспорта
@@ -58,7 +54,6 @@
                 </div>
             </div>
 
-            <!-- Документы -->
                 <div class="mt-8">
                     <flux:heading size="xl" class="mb-3 text-gray-900 dark:text-gray-100">
                         Документы
@@ -79,7 +74,6 @@
                     </div>
             </div>
 
-            <!-- Кнопки -->
             <div class="mt-6 flex gap-3">
                 <flux:button
                         as="a"
@@ -100,5 +94,4 @@
                 </flux:button>
             </div>
         </div>
-    </div>
 </x-layouts.app>
