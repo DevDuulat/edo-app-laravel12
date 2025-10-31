@@ -21,8 +21,6 @@
                 required
         />
 
-        <flux:textarea name="comment" label="Оставьте комментарий" rows="4" />
-
         <div class="space-y-6">
             @foreach ($roles as $role)
                 <div x-data="userMultiSelect(@js($users))" class="relative w-full">
@@ -82,6 +80,7 @@
                 </div>
             @endforeach
         </div>
+        <flux:textarea name="comment" label="Оставьте комментарий" rows="4" />
 
         <div class="flex justify-end">
             <flux:button type="submit" variant="primary">Создать процесс</flux:button>
