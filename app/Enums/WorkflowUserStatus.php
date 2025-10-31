@@ -8,12 +8,15 @@ enum WorkflowUserStatus: int
     case Approved = 1;
     case Rejected = 2;
 
+    case Redirected = 3;
+
     public function label(): string
     {
         return match($this) {
             self::Pending => 'Ожидает',
             self::Approved => 'Согласовал',
             self::Rejected => 'Отклонил',
+            self::Redirected => 'Перенаправлен',
         };
     }
 
@@ -23,6 +26,7 @@ enum WorkflowUserStatus: int
             self::Pending => 'pending',
             self::Approved => 'approved',
             self::Rejected => 'rejected',
+            self::Redirected => 'redirected',
         };
     }
 }
