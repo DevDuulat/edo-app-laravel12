@@ -2,8 +2,10 @@
     <flux:sidebar.toggle class="lg:hidden" icon="bars-2" />
 
     <flux:navbar class="flex-1">
-        <flux:navbar.item icon="home" href="{{route('dashboard')}}">Главная</flux:navbar.item>
-        <flux:navbar.item icon="folder" href="{{route('admin.folders.index')}}">Папки</flux:navbar.item>
+{{--        <flux:navbar.item icon="home" href="{{route('dashboard')}}">Главная</flux:navbar.item>--}}
+{{--        <flux:modal.trigger name="template-modal">--}}
+{{--            <flux:navbar.item icon="arrow-path-rounded-square" href="#">Шаблоны</flux:navbar.item>--}}
+{{--        </flux:modal.trigger>--}}
         <flux:modal.trigger name="workflow-modal">
             <flux:navbar.item icon="arrow-path-rounded-square" href="#">Рабочий процесс</flux:navbar.item>
         </flux:modal.trigger>
@@ -20,18 +22,18 @@
     <flux:spacer />
 
 
-    <flux:navbar class="items-center">
-        <flux:dropdown class="max-lg:hidden">
-            <flux:navbar.item icon:trailing="chevron-down">Загрузить</flux:navbar.item>
-            <flux:navmenu>
-                <flux:navmenu.item href="#">Загрузить документ</flux:navmenu.item>
-                <flux:navmenu.item href="#">Android app</flux:navmenu.item>
-                <flux:navmenu.item href="#">Brand guidelines</flux:navmenu.item>
-            </flux:navmenu>
-        </flux:dropdown>
-        <flux:navbar.item class="max-lg:hidden" icon="cog-6-tooth" href="#" label="Settings" />
-        <flux:navbar.item class="max-lg:hidden" icon="information-circle" href="#" label="Help" />
-    </flux:navbar>
+{{--    <flux:navbar class="items-center">--}}
+{{--        <flux:dropdown class="max-lg:hidden">--}}
+{{--            <flux:navbar.item icon:trailing="chevron-down">Загрузить</flux:navbar.item>--}}
+{{--            <flux:navmenu>--}}
+{{--                <flux:navmenu.item href="#">Загрузить документ</flux:navmenu.item>--}}
+{{--                <flux:navmenu.item href="#">Android app</flux:navmenu.item>--}}
+{{--                <flux:navmenu.item href="#">Brand guidelines</flux:navmenu.item>--}}
+{{--            </flux:navmenu>--}}
+{{--        </flux:dropdown>--}}
+{{--        <flux:navbar.item class="max-lg:hidden" icon="cog-6-tooth" href="#" label="Settings" />--}}
+{{--        <flux:navbar.item class="max-lg:hidden" icon="information-circle" href="#" label="Help" />--}}
+{{--    </flux:navbar>--}}
 
     <flux:dropdown position="top" align="end">
         <flux:profile class="cursor-pointer" :initials="auth()->user()->initials()" />
