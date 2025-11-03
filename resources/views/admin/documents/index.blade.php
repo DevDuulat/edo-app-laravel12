@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Departments')">
+<x-layouts.app :title="__('Документы')">
     @if(session('alert'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
             <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
@@ -60,7 +60,7 @@
             </div>
 
         </div>
-        <div id="foldersContainer" class="transition-all relative overflow-x-auto">
+        <div id="foldersContainer" class="transition-all relative">
             <div x-data="{
                     selectedFolders: [],
                     selectedDocuments: [],
