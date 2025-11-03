@@ -6,10 +6,12 @@
 {{--        <flux:modal.trigger name="template-modal">--}}
 {{--            <flux:navbar.item icon="arrow-path-rounded-square" href="#">Шаблоны</flux:navbar.item>--}}
 {{--        </flux:modal.trigger>--}}
-        <flux:modal.trigger name="workflow-modal">
-            <flux:navbar.item icon="arrow-path-rounded-square" href="#">Рабочий процесс</flux:navbar.item>
-        </flux:modal.trigger>
-        <flux:navbar.item icon="document-text" href="#">Аудит лог</flux:navbar.item>
+        @if (Route::is('admin.documents.*'))
+            <flux:modal.trigger name="workflow-modal">
+                <flux:navbar.item icon="arrow-path-rounded-square" href="#">Рабочий процесс</flux:navbar.item>
+            </flux:modal.trigger>
+            <flux:navbar.item icon="document-text" href="#">Аудит лог</flux:navbar.item>
+        @endif
 {{--        <flux:navbar.item icon="share" href="#">Поделиться</flux:navbar.item>--}}
 {{--        <flux:navbar.item icon="inbox-arrow-down" href="#">Скачать</flux:navbar.item>--}}
 {{--        <flux:navbar.item icon="trash" href="#">Удалить</flux:navbar.item>--}}
