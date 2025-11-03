@@ -75,10 +75,23 @@
                                         href="{{ route('admin.document-templates.edit', $template->id) }}"
                                         class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
                                 />
+
                                 <flux:button
                                         icon="trash"
-                                        href="#"
-                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
+                                        icon-only
+                                        class="text-red-600 hover:text-red-500"
+                                        title="Удалить"
+                                        onclick="
+                                    if (!confirm('Вы уверены что хотите удалить?')) return;
+                                    fetch('{{ route('admin.document-templates.destroy', $template->id) }}', {
+                                        method: 'POST',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ _method: 'DELETE' })
+                                    }).then(() => location.reload());
+                                "
                                 />
                             </div>
                         </td>
