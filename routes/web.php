@@ -67,6 +67,7 @@ Route::middleware(['auth'])->group(function () {
 //       Route::post('/workflow', [WorkflowController::class, 'store'])->name('workflow.store');
        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
         ->name('employees.byDepartment');
+
 });
 
     //debug

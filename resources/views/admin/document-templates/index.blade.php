@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Departments')">
+<x-layouts.app :title="__('Шаблоны')">
     @if(session('alert'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
             <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
@@ -12,54 +12,85 @@
             <flux:button>Создать шаблон</flux:button>
         </flux:modal.trigger>
     </div>
-    <table class="min-w-full rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-        <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
-        <tr>
-            <th scope="col" class="p-4">
-                <input
-                        type="checkbox"
-                        :checked="selectedDocuments.length === {{ $documents->count() }}"
-                        @click="selectedDocuments = selectedDocuments.length === {{ $documents->count() }} ? [] : @js($documents->pluck('id'))"
-                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                />
-            </th>
-            <th class="px-6 py-3 text-left">Название</th>
-            <th class="px-6 py-3 text-left">Статус</th>
-            <th class="px-6 py-3 text-left">Дата создания</th>
-            <th class="px-6 py-3 text-left">Действия</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($documents as $template)
-            <tr class="border-b dark:border-zinc-700" data-document-id="{{ $template->id }}">
-                <td class="w-4 p-4">
-                    <input
-                            type="checkbox"
-                            name="document_ids[]"
-                            value="{{ $template->id }}"
-                            x-model="selectedDocuments"
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
-                    />
-                </td>
-                <td class="px-6 py-4 flex items-center gap-2">
-                    <x-icon.document-icon />
-                    <a href="{{ route('admin.document-templates.show', $template->id) }}"
-                       class="text-blue-600 dark:text-blue-400 hover:underline">
-                        {{ $template->name }}
-                    </a>
-                </td>
-                <td class="px-6 py-4">
-                    {{ $template->active ? 'Активен' : 'Не активен' }}
-                </td>
-                <td class="px-6 py-4">{{ $template->created_at->format('d.m.Y') }}</td>
-                <td class="px-6 py-4">
-                    <a href="{{ route('admin.document-templates.edit', $template->id) }}"
-                       class="text-blue-600 hover:underline text-sm">Редактировать</a>
-                </td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
-    <x-modals.modal-create-template/>
+        <div class="border rounded-xl border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="p-4">
+                        <input
+                                type="checkbox"
+                                :checked="selectedDocuments.length === {{ $documents->count() }}"
+                                @click="selectedDocuments = selectedDocuments.length === {{ $documents->count() }} ? [] : @js($documents->pluck('id'))"
+                                class="w-4 h-4"
+                        />
+                    </th>
+                    <th class="px-6 py-3 text-left">Название</th>
+                    <th class="px-6 py-3 text-left">Статус</th>
+                    <th class="px-6 py-3 text-left">Дата создания</th>
+                    <th class="px-6 py-3 text-left">Действия</th>
+                </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                @foreach($documents as $template)
+                    <tr class="hover:bg-gray-50" data-document-id="{{ $template->id }}">
+                        <td class="w-4 p-4">
+                            <label class="flex items-center justify-center w-6 h-6 border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition cursor-pointer">
+                                <input
+                                        type="checkbox"
+                                        name="document_ids[]"
+                                        value="{{ $template->id }}"
+                                        x-model="selectedDocuments"
+                                        class="accent-blue-500 w-4 h-4 rounded cursor-pointer"
+                                />
+                            </label>
+                        </td>
 
+                        <td class="px-6 py-4 flex items-center gap-3">
+                    <span class="flex items-center justify-center w-8 h-8">
+                        <x-icon.template-icon />
+                    </span>
+                            <a href="{{ route('admin.document-templates.show', $template->id) }}" class="font-medium text-gray-900 hover:text-gray-700 transition">
+                                {{ $template->name }}
+                            </a>
+                        </td>
+
+                        <td class="px-6 py-4">
+                            @if($template->active)
+                                <flux:badge color="lime">Активен</flux:badge>
+                            @else
+                                <flux:badge color="zinc">Не активен</flux:badge>
+                            @endif
+                        </td>
+                        <td class="px-6 py-4">{{ $template->created_at->format('d.m.Y') }}</td>
+                        <td class="px-6 py-4 text-left">
+                            <div class="flex items-center gap-2">
+                                <flux:button
+                                        icon="eye"
+                                        href="{{ route('admin.document-templates.show', $template->id) }}"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                                />
+
+                                <flux:button
+                                        icon="pencil"
+                                        href="{{ route('admin.document-templates.edit', $template->id) }}"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                                />
+                                <flux:button
+                                        icon="trash"
+                                        href="#"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
+                                />
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4">
+            {{ $documents->links() }}
+        </div>
+
+{{--    <x-modals.modal-edit-template/>--}}
+    <x-modals.modal-create-template/>
 </x-layouts.app>
