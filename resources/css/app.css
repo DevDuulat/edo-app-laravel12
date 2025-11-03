@@ -72,7 +72,11 @@
 
 
 /* rich text */
-
+.trix-content {
+    height: 60vh;
+    width: 100%;
+    overflow-x: auto;
+}
 /** These are specific for the tag that will be added to the rich text content */
 .trix-content .attachment-gallery > .attachment,
 .trix-content .attachment-gallery > rich-text-attachment {
