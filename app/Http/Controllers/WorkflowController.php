@@ -2,15 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ActiveStatus;
 use App\Enums\WorkflowUserStatus;
 use App\Http\Requests\StoreWorkflowRequest;
+use App\Models\User;
 use App\Models\Workflow;
 use App\Models\WorkflowUser;
+use App\Services\FolderDocumentService;
+use App\Services\IncomingDocumentService;
+use App\Services\OutgoingDocumentService;
 use App\Services\WorkflowService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+
 class WorkflowController extends Controller
 {
+    public function __construct(
+        protected FolderDocumentService $folderDocumentService
+    ) {}
+
     public function index()
     {
         $workflows = Workflow::all();
@@ -137,6 +147,32 @@ class WorkflowController extends Controller
             ->where('user_id', auth()->id())
             ->first();
     }
+
+    public function outgoing(Request $request, OutgoingDocumentService $outgoingService)
+    {
+        $parentId = $request->query('parent_id');
+        $documents = $outgoingService->getOutgoingDocumentsWithWorkflow($parentId);
+        $folders = collect();
+        $users = User::select('id', 'name')->get();
+        $activeStatus = ActiveStatus::cases();
+        $currentFolder = null;
+
+        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus'));
+    }
+
+    public function incoming(Request $request, IncomingDocumentService $incomingService)
+    {
+        $parentId = $request->query('parent_id');
+        $documents = $incomingService->getIncomingDocumentsWithWorkflow($parentId);
+
+        $folders = collect();
+        $users = \App\Models\User::select('id', 'name')->get();
+        $activeStatus = \App\Enums\ActiveStatus::cases();
+        $currentFolder = null;
+
+        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus'));
+    }
+
 
 
 
