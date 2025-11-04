@@ -4,72 +4,94 @@
             <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
         </div>
     @endif
+
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
-        <div class="flex items-center justify-between">
-            <!-- Breadcrumb -->
-
-            <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="#" icon="home" />
-                <flux:breadcrumbs.item>{{ __('Департамент') }}</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold">{{ __('Департаменты') }}</h1>
             <flux:button href="{{ route('admin.departments.create') }}" icon="plus" variant="primary">
                 {{ __('Добавить департамент') }}
             </flux:button>
-
         </div>
-        <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
-            Департамент
-        </h3>
-        <div class="relative overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <table class="min-w-full overflow-hidden">
-                <thead class="bg-zinc-200 dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100">
+
+        <div class="border rounded-xl border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left">ID</th>
-                    <th scope="col" class="px-6 py-3 text-left">Название</th>
-                    <th scope="col" class="px-6 py-3 text-left">Локация</th>
-                    <th scope="col" class="px-6 py-3 text-left">Cотрудники</th>
-                    <th scope="col" class="px-6 py-3 text-left">Дата создание</th>
-                    <th scope="col" class="px-6 py-3 text-left">Действия</th>
+                    <th scope="col" class="p-4">
+                        <input
+                                type="checkbox"
+                                :checked="selectedDepartments.length === {{ $departments->count() }}"
+                                @click="selectedDepartments = selectedDepartments.length === {{ $departments->count() }} ? [] : @js($departments->pluck('id'))"
+                                class="w-4 h-4"
+                        />
+                    </th>
+                    <th class="px-6 py-3 text-left">ID</th>
+                    <th class="px-6 py-3 text-left">Название</th>
+                    <th class="px-6 py-3 text-left">Локация</th>
+                    <th class="px-6 py-3 text-left">Сотрудники</th>
+                    <th class="px-6 py-3 text-left">Дата создания</th>
+                    <th class="px-6 py-3 text-left">Действия</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                 @foreach($departments as $department)
-                    <tr class="odd:bg-white odd:dark:bg-zinc-900 even:bg-zinc-50 even:dark:bg-zinc-800 border-b dark:border-zinc-700">
-                        <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ $department->id }}</td>
-                        <td class="px-6 py-4">{{ $department->name }}</td>
+                    <tr class="hover:bg-gray-50" data-department-id="{{ $department->id }}">
+                        <td class="w-4 p-4">
+                            <label class="flex items-center justify-center w-6 h-6 border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition cursor-pointer">
+                                <input
+                                        type="checkbox"
+                                        name="department_ids[]"
+                                        value="{{ $department->id }}"
+                                        x-model="selectedDepartments"
+                                        class="accent-blue-500 w-4 h-4 rounded cursor-pointer"
+                                />
+                            </label>
+                        </td>
+
+                        <td class="px-6 py-4">{{ $department->id }}</td>
+                        <td class="px-6 py-4 font-medium text-gray-900">{{ $department->name }}</td>
                         <td class="px-6 py-4">{{ $department->location ?? '-' }}</td>
+
                         <td class="px-6 py-4">
+                            <!-- Название департамента -->
                             <a href="{{ route('admin.employees.byDepartment', $department->id) }}"
-                               class="text-blue-600 dark:text-blue-400 hover:underline block mb-2">
+                               class="font-medium text-gray-900 hover:text-blue-600 transition duration-150">
                                 {{ $department->name }}
                             </a>
 
-                            <div class="flex -space-x-4 rtl:space-x-reverse">
-                                @foreach($department->employees as $employee)
-                                    <img class="w-10 h-10 border-2 border-white rounded-full dark:border-gray-800"
-                                         src="{{ asset('storage/' . $employee->avatar_url) }} "
-                                         alt="{{ $employee->name }}">
+                            <!-- Аватары сотрудников с подсказкой и прокруткой -->
+                            <div class="flex items-center mt-2 space-x-2 overflow-x-auto py-1">
+                                @foreach($department->employees as $index => $employee)
+                                    @if($index < 4)
+                                        <img
+                                                class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover hover:scale-110 transition-transform duration-200 cursor-pointer"
+                                                src="{{ asset('storage/' . $employee->avatar_url) }}"
+                                                alt="{{ $employee->name }}"
+                                                title="{{ $employee->name }}"
+                                        >
+                                    @endif
                                 @endforeach
 
                                 @if($department->employees()->count() > 4)
-                                    <a class="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
-                                       href="{{ route('admin.employees.byDepartment', $department->id) }}">
+                                    <a href="{{ route('admin.employees.byDepartment', $department->id) }}"
+                                       class="flex items-center justify-center w-10 h-10 text-xs font-semibold text-white bg-gray-700 border-2 border-white rounded-full shadow-sm hover:bg-gray-600 hover:scale-105 transition-transform duration-200"
+                                       title="Еще {{ $department->employees()->count() - 4 }} сотрудников">
                                         +{{ $department->employees()->count() - 4 }}
                                     </a>
                                 @endif
                             </div>
                         </td>
 
-                        <td class="px-6 py-4">{{ $department->created_at }}</td>
 
+
+                        <td class="px-6 py-4">{{ $department->created_at->format('d.m.Y') }}</td>
 
                         <td class="px-6 py-4 flex gap-2">
-
                             <flux:button
                                     href="{{ route('admin.departments.edit', $department) }}"
-                                    icon="pencil-square">
-                            </flux:button>
+                                    icon="pencil"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                            />
                             <flux:button
                                     icon="trash"
                                     icon-only
@@ -87,9 +109,7 @@
                                     }).then(() => location.reload());
                                 "
                             />
-
                         </td>
-
                     </tr>
                 @endforeach
                 </tbody>

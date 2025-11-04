@@ -46,9 +46,9 @@
                         </td>
 
                         <td class="px-6 py-4 flex items-center gap-3">
-                    <span class="flex items-center justify-center w-8 h-8">
-                        <x-icon.template-icon />
-                    </span>
+                            <span class="flex items-center justify-center w-8 h-8">
+                                <x-icon.template-icon />
+                            </span>
                             <a href="{{ route('admin.document-templates.show', $template->id) }}" class="font-medium text-gray-900 hover:text-gray-700 transition">
                                 {{ $template->name }}
                             </a>
