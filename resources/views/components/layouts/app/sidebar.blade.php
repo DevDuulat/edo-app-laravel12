@@ -4,14 +4,14 @@
     @include('partials.head')
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
+<body class="min-h-screen">
 <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
     <flux:sidebar.header class="pb-2">
         <flux:sidebar.brand
-                href="{{route('dashboard')}}"
-                logo="https://kutstroy.kg/img/logo_black.png"
-                logo:dark="https://kutstroy.kg/img/logo_black.png"
-                name="ЭДО"
+                href="{{ route('dashboard') }}"
+                logo="{{ config('app.logo_light') }}"
+                logo:dark="{{ config('app.logo_dark') }}"
+                name="{{ config('app.name') }}"
         />
         <flux:sidebar.collapse class="lg:hidden" />
     </flux:sidebar.header>
@@ -25,20 +25,20 @@
         Перейти в Кут База
     </flux:sidebar.item>
 
-   @canany(['edo-hr-department', 'edo-employee-list'])
+{{--   @canany(['edo-hr-department', 'edo-employee-list'])--}}
     <flux:sidebar.group expandable heading="Менеджмент" class="grid gap-1">
-        @can('edo-hr-department')
+{{--        @can('edo-hr-department')--}}
             <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate class="py-1">
                 Департаменты
             </flux:sidebar.item>
-        @endcan
-        @can('edo-employee-list')
+{{--        @endcan--}}
+{{--        @can('edo-employee-list')--}}
             <flux:sidebar.item icon="users" :href="route('admin.employees.index')" wire:navigate class="py-1">
                 Сотрудники
             </flux:sidebar.item>
-        @endcan
+{{--        @endcan--}}
     </flux:sidebar.group>
-    @endcanany
+{{--    @endcanany--}}
 
 
     <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
@@ -56,7 +56,7 @@
             Входящие
         </flux:sidebar.item>
 
-        {{--Входяище рабочие процессы--}}
+        {{--Исходящие рабочие процессы--}}
         <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">
             Исходящие
         </flux:sidebar.item>
