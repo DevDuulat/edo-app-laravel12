@@ -166,8 +166,8 @@ class WorkflowController extends Controller
         $documents = $incomingService->getIncomingDocumentsWithWorkflow($parentId);
 
         $folders = collect();
-        $users = \App\Models\User::select('id', 'name')->get();
-        $activeStatus = \App\Enums\ActiveStatus::cases();
+        $users = User::select('id', 'name')->get();
+        $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
 
         return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus'));
