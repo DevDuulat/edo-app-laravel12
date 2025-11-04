@@ -51,13 +51,13 @@
             Все документы
         </flux:sidebar.item>
 
-        {{--Входяище рабочие процессы--}}
-        <flux:sidebar.item icon="document-arrow-down" wire:navigate class="py-1">
+        {{--Входящие рабочие процессы--}}
+        <flux:sidebar.item icon="document-arrow-down" badge="12" :href="route('admin.incoming.workflows')" wire:navigate  class="py-1">
             Входящие
         </flux:sidebar.item>
 
         {{--Исходящие рабочие процессы--}}
-        <flux:sidebar.item icon="document-arrow-up" wire:navigate class="py-1">
+        <flux:sidebar.item icon="document-arrow-up" :href="route('admin.outgoing.workflows')" wire:navigate class="py-1">
             Исходящие
         </flux:sidebar.item>
 
