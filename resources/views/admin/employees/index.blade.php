@@ -6,10 +6,11 @@
                 <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
                 <flux:breadcrumbs.item>Сотрудники</flux:breadcrumbs.item>
             </flux:breadcrumbs>
-
+            @can('edo-employee-add')
             <flux:button href="{{ route('admin.employees.create') }}" icon="plus" variant="primary">
                 {{ __('Добавить сотрудников') }}
             </flux:button>
+            @endcan
         </div>
 
         @if(isset($department))
