@@ -10,7 +10,7 @@
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
 
                     <li class="inline-flex items-center">
-                        <a href="{{ route('admin.folders.index') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
+                        <a href="{{ route('admin.documents.index') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
                             Домашняя папка
                         </a>
                     </li>
@@ -47,8 +47,8 @@
             </nav>
 
             <div class="flex gap-2 items-center">
-                <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />
-                <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />
+{{--                <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />--}}
+{{--                <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />--}}
                 @if (!$currentFolder)
                     <flux:modal.trigger name="create-root-folder">
                         <flux:button>Создать папку</flux:button>

@@ -53,13 +53,15 @@ Route::middleware(['auth'])->group(function () {
 
 
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-       Route::resource('departments', DepartmentController::class)
-        ->middleware('permission:edo-hr-department');
-//       Route::resource('departments', DepartmentController::class);
+//       Route::resource('departments', DepartmentController::class)
+//        ->middleware('permission:edo-hr-department');
+       Route::resource('departments', DepartmentController::class);
        Route::resource('employees', EmployeeController::class);
        Route::resource('folders', FolderController::class);
        Route::resource('documents', DocumentController::class);
        Route::resource('workflows', WorkflowController::class);
+       Route::get('/outgoing/workflows', [WorkflowController::class, 'outgoing'])->name('outgoing.workflows');
+       Route::get('/incoming/workflows', [WorkflowController::class, 'incoming'])->name('incoming.workflows');
        Route::post('/workflows/{workflow}/approve', [WorkflowController::class, 'approve'])->name('workflows.approve');
        Route::post('/workflows/{workflow}/reject', [WorkflowController::class, 'reject'])->name('workflows.reject');
        Route::post('/workflows/{workflow}/redirect', [WorkflowController::class, 'redirect'])->name('workflows.redirect');
@@ -72,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
 
     //debug
     Route::view('/test-page', 'test-page');
+    Route::view('/test-page-pusher', 'test-page-pusher');
     Route::get('/ocr', [OcrController::class, 'index'])->name('ocr.index');
     Route::post('/ocr', [OcrController::class, 'process'])->name('ocr.process');
 });
