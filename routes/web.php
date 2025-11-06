@@ -8,6 +8,7 @@ use App\Http\Controllers\FolderController;
 use App\Http\Controllers\OcrController;
 use App\Http\Controllers\SsoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WordDocumentController;
 use App\Http\Controllers\WorkflowController;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
@@ -70,13 +71,13 @@ Route::middleware(['auth'])->group(function () {
        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
         ->name('employees.byDepartment');
 
-});
+   });
 
     //debug
     Route::view('/test-page', 'test-page');
     Route::view('/test-page-pusher', 'test-page-pusher');
     Route::get('/ocr', [OcrController::class, 'index'])->name('ocr.index');
     Route::post('/ocr', [OcrController::class, 'process'])->name('ocr.process');
-});
+    });
 require __DIR__.'/auth.php';
 
