@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\DocumentType;
 use App\Enums\WorkflowStatus;
+use App\Events\DocumentCreated;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Models\Document;
 use App\Models\User;
@@ -43,6 +44,7 @@ class DocumentController extends Controller
         $data['slug'] = Str::slug($data['title']);
 
         $document = Document::create($data);
+        event(new DocumentCreated($document));
 
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
