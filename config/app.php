@@ -14,7 +14,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-
+    'logo_light' => env('APP_LOGO_LIGHT'),
+    'logo_dark' => env('APP_LOGO_DARK'),
     /*
     |--------------------------------------------------------------------------
     | Application Environment
