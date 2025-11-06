@@ -17,6 +17,11 @@ class DocumentTemplateController extends Controller
             'documents' => $documentTemplates,
         ]);
     }
+
+    public function create()
+    {
+        return view('admin.document-templates.create');
+    }
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -42,33 +47,29 @@ class DocumentTemplateController extends Controller
 
     public function edit(DocumentTemplate $documentTemplate)
     {
-        return view('admin.document-templates.edit', compact('documentTemplate'));
+        return view('admin.document-templates.edit', [
+            'template' => $documentTemplate,
+        ]);
     }
 
     public function update(Request $request, DocumentTemplate $documentTemplate)
     {
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'status' => ['required', 'integer', 'in:0,1'],
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'content' => 'nullable|string',
+            'active' => 'boolean',
         ]);
 
-        $documentTemplate->update([
-            'name' => $validatedData['name'],
-            'description' => $validatedData['description'] ?? null,
-            'active' => $validatedData['status'] == \App\Enums\ActiveStatus::active->value,
-        ]);
+        $documentTemplate->update($validated);
 
-        $documentTemplate->content = $validatedData['content'] ?? '';
-        $documentTemplate->save();
-
-        return redirect()->route('admin.document-templates.index')
+        return redirect()
+            ->route('admin.document-templates.index')
             ->with('alert', [
                 'type' => 'success',
-                'message' => 'Шаблон успешно обновлён.',
+                'message' => 'Шаблон успешно обновлён',
             ]);
     }
+
 
     public function destroy(DocumentTemplate $documentTemplate)
     {
