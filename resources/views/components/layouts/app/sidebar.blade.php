@@ -176,5 +176,6 @@
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 
 <script src="{{ asset('flux/flux.js') }}"></script>
+
 </body>
 </html>
