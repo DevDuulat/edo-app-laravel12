@@ -8,9 +8,12 @@
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold">Шаблоны</h1>
 
-        <flux:modal.trigger name="template-modal">
-            <flux:button>Создать шаблон</flux:button>
-        </flux:modal.trigger>
+        <a href="{{ route('admin.document-templates.create') }}" class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            Создать шаблон
+        </a>
     </div>
         <div class="border rounded-xl border-gray-200">
             <table class="min-w-full divide-y divide-gray-200">
@@ -104,6 +107,4 @@
             {{ $documents->links() }}
         </div>
 
-{{--    <x-modals.modal-edit-template/>--}}
-    <x-modals.modal-create-template/>
 </x-layouts.app>
