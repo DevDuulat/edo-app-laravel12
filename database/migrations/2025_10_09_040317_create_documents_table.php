@@ -21,6 +21,10 @@ return new class extends Migration
             $table->date('due_date');
             $table->date('approved_at')->nullable();
             $table->longText('content')->nullable();
+            $table->foreignId('template_id')
+                ->nullable()
+                ->constrained('document_templates')
+                ->nullOnDelete();
             $table->unsignedTinyInteger('workflow_status');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
