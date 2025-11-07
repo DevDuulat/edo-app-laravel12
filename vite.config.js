@@ -14,6 +14,9 @@ export default defineConfig({
                 'resources/js/photoswipe-init.js',
                 'resources/js/folder-interactions.js',
                 'resources/js/folders.js',
+                'resources/js/document-create-templates-editor.js',
+                'resources/js/document-edit-templates-editor.js'
+
             ],
             refresh: true,
         }),

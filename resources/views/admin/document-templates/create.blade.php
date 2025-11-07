@@ -33,7 +33,6 @@
             background: #f9fafb;
             border-radius: 0.5rem;
             padding: 0.75rem;
-            overflow-x: auto;
             font-family: monospace;
             font-size: 0.875rem;
         }
@@ -55,50 +54,19 @@
 
     <div class="flex justify-between items-center mb-6">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">
-                @isset($template)
-                    Редактирование шаблона
-                @else
-                    Создание шаблона
-                @endisset
-            </h1>
-            <p class="text-gray-600 mt-1">
-                @isset($template)
-                    Измените данные шаблона документа
-                @else
-                    Создавайте и управляйте шаблонами документов для быстрого создания контента
-                @endisset
-            </p>
+            <h1 class="text-2xl font-bold text-gray-900">Шаблоны документов</h1>
+            <p class="text-gray-600 mt-1">Создавайте и управляйте шаблонами документов для быстрого создания контента</p>
         </div>
     </div>
 
-    {{-- Форма создания/редактирования шаблона --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
         <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
-            <h2 class="text-lg font-semibold text-gray-900">
-                @isset($template)
-                    Редактирование шаблона
-                @else
-                    Создать новый шаблон
-                @endisset
-            </h2>
-            <p class="text-sm text-gray-600 mt-1">
-                @isset($template)
-                    Измените данные шаблона документа
-                @else
-                    Заполните форму, чтобы добавить новый шаблон документа
-                @endisset
-            </p>
+            <h2 class="text-lg font-semibold text-gray-900">Создать новый шаблон</h2>
+            <p class="text-sm text-gray-600 mt-1">Заполните форму, чтобы добавить новый шаблон документа</p>
         </div>
 
-        <form id="templateForm"
-              action="@isset($template) {{ route('admin.document-templates.update', $template) }} @else {{ route('admin.document-templates.store') }} @endisset"
-              method="POST"
-              class="p-6 space-y-6">
+        <form id="templateForm" action="{{ route('admin.document-templates.store') }}" method="POST" class="p-6 space-y-6">
             @csrf
-            @isset($template)
-                @method('PUT')
-            @endisset
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="md:col-span-2">
@@ -110,7 +78,7 @@
                             placeholder="Введите название шаблона"
                             required
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                            value="{{ old('name', $template->name ?? '') }}"
+                            value="{{ old('name') }}"
                     >
                     @error('name')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -127,7 +95,7 @@
                                         name="active"
                                         value="{{ $status->value }}"
                                         class="h-4 w-4 text-blue-600 accent-blue-500 focus:ring-blue-500 cursor-pointer"
-                                        @checked(old('active', $template->active->value ?? \App\Enums\ActiveStatus::active->value) == $status->value)
+                                        @checked(old('active', \App\Enums\ActiveStatus::active->value) == $status->value)
                                 >
                                 <span class="text-sm font-medium">{{ $status->label() }}</span>
                             </label>
@@ -138,6 +106,7 @@
                     @enderror
                 </div>
             </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Содержимое шаблона</label>
                 <div class="w-full border border-gray-200 rounded-lg bg-white overflow-hidden">
@@ -217,7 +186,7 @@
                         <div id="wysiwyg-example"
                              class="editor-content w-full min-h-[400px] p-4 bg-white rounded-b-lg focus:outline-none">
                         </div>
-                        <input type="hidden" name="content" id="contentInput" value="{{ old('content', $template->content ?? '') }}">
+                        <input type="hidden" name="content" id="contentInput" value="{{ old('content') }}">
                         @error('content')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -233,18 +202,106 @@
                         type="submit"
                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition"
                 >
-                    @isset($template)
-                        Обновить шаблон
-                    @else
-                        Сохранить шаблон
-                    @endisset
+                    Сохранить шаблон
                 </button>
             </div>
         </form>
     </div>
+    @vite('resources/js/document-create-templates-editor.js')
+{{--    <script type="module">--}}
+{{--        import { Editor } from 'https://esm.sh/@tiptap/core@2.6.6';--}}
+{{--        import StarterKit from 'https://esm.sh/@tiptap/starter-kit@2.6.6';--}}
+{{--        import Highlight from 'https://esm.sh/@tiptap/extension-highlight@2.6.6';--}}
+{{--        import Underline from 'https://esm.sh/@tiptap/extension-underline@2.6.6';--}}
+{{--        import Link from 'https://esm.sh/@tiptap/extension-link@2.6.6';--}}
+{{--        import TextAlign from 'https://esm.sh/@tiptap/extension-text-align@2.6.6';--}}
+{{--        import Image from 'https://esm.sh/@tiptap/extension-image@2.6.6';--}}
 
-    <script>
-        window.editorContent = {!! json_encode(old('content', $template->content ?? '<p>Начните вводить текст здесь...</p>')) !!};
-    </script>
-    @vite('resources/js/document-edit-templates-editor.js')
+{{--        document.addEventListener('DOMContentLoaded', function() {--}}
+{{--            let editor;--}}
+
+{{--            try {--}}
+{{--                editor = new Editor({--}}
+{{--                    element: document.querySelector('#wysiwyg-example'),--}}
+{{--                    extensions: [--}}
+{{--                        StarterKit,--}}
+{{--                        Highlight,--}}
+{{--                        Underline,--}}
+{{--                        Link.configure({--}}
+{{--                            openOnClick: false,--}}
+{{--                            autolink: true,--}}
+{{--                            defaultProtocol: 'https',--}}
+{{--                        }),--}}
+{{--                        TextAlign.configure({--}}
+{{--                            types: ['heading', 'paragraph'],--}}
+{{--                        }),--}}
+{{--                        Image,--}}
+{{--                    ],--}}
+{{--                    content: `{!! old('content', '<p>Начните вводить текст здесь...</p>') !!}`,--}}
+{{--                    onUpdate: ({ editor }) => {--}}
+{{--                        const content = editor.getHTML();--}}
+{{--                        const contentInput = document.getElementById('contentInput');--}}
+{{--                        if (contentInput) {--}}
+{{--                            contentInput.value = content;--}}
+{{--                        }--}}
+{{--                    },--}}
+{{--                    onBlur: ({ editor }) => {--}}
+{{--                        const content = editor.getHTML();--}}
+{{--                        const contentInput = document.getElementById('contentInput');--}}
+{{--                        if (contentInput) {--}}
+{{--                            contentInput.value = content;--}}
+{{--                        }--}}
+{{--                    }--}}
+{{--                });--}}
+
+
+{{--                document.getElementById('toggleBoldButton').addEventListener('click', () => editor.chain().focus().toggleBold().run());--}}
+{{--                document.getElementById('toggleItalicButton').addEventListener('click', () => editor.chain().focus().toggleItalic().run());--}}
+{{--                document.getElementById('toggleUnderlineButton').addEventListener('click', () => editor.chain().focus().toggleUnderline().run());--}}
+{{--                document.getElementById('toggleStrikeButton').addEventListener('click', () => editor.chain().focus().toggleStrike().run());--}}
+{{--                document.getElementById('toggleLeftAlignButton').addEventListener('click', () => editor.chain().focus().setTextAlign('left').run());--}}
+{{--                document.getElementById('toggleCenterAlignButton').addEventListener('click', () => editor.chain().focus().setTextAlign('center').run());--}}
+{{--                document.getElementById('toggleRightAlignButton').addEventListener('click', () => editor.chain().focus().setTextAlign('right').run());--}}
+{{--                document.getElementById('toggleListButton').addEventListener('click', () => editor.chain().focus().toggleBulletList().run());--}}
+{{--                document.getElementById('toggleOrderedListButton').addEventListener('click', () => editor.chain().focus().toggleOrderedList().run());--}}
+{{--                document.getElementById('addImageButton').addEventListener('click', () => {--}}
+{{--                    const url = window.prompt('Введите URL изображения:');--}}
+{{--                    if (url) {--}}
+{{--                        editor.chain().focus().setImage({ src: url }).run();--}}
+{{--                    }--}}
+{{--                });--}}
+{{--                document.getElementById('toggleLinkButton').addEventListener('click', () => {--}}
+{{--                    const url = window.prompt('Введите URL:');--}}
+{{--                    if (url) {--}}
+{{--                        editor.chain().focus().toggleLink({ href: url }).run();--}}
+{{--                    }--}}
+{{--                });--}}
+
+{{--            } catch (error) {--}}
+{{--                console.error('Error initializing editor:', error);--}}
+{{--                const editorElement = document.querySelector('#wysiwyg-example');--}}
+{{--                const contentInput = document.getElementById('contentInput');--}}
+{{--                editorElement.setAttribute('contenteditable', 'true');--}}
+{{--                editorElement.classList.add('prose', 'max-w-none');--}}
+
+{{--                editorElement.addEventListener('input', function() {--}}
+{{--                    contentInput.value = this.innerHTML;--}}
+{{--                });--}}
+{{--            }--}}
+
+{{--            const form = document.getElementById('templateForm');--}}
+{{--            const contentInput = document.getElementById('contentInput');--}}
+
+{{--            if (form) {--}}
+{{--                form.addEventListener('submit', function (e) {--}}
+{{--                    if (editor) {--}}
+{{--                        const content = editor.getHTML();--}}
+{{--                        if (contentInput) {--}}
+{{--                            contentInput.value = content;--}}
+{{--                        }--}}
+{{--                    }--}}
+{{--                });--}}
+{{--            }--}}
+{{--        });--}}
+{{--    </script>--}}
 </x-layouts.app>

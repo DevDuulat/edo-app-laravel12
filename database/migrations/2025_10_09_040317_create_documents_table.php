@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('comment')->nullable();
             $table->date('due_date');
             $table->date('approved_at')->nullable();
+            $table->longText('content')->nullable();
             $table->unsignedTinyInteger('workflow_status');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

@@ -1,4 +1,5 @@
 <x-layouts.app :title="__('Документы')">
+
     @if(session('alert'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
             <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
@@ -8,7 +9,6 @@
         <div class="flex items-center justify-between mb-4">
             <nav class="flex px-5 py-3 text-gray-700 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-3">
-
                     <li class="inline-flex items-center">
                         <a href="{{ route('admin.documents.index') }}" class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
                             Домашняя папка
@@ -16,10 +16,7 @@
                     </li>
 
                     @if($currentFolder)
-                        @php
-                            $ancestors = $currentFolder->ancestors()->get();
-                        @endphp
-
+                        @php $ancestors = $currentFolder->ancestors()->get(); @endphp
                         @foreach($ancestors as $ancestor)
                             <li class="inline-flex items-center">
                                 <div class="flex items-center">
@@ -42,34 +39,46 @@
                             </div>
                         </li>
                     @endif
-
                 </ol>
             </nav>
 
             <div class="flex gap-2 items-center">
-{{--                <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />--}}
-{{--                <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />--}}
                 @if (!$currentFolder)
                     <flux:modal.trigger name="create-root-folder">
                         <flux:button>Создать папку</flux:button>
                     </flux:modal.trigger>
-                    <flux:modal.trigger name="create-root-document">
-                        <flux:button>Создать документ</flux:button>
-                    </flux:modal.trigger>
+                    <flux:button href="{{ route('admin.documents.create') }}" icon="plus" variant="primary">
+                        Создать документ
+                    </flux:button>
                 @endif
             </div>
-
         </div>
-        <div id="foldersContainer" class="transition-all relative">
-            <div x-data="{
-                    selectedFolders: [],
-                    selectedDocuments: [],
-                    users: @js($users),
-                    folders: @js($folders) }">
-                <x-folders.list :folders="$folders" :documents="$documents" />
-                <x-modals.modal-create-workflow :users="$users" />
-            </div>
+
+        <div id="foldersContainer" class="transition-all relative"
+             x-data="{
+                selectedFolders: [],
+                selectedDocuments: [],
+                users: @js($users),
+                folders: @js($folders)
+             }">
+
+            <x-folders.list :folders="$folders" :documents="$documents" />
             <x-folders.grid :folders="$folders" :documents="$documents" />
+
+            {{-- Contextual action panel --}}
+            <div x-show="selectedFolders.length || selectedDocuments.length"
+                 class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-3 items-center border border-gray-200">
+                <span class="text-sm text-gray-600">
+                    Выбрано:
+                    <strong x-text="selectedFolders.length + selectedDocuments.length"></strong> элементов
+                </span>
+                <flux:modal.trigger name="workflow-modal">
+                    <flux:button variant="primary">Создать процесс</flux:button>
+                </flux:modal.trigger>
+            </div>
+
+            <x-modals.modal-create-workflow :users="$users" :roles="$roles" />
+
         </div>
     </div>
 

@@ -8,7 +8,6 @@ use App\Http\Requests\StoreDocumentRequest;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use App\Services\FolderDocumentService;
 
 class DocumentController extends Controller
@@ -28,8 +27,12 @@ class DocumentController extends Controller
     public function create()
     {
         $users = User::query()->paginate(10);
+        $templates = \App\Models\DocumentTemplate::where('active', true)
+            ->select('id', 'name', 'content')
+            ->get();
 
-        return view('admin.documents.create', compact('users'));
+        return view('admin.documents.create', compact('templates', 'users'));
+
     }
 
 
@@ -40,7 +43,10 @@ class DocumentController extends Controller
         $data['user_id'] = auth()->id();
         $data['document_type'] = DocumentType::internal->value;
         $data['workflow_status'] = WorkflowStatus::draft->value;
-        $data['slug'] = Str::slug($data['title']);
+//        $data['slug'] = Str::slug($data['title']);
+        if (empty($data['slug']) && !empty($data['title'])) {
+            $data['slug'] = \Str::slug($data['title']);
+        }
 
         $document = Document::create($data);
 
@@ -52,7 +58,7 @@ class DocumentController extends Controller
         }
 
         return redirect()
-            ->route('admin.folders.index')
+            ->route('admin.documents.index')
             ->with('success', 'Документ успешно создан.');
     }
 

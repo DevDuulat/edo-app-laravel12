@@ -17,6 +17,7 @@ class Document extends Model
         'description',
         'document_type',
         'comment',
+        'content',
         'due_date',
         'folder_id',
         'approved_at',
