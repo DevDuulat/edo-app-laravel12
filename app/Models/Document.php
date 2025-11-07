@@ -42,4 +42,9 @@ class Document extends Model
     {
         return $this->hasMany(DocumentFile::class);
     }
+
+    public function template()
+    {
+        return $this->belongsTo(\App\Models\DocumentTemplate::class, 'template_id');
+    }
 }
