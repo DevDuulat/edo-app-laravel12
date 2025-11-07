@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ActiveStatus;
+use App\Enums\WorkflowUserRole;
 use App\Enums\WorkflowUserStatus;
 use App\Http\Requests\StoreWorkflowRequest;
 use App\Models\User;
@@ -156,8 +157,9 @@ class WorkflowController extends Controller
         $users = User::select('id', 'name')->get();
         $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
+        $roles = WorkflowUserRole::cases();
 
-        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus'));
+        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus', 'roles'));
     }
 
     public function incoming(Request $request, IncomingDocumentService $incomingService)
@@ -169,8 +171,9 @@ class WorkflowController extends Controller
         $users = User::select('id', 'name')->get();
         $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
+        $roles = WorkflowUserRole::cases();
 
-        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus'));
+        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus', 'roles'));
     }
 
 
