@@ -129,7 +129,7 @@
                         />
                         <flux:button
                                 icon="pencil"
-                                href="#"
+                                href="{{ route('admin.documents.edit', $document->id) }}"
                                 class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
                         />
                         <flux:button
