@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\WorkflowUserRole;
 use App\Models\Document;
 use App\Models\Folder;
 use App\Models\User;
@@ -23,8 +24,10 @@ class FolderDocumentService
             ->get(['id', 'title', 'folder_id', 'created_at']);
 
         $users = User::select('id', 'name')->get();
+        $roles = WorkflowUserRole::cases();
+
         $activeStatus = ActiveStatus::cases();
 
-        return compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus');
+        return compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus', 'roles');
     }
 }
