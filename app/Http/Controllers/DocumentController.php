@@ -64,6 +64,8 @@ class DocumentController extends Controller
 
     public function show(Document $document)
     {
+        $document->load('template');
+
         return view('admin.documents.show', compact('document'));
     }
 
