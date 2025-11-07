@@ -77,7 +77,6 @@
             <x-actions.folder-context-menu :folder="$folder" />
         @endforeach
 
-        {{-- Documents --}}
         @foreach($documents as $document)
             <tr class="hover:bg-gray-50 transition" data-document-id="{{ $document->id }}">
                 <td class="w-4 p-4">
