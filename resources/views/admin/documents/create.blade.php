@@ -47,8 +47,8 @@
     </style>
 
     <div x-data="documentForm({{ $templates->toJson() }})">
-        <flux:breadcrumbs>
-            <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
+        <flux:breadcrumbs class="mb-8">
+        <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
             <flux:breadcrumbs.item href="{{ route('admin.documents.index') }}">Документы</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Создание Документа</flux:breadcrumbs.item>
         </flux:breadcrumbs>
