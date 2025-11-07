@@ -1,69 +1,148 @@
-<x-layouts.app :title="__('Редактировать департамент')">
-    <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
-        <div class="flex items-center justify-between">
-            <flux:breadcrumbs>
-                <flux:breadcrumbs.item href="{{route('dashboard')}}" icon="home" />
-                <flux:breadcrumbs.item href="{{route('admin.documents.index')}}">Документы</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>Редактирование Документа</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
-        </div>
-        <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900 md:text-2xl dark:text-white">
-            Редактирование документа
-        </h3>
-        <div class="px-5 py-5 rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <form action="{{ route('admin.departments.update', $document->id) }}" method="POST" class="grid gap-5 max-w-lg">
-                @csrf
-                @method('PUT')
+<x-layouts.app :title="__('Редактировать Документ')">
+    <div x-data="documentForm({{ $templates->toJson() }}, {{ $document->template_id ?? 'null' }})">
 
-                <!-- Name Input -->
-                <div class="flex flex-col gap-2">
-                    <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {{ __('Название') }}
-                    </label>
-                    <input
-                            type="text"
-                            name="title"
-                            id="title"
-                            value="{{ old('title', $document->title) }}"
-                            required
-                            placeholder="Введите название департамента"
-                            class="w-full px-4 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-400 transition-all duration-300"
-                    />
-                    @error('title')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
+    <flux:breadcrumbs class="mb-8">
+            <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
+            <flux:breadcrumbs.item href="{{ route('admin.documents.index') }}">Документы</flux:breadcrumbs.item>
+            <flux:breadcrumbs.item>Редактирование Документа</flux:breadcrumbs.item>
+        </flux:breadcrumbs>
+
+        <form method="POST" action="{{ route('admin.documents.update', $document->id) }}">
+            @csrf
+            @method('PUT')
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="col-span-1 lg:col-span-8 space-y-6">
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-5">
+                        <flux:field>
+                            <flux:label>Название документа</flux:label>
+                            <flux:input name="title" value="{{ old('title', $document->title) }}" required />
+                            <flux:error name="title" class="mt-1 text-sm text-red-600" />
+                        </flux:field>
+
+                        <flux:separator class="my-5" />
+
+                        <flux:field>
+                            <flux:label>URL (slug)</flux:label>
+                            <flux:input name="slug" value="{{ old('slug', $document->slug) }}" />
+                            <flux:error name="slug" class="mt-1 text-sm text-red-600" />
+                        </flux:field>
+
+                        <flux:separator class="my-5" />
+
+                        <div class="mt-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Содержимое шаблона</label>
+                            <div class="w-full border border-gray-200 rounded-lg bg-white overflow-hidden">
+                                <x-editor-toolbar />
+
+                                <div id="wysiwyg-example"
+                                     class="editor-content w-full min-h-[400px] p-4 bg-white rounded-b-lg focus:outline-none"
+                                     contenteditable="true"
+                                     @input="editorContent = $event.target.innerHTML">{!! old('content', $document->content) !!}</div>
+                                <input type="hidden" name="content" x-model="editorContent">
+                                @error('content')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <flux:separator class="my-5" />
+
+                        <flux:field>
+                            <flux:label>Описание</flux:label>
+                            <flux:textarea name="comment" rows="3">{{ old('comment', $document->comment) }}</flux:textarea>
+                            <flux:error name="comment" class="mt-1 text-sm text-red-600" />
+                        </flux:field>
+                    </div>
                 </div>
 
-                <!-- comment Input -->
-                <div class="flex flex-col gap-2">
-                    <label for="comment" class="text-sm font-medium text-gray-700 dark:text-gray-300">
-                        {{ __('Комментарий') }}
-                    </label>
-                    <input
-                            type="text"
-                            name="comment"
-                            id="comment"
-                            value="{{ old('comment', $document->comment) }}"
-                            placeholder="Введите локацию"
-                            class="w-full px-4 py-2 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-500 placeholder-gray-400 dark:placeholder-gray-400 transition-all duration-300"
-                    />
-                    @error('comment')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
+                <div class="col-span-1 lg:col-span-4 space-y-6">
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Статус</h3>
+                        <select name="status" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="draft" {{ $document->status === 'draft' ? 'selected' : '' }}>Черновик</option>
+                            <option value="published" {{ $document->status === 'published' ? 'selected' : '' }}>Опубликован</option>
+                        </select>
+                        <flux:button type="submit" variant="primary" class="w-full mt-4">Обновить документ</flux:button>
+                    </div>
 
-                <!-- Buttons -->
-                <div class="flex gap-3 mt-4">
-                    <button type="submit"
-                            class="px-6 py-2 bg-gray-600 dark:bg-gray-700 hover:bg-gray-500 dark:hover:bg-gray-600 text-white font-semibold rounded-lg shadow-md transition-all duration-200">
-                        {{ __('Обновить') }}
-                    </button>
-                    <a href="{{ route('admin.departments.index') }}"
-                       class="px-6 py-2 border border-gray-400 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200">
-                        {{ __('Отмена') }}
-                    </a>
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Шаблон документа</h3>
+                        <select id="template"
+                                x-model="selectedTemplate"
+                                @change="applyTemplateContent"
+                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                                name="template_id">
+                            <option value="">— Не выбран —</option>
+                            <template x-for="template in templates" :key="template.id">
+                                <option :value="template.id" x-text="template.name"></option>
+                            </template>
+                        </select>
+
+                    </div>
+
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
+                        <flux:input
+                                type="date"
+                                name="due_date"
+                                value="{{ old('due_date', optional($document->due_date ? \Illuminate\Support\Carbon::parse($document->due_date) : null)->format('Y-m-d')) }}"
+                                label="Срок выполнения"
+                                required
+                        />
+
+                    </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+
+    <script>
+        function documentForm(templates = [], selectedId = null) {
+            return {
+                templates,
+                selectedTemplate: selectedId,
+                editorContent: '',
+
+                applyTemplateContent() {
+                    const selected = this.templates.find(t => t.id == this.selectedTemplate);
+                    if (selected) {
+                        this.editorContent = selected.content || '';
+                        const editor = document.getElementById('wysiwyg-example');
+                        if (editor) editor.innerHTML = this.editorContent;
+                    }
+                }
+            };
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const editor = document.getElementById('wysiwyg-example');
+
+            const commands = {
+                toggleBoldButton: 'bold',
+                toggleItalicButton: 'italic',
+                toggleUnderlineButton: 'underline',
+                toggleStrikeButton: 'strikeThrough',
+                toggleLeftAlignButton: 'justifyLeft',
+                toggleCenterAlignButton: 'justifyCenter',
+                toggleRightAlignButton: 'justifyRight',
+                toggleListButton: 'insertUnorderedList',
+                toggleOrderedListButton: 'insertOrderedList'
+            };
+
+            Object.keys(commands).forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        document.execCommand(commands[id], false, null);
+                        editor.focus();
+                    });
+                }
+            });
+
+            editor.addEventListener('input', () => {
+                document.querySelector('input[name="content"]').value = editor.innerHTML;
+            });
+        });
+    </script>
+
+
 </x-layouts.app>
