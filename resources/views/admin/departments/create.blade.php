@@ -15,7 +15,6 @@
         <form action="{{ route('admin.departments.store') }}" method="POST" class="grid gap-5 max-w-lg">
             @csrf
 
-            <!-- Name Input -->
             <div class="flex flex-col gap-2">
                 <label for="name" class="text-sm font-medium text-gray-700 dark:text-gray-300">
                     {{ __('Название') }}
