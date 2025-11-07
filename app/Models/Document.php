@@ -19,6 +19,7 @@ class Document extends Model
         'comment',
         'content',
         'due_date',
+        'template_id',
         'folder_id',
         'approved_at',
         'workflow_status',
@@ -40,5 +41,10 @@ class Document extends Model
     public function files()
     {
         return $this->hasMany(DocumentFile::class);
+    }
+
+    public function template()
+    {
+        return $this->belongsTo(\App\Models\DocumentTemplate::class, 'template_id');
     }
 }

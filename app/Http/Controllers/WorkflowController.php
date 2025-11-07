@@ -38,7 +38,7 @@ class WorkflowController extends Controller
 
         DB::transaction(function () use ($validated, $workflowService) {
             $workflowService->createFullWorkflow([
-                'note' => $validated['comment'] ?? null,
+                'note' => $validated['note'] ?? null,
                 'due_date' => $validated['due_date'],
                 'user_id' => auth()->id(),
                 'folder_ids' => $validated['folder_ids'] ?? [],

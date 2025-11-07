@@ -35,7 +35,6 @@ class DocumentController extends Controller
 
     }
 
-
     public function store(StoreDocumentRequest $request)
     {
         $data = $request->validated();
@@ -65,17 +64,45 @@ class DocumentController extends Controller
 
     public function show(Document $document)
     {
+        $document->load('template');
+
         return view('admin.documents.show', compact('document'));
     }
 
     public function edit(Document $document)
     {
-        return view('admin.documents.edit', compact('document'));
-    }
-    public function update(Request $request, Document $document)
-    {
+        $templates = \App\Models\DocumentTemplate::where('active', true)
+            ->select('id', 'name', 'content')
+            ->get();
 
+        return view('admin.documents.edit', [
+            'document' => $document,
+            'templates' => $templates,
+        ]);
     }
+
+    public function update(StoreDocumentRequest $request, Document $document)
+    {
+        $data = $request->validated();
+
+        if (empty($data['slug']) && !empty($data['title'])) {
+            $data['slug'] = \Str::slug($data['title']);
+        }
+
+        $document->update($data);
+
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('documents', 'public');
+                $document->files()->create(['file_path' => $path]);
+            }
+        }
+
+        return redirect()
+            ->route('admin.documents.index')
+            ->with('success', 'Документ успешно обновлен.');
+    }
+
 
     public function destroy(Document $document)
     {

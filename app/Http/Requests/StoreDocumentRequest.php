@@ -21,6 +21,7 @@ class StoreDocumentRequest extends FormRequest
             'due_date' => 'required|date|after_or_equal:today',
             'comment' => 'nullable|string',
             'content' => ['nullable', 'string'],
+            'template_id' => 'nullable|integer|exists:document_templates,id',
         ];
     }
 

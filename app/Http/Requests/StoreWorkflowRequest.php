@@ -15,7 +15,7 @@ class StoreWorkflowRequest extends FormRequest
     {
         return [
             'due_date' => ['required', 'date'],
-            'comment' => ['nullable', 'string'],
+            'note' => ['nullable', 'string'],
             'folder_ids' => ['nullable', 'array'],
             'folder_ids.*' => ['integer', 'exists:folders,id'],
             'document_ids' => ['nullable', 'array'],
