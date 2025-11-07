@@ -87,7 +87,7 @@
             @endforeach
         </div>
 
-        <flux:textarea name="comment" label="Оставьте комментарий" rows="4" />
+        <flux:textarea name="note" label="Оставьте комментарий" rows="4" />
 
         <div class="border-t pt-4 mt-4 text-sm text-gray-600">
             <h4 class="font-semibold mb-2">Проверка перед созданием:</h4>
