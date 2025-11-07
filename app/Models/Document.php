@@ -19,6 +19,7 @@ class Document extends Model
         'comment',
         'content',
         'due_date',
+        'template_id',
         'folder_id',
         'approved_at',
         'workflow_status',
