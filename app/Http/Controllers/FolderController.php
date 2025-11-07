@@ -60,7 +60,6 @@ class FolderController extends Controller
         $subfolders = Folder::where('parent_id', $folder->id)->orderBy('order_index')->get();
 
         $files = $folder->files()->orderBy('created_at', 'desc')->get();
-
         return view('admin.folders.show', compact('folder', 'subfolders', 'files'));
     }
 
