@@ -176,6 +176,19 @@ class WorkflowController extends Controller
         return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus', 'roles'));
     }
 
+    public function storeComment(Request $request, Workflow $workflow)
+    {
+        $validated = $request->validate([
+            'comment' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $workflow->comments()->create([
+            'user_id' => auth()->id(),
+            'comment' => $validated['comment'],
+        ]);
+
+        return back()->with('success', 'Комментарий добавлен.');
+    }
 
 
 

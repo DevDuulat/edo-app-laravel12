@@ -5,7 +5,7 @@
 </head>
 
 <body class="min-h-screen">
-<flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+<flux:sidebar sticky stashable class="border-e z-40 border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
     <flux:sidebar.header class="pb-2">
         <flux:sidebar.brand
                 href="{{ route('dashboard') }}"
@@ -15,6 +15,7 @@
         />
         <flux:sidebar.collapse class="lg:hidden" />
     </flux:sidebar.header>
+
     <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
     <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-1 rtl:space-x-reverse" wire:navigate>
@@ -52,7 +53,12 @@
         </flux:sidebar.item>
 
         {{--Входящие рабочие процессы--}}
-        <flux:sidebar.item icon="document-arrow-down" badge="12" :href="route('admin.incoming.workflows')" wire:navigate  class="py-1">
+        <flux:sidebar.item
+                icon="document-arrow-down"
+                :badge="$incomingCount"
+                :href="route('admin.incoming.workflows')"
+                wire:navigate
+                class="py-1">
             Входящие
         </flux:sidebar.item>
 

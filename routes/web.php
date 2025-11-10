@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
        Route::post('/workflows/{workflow}/approve', [WorkflowController::class, 'approve'])->name('workflows.approve');
        Route::post('/workflows/{workflow}/reject', [WorkflowController::class, 'reject'])->name('workflows.reject');
        Route::post('/workflows/{workflow}/redirect', [WorkflowController::class, 'redirect'])->name('workflows.redirect');
+       Route::post('/workflows/{workflow}/comments', [WorkflowController::class, 'storeComment'])->name('workflows.comment.store');
        Route::resource('document-templates', DocumentTemplateController::class);
 //       Route::post('/workflow', [WorkflowController::class, 'store'])->name('workflow.store');
        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
