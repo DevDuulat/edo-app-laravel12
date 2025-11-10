@@ -122,21 +122,35 @@
 
                 <td class="px-6 py-4 text-left">
                     <div class="flex items-center gap-2">
-                        <flux:button
-                                icon="eye"
-                                href="{{ route('admin.documents.show', $document->id) }}"
-                                class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
-                        />
-                        <flux:button
-                                icon="pencil"
-                                href="{{ route('admin.documents.edit', $document->id) }}"
-                                class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
-                        />
-                        <flux:button
-                                icon="trash"
-                                href="#"
-                                class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
-                        />
+                        @if($document->workflows->isNotEmpty())
+                            <flux:button
+                                    icon="eye"
+                                    href="{{ route('admin.workflows.show', $document->workflows->first()->id) }}"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                            />
+                            <flux:button
+                                    icon="trash"
+                                    href="#"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
+                            />
+                        @else
+                            <flux:button
+                                    icon="eye"
+                                    href="{{ route('admin.documents.show', $document->id) }}"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                            />
+                            <flux:button
+                                    icon="pencil"
+                                    href="{{ route('admin.documents.edit', $document->id) }}"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                            />
+                            <flux:button
+                                    icon="trash"
+                                    href="#"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
+                            />
+                        @endif
+
                     </div>
                 </td>
             </tr>
