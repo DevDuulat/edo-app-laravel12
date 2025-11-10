@@ -21,4 +21,10 @@ class IncomingDocumentService
             ])
             ->get(['id', 'title', 'folder_id', 'created_at', 'user_id']);
     }
+
+    public function countIncomingDocuments(?int $parentId = null): int
+    {
+        return $this->getIncomingDocumentsWithWorkflow($parentId)->count();
+    }
+
 }
