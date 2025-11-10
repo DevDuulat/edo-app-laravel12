@@ -72,7 +72,6 @@
         </div>
     </div>
 
-    {{-- Форма создания/редактирования шаблона --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-8 overflow-hidden">
         <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
             <h2 class="text-lg font-semibold text-gray-900">
