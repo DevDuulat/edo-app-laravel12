@@ -58,22 +58,43 @@
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <div class="col-span-1 lg:col-span-8 space-y-6">
                     <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-5">
+                        <div x-data="{
+    title: '',
+    slug: '',
+    cyrillicMap: {
+        'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'e','ж':'zh','з':'z','и':'i','й':'y',
+        'к':'k','л':'l','м':'m','н':'n','о':'o','п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f',
+        'х':'h','ц':'ts','ч':'ch','ш':'sh','щ':'sch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
+    },
+    generateSlug() {
+        let text = this.title.toLowerCase();
 
+        // Транслитерация
+        text = text.split('').map(char => this.cyrillicMap[char] ?? char).join('');
+
+        // Удаляем недопустимые символы, заменяем пробелы на дефисы
+        this.slug = text
+            .replace(/[^a-z0-9 -]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-+|-+$/g, ''); // удаляем дефисы в начале и конце
+    }
+}">
                         <flux:field>
                             <flux:label>Название документа</flux:label>
                             <flux:description>Введите название документа</flux:description>
-                            <flux:input name="title" placeholder="Введите название документа" required />
+                            <flux:input  x-model="title" @input="generateSlug()"  name="title" placeholder="Введите название документа" required />
                             <flux:error name="title" class="mt-1 text-sm text-red-600" />
                         </flux:field>
 
                         <flux:separator class="my-5" />
 
                         <flux:field>
-                            <flux:label>URL (slug)</flux:label>
-                            <flux:description>Введите уникальный slug</flux:description>
-                            <flux:input name="slug" placeholder="Введите уникальный slug" class="w-full" />
+                            <flux:label>Ссылка документа</flux:label>
+                            <flux:input  x-model="slug"  name="slug" placeholder="Введите уникальный slug" class="w-full" />
                             <flux:error name="slug" class="mt-1 text-sm text-red-600" />
                         </flux:field>
+                        </div>
 
                         <flux:separator class="my-5" />
 
@@ -112,10 +133,15 @@
                 <div class="col-span-1 lg:col-span-4 space-y-6">
                     <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
                         <h3 class="text-sm font-semibold text-gray-700 mb-3">Статус</h3>
-                        <select name="status" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="draft">Черновик</option>
-                            <option value="published">Опубликован</option>
-                        </select>
+                        <flux:select wire:model="status" placeholder="Выберите статус...">
+                            @foreach(\App\Enums\Status::cases() as $status)
+                                <flux:select.option value="{{ $status->slug() }}">
+                                    {{ $status->label() }}
+                                </flux:select.option>
+                            @endforeach
+                        </flux:select>
+
+
                         <flux:button type="submit" variant="primary" class="w-full mt-4">Сохранить документ</flux:button>
                     </div>
 
