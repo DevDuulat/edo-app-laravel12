@@ -23,6 +23,6 @@ class AppServiceProvider extends ServiceProvider
 
 //        Выключить в проде
 //        Включить локально
-//        URL::forceScheme('https');
+        URL::forceScheme('https');
     }
 }
