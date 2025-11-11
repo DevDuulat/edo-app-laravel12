@@ -6,7 +6,7 @@
             @if (Laravel\Fortify\Features::canManageTwoFactorAuthentication())
                 <flux:navlist.item :href="route('two-factor.show')" wire:navigate>{{ __('Двухфакторная аутентификация') }}</flux:navlist.item>
             @endif
-            <flux:navlist.item :href="route('settings.appearance')" wire:navigate>{{ __('Appearance') }}</flux:navlist.item>
+            <flux:navlist.item :href="route('settings.appearance')" wire:navigate>{{ __('Внешний вид') }}</flux:navlist.item>
         </flux:navlist>
     </div>
 
