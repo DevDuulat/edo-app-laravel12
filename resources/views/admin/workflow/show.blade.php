@@ -209,11 +209,16 @@
         </script>
 
         <footer class="p-6 border-t bg-gray-50 rounded-b-xl flex flex-col items-center gap-5">
-            @if($currentUserWorkflow && $currentUserWorkflow->isPending())
-                @php
-                    $role = $currentUserWorkflow->role;
-                @endphp
-                @if($role->can('approve'))
+
+            @php
+                $workflowStatus = \App\Enums\WorkflowStatus::from($workflow->workflow_status);
+                $currentRole = $currentUserWorkflow?->role;
+            @endphp
+
+            @if($currentUserWorkflow)
+
+                {{-- Согласующие: Pending --}}
+                @if($currentUserWorkflow->isPending() && $currentRole->can('approve'))
                     <div class="flex flex-wrap justify-center gap-4">
                         <form method="POST" action="{{ route('admin.workflows.approve', $workflow->id) }}">
                             @csrf
@@ -233,18 +238,17 @@
                             </button>
                         </form>
                     </div>
-                @endif
 
-                @if($role->can('approve'))
-                <form method="POST" action="{{ route('admin.workflows.redirect', $workflow->id) }}"
-                          class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center">
+                    {{-- Перенаправление --}}
+                    <form method="POST" action="{{ route('admin.workflows.redirect', $workflow->id) }}"
+                          class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center mt-4">
                         @csrf
                         <select name="redirect_to"
                                 class="flex-1 py-2.5 border-gray-300 rounded-xl bg-white shadow-sm
                                focus:ring-blue-500 focus:border-blue-500 text-gray-700">
-                            @foreach($users as $workflowUser)
-                                @if($workflowUser->user_id !== auth()->id())
-                                    <option value="{{ $workflowUser->user_id }}">{{ $workflowUser->user->name }}</option>
+                            @foreach($users as $workflowUserItem)
+                                @if($workflowUserItem->user_id !== auth()->id())
+                                    <option value="{{ $workflowUserItem->user_id }}">{{ $workflowUserItem->user->name }}</option>
                                 @endif
                             @endforeach
                         </select>
@@ -255,11 +259,32 @@
                             Перенаправить
                         </button>
                     </form>
+
+                    {{-- Исполнители после утверждения --}}
+                @elseif($workflowStatus === \App\Enums\WorkflowStatus::approved && $currentRole->can('execute'))
+                    <form method="POST" action="{{ route('admin.workflows.execute', $workflow->id) }}">
+                        @csrf
+                        <button type="submit"
+                                class="min-w-[180px] py-2.5 px-6 bg-blue-600 text-white font-medium rounded-xl
+                               shadow-sm hover:bg-blue-700 active:scale-[0.98] transition-all">
+                            Выполнить задачу
+                        </button>
+                    </form>
+
+                    {{-- Остальные пользователи или уже выполнено --}}
+                @else
+                    <p class="text-gray-500 text-center text-sm">
+                        Вы уже выполнили действие в этом процессе или у вас нет прав.
+                    </p>
                 @endif
+
             @else
-                <p class="text-gray-500 text-center text-sm">Вы уже выполнили действие в этом процессе.</p>
+                <p class="text-gray-500 text-center text-sm">Вы не участвуете в этом процессе.</p>
             @endif
+
         </footer>
+
+
 
     </div>
 </x-layouts.app>
