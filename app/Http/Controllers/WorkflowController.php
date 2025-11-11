@@ -13,15 +13,22 @@ use App\Models\WorkflowUser;
 use App\Services\FolderDocumentService;
 use App\Services\IncomingDocumentService;
 use App\Services\OutgoingDocumentService;
-use App\Services\WorkflowService;
+use App\Services\Workflow\WorkflowService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class WorkflowController extends Controller
 {
+    protected WorkflowService $workflowService;
+    protected FolderDocumentService $folderDocumentService;
+
     public function __construct(
-        protected FolderDocumentService $folderDocumentService
-    ) {}
+        WorkflowService $workflowService,
+        FolderDocumentService $folderDocumentService
+    ) {
+        $this->workflowService = $workflowService;
+        $this->folderDocumentService = $folderDocumentService;
+    }
 
     public function index()
     {
@@ -56,28 +63,9 @@ class WorkflowController extends Controller
 
     public function show(Workflow $workflow)
     {
-        $documents = $workflow->documents()
-            ->with('files')
-            ->get();
+        $data = $this->workflowService->getWorkflowData($workflow);
 
-        $users = $workflow->users()
-            ->with('user')
-            ->orderBy('order_index')
-            ->get();
-
-        $initiator = $workflow->user;
-
-        $currentUserWorkflow = $workflow->users()
-            ->where('user_id', auth()->id())
-            ->first();
-
-        return view('admin.workflow.show', [
-            'workflow' => $workflow,
-            'documents' => $documents,
-            'users' => $users,
-            'initiator' => $initiator,
-            'currentUserWorkflow' => $currentUserWorkflow,
-        ]);
+        return view('admin.workflow.show', $data);
     }
 
 
@@ -100,7 +88,10 @@ class WorkflowController extends Controller
 
         $allApproved = $workflow->users()
             ->where('role', \App\Enums\WorkflowUserRole::Approver)
-            ->where('status', '!=', \App\Enums\WorkflowUserStatus::Approved)
+            ->whereNotIn('status', [
+                \App\Enums\WorkflowUserStatus::Approved,
+                \App\Enums\WorkflowUserStatus::Redirected
+            ])
             ->doesntExist();
 
         if ($allApproved) {
@@ -135,25 +126,34 @@ class WorkflowController extends Controller
     public function redirect(Request $request, Workflow $workflow)
     {
         $workflowUser = $this->getWorkflowUser($workflow);
-        if (!$workflowUser) abort(403, 'Нет доступа к этому процессу.');
+
+        if (!$workflowUser) {
+            abort(403, 'Нет доступа к этому процессу.');
+        }
 
         $request->validate([
             'redirect_to' => 'required|exists:users,id',
         ]);
 
-        DB::transaction(function () use ($workflowUser, $request, $workflow) {
+        $targetUserId = $request->input('redirect_to');
+
+        DB::transaction(function () use ($workflowUser, $workflow, $targetUserId) {
             $workflowUser->update([
                 'status' => WorkflowUserStatus::Redirected,
                 'acted_at' => now(),
             ]);
 
-            WorkflowUser::create([
-                'workflow_id' => $workflow->id,
-                'user_id' => $request->input('redirect_to'),
-                'role' => $workflowUser->role,
-                'order_index' => $workflowUser->order_index + 0.1,
-                'status' => WorkflowUserStatus::Pending,
-            ]);
+            $workflow->users()->updateOrCreate(
+                [
+                    'workflow_id' => $workflow->id,
+                    'user_id' => $targetUserId,
+                ],
+                [
+                    'role' => $workflowUser->role->value,
+                    'order_index' => $workflowUser->order_index + 0.1,
+                    'status' => WorkflowUserStatus::Pending->value,
+                ]
+            );
         });
 
         return back()->with('alert', [
@@ -161,6 +161,35 @@ class WorkflowController extends Controller
             'message' => 'Вы перенаправили документ другому пользователю.',
         ]);
     }
+
+    public function execute(Request $request, Workflow $workflow)
+    {
+        $user = auth()->user();
+
+        $workflowUser = $workflow->users()
+            ->where('user_id', $user->id)
+            ->where('role', \App\Enums\WorkflowUserRole::Executor)
+            ->first();
+
+        if (!$workflowUser) {
+            return back()->with('error', 'Вы не являетесь исполнителем этого процесса.');
+        }
+
+        $workflowUser->update([
+            'status' => WorkflowUserStatus::Approved,
+            'acted_at' => now(),
+        ]);
+
+        if ($workflow->workflow_status === WorkflowStatus::approved->value) {
+            $workflow->update([
+                'workflow_status' => WorkflowStatus::completed->value,
+            ]);
+        }
+
+        return back()->with('success', 'Задача успешно выполнена.');
+    }
+
+
 
     private function getWorkflowUser(Workflow $workflow): ?WorkflowUser
     {
