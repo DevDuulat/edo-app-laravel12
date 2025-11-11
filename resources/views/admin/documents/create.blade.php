@@ -294,10 +294,17 @@
                 editorContent: '',
 
                 applyTemplateContent() {
+                    const editor = document.getElementById('wysiwyg-example');
+
+                    if (!this.selectedTemplate) {
+                        this.editorContent = '';
+                        if (editor) editor.innerHTML = '';
+                        return;
+                    }
+
                     const selected = this.templates.find(t => t.id == this.selectedTemplate);
                     if (selected) {
                         this.editorContent = selected.content || '';
-                        const editor = document.getElementById('wysiwyg-example');
                         if (editor) editor.innerHTML = this.editorContent;
                     }
                 }
