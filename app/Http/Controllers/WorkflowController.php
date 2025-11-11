@@ -84,22 +84,28 @@ class WorkflowController extends Controller
     public function approve(Request $request, Workflow $workflow)
     {
         $workflowUser = $this->getWorkflowUser($workflow);
+
         if (!$workflowUser) {
             abort(403, 'Нет доступа к этому процессу.');
         }
 
+        if ($workflowUser->role !== \App\Enums\WorkflowUserRole::Approver) {
+            abort(403, 'Только согласующие могут утверждать документ.');
+        }
+
         $workflowUser->update([
-            'status' => WorkflowUserStatus::Approved,
+            'status' => \App\Enums\WorkflowUserStatus::Approved,
             'acted_at' => now(),
         ]);
 
         $allApproved = $workflow->users()
-            ->where('status', '!=', WorkflowUserStatus::Approved)
+            ->where('role', \App\Enums\WorkflowUserRole::Approver)
+            ->where('status', '!=', \App\Enums\WorkflowUserStatus::Approved)
             ->doesntExist();
 
         if ($allApproved) {
             $workflow->update([
-                'workflow_status' => WorkflowStatus::approved,
+                'workflow_status' => \App\Enums\WorkflowStatus::approved,
             ]);
         }
 
@@ -108,6 +114,7 @@ class WorkflowController extends Controller
             'message' => 'Вы утвердили документ.',
         ]);
     }
+
 
     public function reject(Request $request, Workflow $workflow)
     {
