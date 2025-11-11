@@ -2,16 +2,11 @@
     <div class="max-w-5xl mx-auto py-8">
         <div class="flex justify-between items-center mb-6">
             <div class="flex items-center justify-between">
-                <!-- Breadcrumb -->
-
                 <flux:breadcrumbs>
                     <flux:breadcrumbs.item href="{{route('dashboard')}}" icon="home" />
                     <flux:breadcrumbs.item href="{{route('admin.document-templates.index')}}">Шаблоны</flux:breadcrumbs.item>
                     <flux:breadcrumbs.item>   {{ $documentTemplate->name }}</flux:breadcrumbs.item>
                 </flux:breadcrumbs>
-
-
-
             </div>
 
 
@@ -23,7 +18,6 @@
             </div>
         </div>
 
-        <!-- Контент шаблона -->
         <div class="flowbite-typography border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 bg-white dark:bg-zinc-900 shadow-sm">
             @if($documentTemplate->content)
                 {!! $documentTemplate->content !!}
