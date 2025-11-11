@@ -2,50 +2,50 @@
     @include('partials.settings-heading')
 
     <x-settings.layout
-        :heading="__('Two Factor Authentication')"
-        :subheading="__('Manage your two-factor authentication settings')"
+            :heading="__('Двухфакторная аутентификация')"
+            :subheading="__('Управляйте настройками двухфакторной аутентификации')"
     >
         <div class="flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
             @if ($twoFactorEnabled)
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <flux:badge color="green">{{ __('Enabled') }}</flux:badge>
+                        <flux:badge color="green">{{ __('Включено') }}</flux:badge>
                     </div>
 
                     <flux:text>
-                        {{ __('With two-factor authentication enabled, you will be prompted for a secure, random pin during login, which you can retrieve from the TOTP-supported application on your phone.') }}
+                        {{ __('При включенной двухфакторной аутентификации при входе в систему потребуется безопасный случайный PIN, который можно получить в приложении с поддержкой TOTP на вашем телефоне.') }}
                     </flux:text>
 
                     <livewire:settings.two-factor.recovery-codes :$requiresConfirmation/>
 
                     <div class="flex justify-start">
                         <flux:button
-                            variant="danger"
-                            icon="shield-exclamation"
-                            icon:variant="outline"
-                            wire:click="disable"
+                                variant="danger"
+                                icon="shield-exclamation"
+                                icon:variant="outline"
+                                wire:click="disable"
                         >
-                            {{ __('Disable 2FA') }}
+                            {{ __('Отключить 2FA') }}
                         </flux:button>
                     </div>
                 </div>
             @else
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
-                        <flux:badge color="red">{{ __('Disabled') }}</flux:badge>
+                        <flux:badge color="red">{{ __('Отключено') }}</flux:badge>
                     </div>
 
                     <flux:text variant="subtle">
-                        {{ __('When you enable two-factor authentication, you will be prompted for a secure pin during login. This pin can be retrieved from a TOTP-supported application on your phone.') }}
+                        {{ __('При включении двухфакторной аутентификации при входе в систему потребуется безопасный PIN. Этот PIN можно получить в приложении с поддержкой TOTP на вашем телефоне.') }}
                     </flux:text>
 
                     <flux:button
-                        variant="primary"
-                        icon="shield-check"
-                        icon:variant="outline"
-                        wire:click="enable"
+                            variant="primary"
+                            icon="shield-check"
+                            icon:variant="outline"
+                            wire:click="enable"
                     >
-                        {{ __('Enable 2FA') }}
+                        {{ __('Включить 2FA') }}
                     </flux:button>
                 </div>
             @endif
@@ -53,10 +53,10 @@
     </x-settings.layout>
 
     <flux:modal
-        name="two-factor-setup-modal"
-        class="max-w-md md:min-w-md"
-        @close="closeModal"
-        wire:model="showModal"
+            name="two-factor-setup-modal"
+            class="max-w-md md:min-w-md"
+            @close="closeModal"
+            wire:model="showModal"
     >
         <div class="space-y-6">
             <div class="flex flex-col items-center space-y-4">
@@ -88,40 +88,40 @@
                 <div class="space-y-6">
                     <div class="flex flex-col items-center space-y-3">
                         <x-input-otp
-                            :digits="6"
-                            name="code"
-                            wire:model="code"
-                            autocomplete="one-time-code"
+                                :digits="6"
+                                name="code"
+                                wire:model="code"
+                                autocomplete="one-time-code"
                         />
                         @error('code')
-                            <flux:text color="red">
-                                {{ $message }}
-                            </flux:text>
+                        <flux:text color="red">
+                            {{ $message }}
+                        </flux:text>
                         @enderror
                     </div>
 
                     <div class="flex items-center space-x-3">
                         <flux:button
-                            variant="outline"
-                            class="flex-1"
-                            wire:click="resetVerification"
+                                variant="outline"
+                                class="flex-1"
+                                wire:click="resetVerification"
                         >
-                            {{ __('Back') }}
+                            {{ __('Назад') }}
                         </flux:button>
 
                         <flux:button
-                            variant="primary"
-                            class="flex-1"
-                            wire:click="confirmTwoFactor"
-                            x-bind:disabled="$wire.code.length < 6"
+                                variant="primary"
+                                class="flex-1"
+                                wire:click="confirmTwoFactor"
+                                x-bind:disabled="$wire.code.length < 6"
                         >
-                            {{ __('Confirm') }}
+                            {{ __('Подтвердить') }}
                         </flux:button>
                     </div>
                 </div>
             @else
                 @error('setupData')
-                    <flux:callout variant="danger" icon="x-circle" heading="{{ $message }}"/>
+                <flux:callout variant="danger" icon="x-circle" heading="{{ $message }}"/>
                 @enderror
 
                 <div class="flex justify-center">
@@ -140,10 +140,10 @@
 
                 <div>
                     <flux:button
-                        :disabled="$errors->has('setupData')"
-                        variant="primary"
-                        class="w-full"
-                        wire:click="showVerificationIfNecessary"
+                            :disabled="$errors->has('setupData')"
+                            variant="primary"
+                            class="w-full"
+                            wire:click="showVerificationIfNecessary"
                     >
                         {{ $this->modalConfig['buttonText'] }}
                     </flux:button>
@@ -153,13 +153,13 @@
                     <div class="relative flex items-center justify-center w-full">
                         <div class="absolute inset-0 w-full h-px top-1/2 bg-stone-200 dark:bg-stone-600"></div>
                         <span class="relative px-2 text-sm bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400">
-                            {{ __('or, enter the code manually') }}
+                            {{ __('или введите код вручную') }}
                         </span>
                     </div>
 
                     <div
-                        class="flex items-center space-x-2"
-                        x-data="{
+                            class="flex items-center space-x-2"
+                            x-data="{
                             copied: false,
                             async copy() {
                                 try {
@@ -167,7 +167,7 @@
                                     this.copied = true;
                                     setTimeout(() => this.copied = false, 1500);
                                 } catch (e) {
-                                    console.warn('Could not copy to clipboard');
+                                    console.warn('Не удалось скопировать в буфер обмена');
                                 }
                             }
                         }"
@@ -179,21 +179,21 @@
                                 </div>
                             @else
                                 <input
-                                    type="text"
-                                    readonly
-                                    value="{{ $manualSetupKey }}"
-                                    class="w-full p-3 bg-transparent outline-none text-stone-900 dark:text-stone-100"
+                                        type="text"
+                                        readonly
+                                        value="{{ $manualSetupKey }}"
+                                        class="w-full p-3 bg-transparent outline-none text-stone-900 dark:text-stone-100"
                                 />
 
                                 <button
-                                    @click="copy()"
-                                    class="px-3 transition-colors border-l cursor-pointer border-stone-200 dark:border-stone-600"
+                                        @click="copy()"
+                                        class="px-3 transition-colors border-l cursor-pointer border-stone-200 dark:border-stone-600"
                                 >
                                     <flux:icon.document-duplicate x-show="!copied" variant="outline"></flux:icon>
                                     <flux:icon.check
-                                        x-show="copied"
-                                        variant="solid"
-                                        class="text-green-500"
+                                            x-show="copied"
+                                            variant="solid"
+                                            class="text-green-500"
                                     ></flux:icon>
                                 </button>
                             @endempty
