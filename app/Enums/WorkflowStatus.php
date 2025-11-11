@@ -36,4 +36,17 @@ enum WorkflowStatus: int
             self::archived => 'archived',
         };
     }
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::draft => 'gray',
+            self::in_review => 'blue',
+            self::approved => 'green',
+            self::rejected => 'red',
+            self::executing => 'yellow',
+            self::completed => 'emerald',
+            self::archived => 'slate',
+        };
+    }
 }
