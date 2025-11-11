@@ -34,7 +34,6 @@ enum WorkflowStatus: int
             self::executing => 'executing',
             self::completed => 'completed',
             self::archived => 'archived',
-
         };
     }
 }
