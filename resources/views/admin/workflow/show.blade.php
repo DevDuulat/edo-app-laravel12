@@ -5,12 +5,27 @@
     </flux:breadcrumbs>
 
     <div class="space-y-6">
+        @php
+            $status = \App\Enums\WorkflowStatus::from($workflow->workflow_status);
+        @endphp
+
         <div class="space-y-2">
-            <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $workflow->title }}</h1>
+            <div class="flex items-center gap-3">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
+                    {{ $workflow->title }}
+                </h1>
+
+                <span class="px-3 py-1 text-sm rounded-full
+            bg-{{ $status->color() }}-200 text-{{ $status->color() }}-800">
+            {{ $status->label() }}
+        </span>
+            </div>
+
             @if($workflow->note)
                 <p class="text-gray-600 dark:text-gray-400">{{ $workflow->note }}</p>
             @endif
         </div>
+
 
         <section class="p-6 bg-white rounded-xl border border-gray-200">
             @if($initiator)
