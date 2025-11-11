@@ -130,8 +130,9 @@
                 </div>
             </section>
 
-            <section class="flex flex-col w-full md:w-1/2 bg-white rounded-xl border border-gray-200 p-6">
-                <div class="flex-1 overflow-y-auto flex flex-col gap-6" id="commentsContainer">
+            <section class="flex flex-col w-full md:w-1/2 bg-white rounded-xl border border-gray-200 h-[600px]">
+                <!-- Контейнер с прокруткой для комментариев -->
+                <div class="flex-1 overflow-y-auto flex flex-col gap-6 p-6" id="commentsContainer">
                     @foreach($workflow->comments()->oldest()->get() as $comment)
                         @php
                             $isOwn = $comment->user_id === auth()->id();
@@ -157,14 +158,9 @@
                             : 'bg-gray-100 border border-gray-200 text-gray-900 rounded-2xl rounded-bl-none'
                         }}">
                                     <div class="flex items-center gap-2 mb-1 text-sm {{ $isOwn ? 'justify-end' : 'justify-start' }}">
-                                        <span class="font-semibold text-gray-900">
-                                            {{ $comment->user->name }}
-                                        </span>
-                                        <span class="text-xs text-gray-500">
-                                            {{ $comment->created_at->format('H:i d.m.Y') }}
-                                        </span>
+                                        <span class="font-semibold text-gray-900">{{ $comment->user->name }}</span>
+                                        <span class="text-xs text-gray-500">{{ $comment->created_at->format('H:i d.m.Y') }}</span>
                                     </div>
-
                                     <p class="text-sm leading-relaxed">{{ $comment->comment }}</p>
                                 </div>
 
@@ -185,9 +181,10 @@
                             @endif
                         </div>
                     @endforeach
+                </div>
 
-
-                    <form method="POST" action="{{ route('admin.workflows.comment.store', $workflow->id) }}" class="mt-6 flex items-center gap-3 border-t border-gray-200 pt-4">
+                <form method="POST" action="{{ route('admin.workflows.comment.store', $workflow->id) }}"
+                      class="flex items-center gap-3 border-t border-gray-200 p-4">
                     @csrf
                     <textarea id="comment" name="comment" rows="1"
                               class="flex-1 p-2 text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
@@ -198,10 +195,9 @@
                         </svg>
                     </button>
                 </form>
-                </div>
             </section>
-        </div>
 
+        </div>
 
         <script>
             const container = document.getElementById('commentsContainer');
@@ -217,7 +213,6 @@
 
             @if($currentUserWorkflow)
 
-                {{-- Согласующие: Pending --}}
                 @if($currentUserWorkflow->isPending() && $currentRole->can('approve'))
                     <div class="flex flex-wrap justify-center gap-4">
                         <form method="POST" action="{{ route('admin.workflows.approve', $workflow->id) }}">
@@ -239,7 +234,6 @@
                         </form>
                     </div>
 
-                    {{-- Перенаправление --}}
                     <form method="POST" action="{{ route('admin.workflows.redirect', $workflow->id) }}"
                           class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center mt-4">
                         @csrf
@@ -260,7 +254,6 @@
                         </button>
                     </form>
 
-                    {{-- Исполнители после утверждения --}}
                 @elseif($workflowStatus === \App\Enums\WorkflowStatus::approved && $currentRole->can('execute'))
                     <form method="POST" action="{{ route('admin.workflows.execute', $workflow->id) }}">
                         @csrf
@@ -271,7 +264,6 @@
                         </button>
                     </form>
 
-                    {{-- Остальные пользователи или уже выполнено --}}
                 @else
                     <p class="text-gray-500 text-center text-sm">
                         Вы уже выполнили действие в этом процессе или у вас нет прав.
@@ -283,8 +275,5 @@
             @endif
 
         </footer>
-
-
-
     </div>
 </x-layouts.app>
