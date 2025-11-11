@@ -16,9 +16,9 @@
                 </h1>
 
                 <span class="px-3 py-1 text-sm rounded-full
-            bg-{{ $status->color() }}-200 text-{{ $status->color() }}-800">
-            {{ $status->label() }}
-        </span>
+                    bg-{{ $status->color() }}-200 text-{{ $status->color() }}-800">
+                    {{ $status->label() }}
+                </span>
             </div>
 
             @if($workflow->note)
