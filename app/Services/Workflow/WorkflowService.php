@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Workflow;
 
 use App\Enums\WorkflowUserRole;
 use App\Enums\WorkflowUserStatus;
@@ -8,8 +8,8 @@ use App\Models\Document;
 use App\Models\Workflow;
 use App\Models\WorkflowDocument;
 use App\Models\WorkflowUser;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class WorkflowService
 {
@@ -23,7 +23,32 @@ class WorkflowService
             'workflow_status' => $data['workflow_status'] ?? \App\Enums\WorkflowStatus::in_review->value,
             'user_id' => $data['user_id'],
         ]);
+    }
 
+    public function getWorkflowData(Workflow $workflow): array
+    {
+        $documents = $workflow->documents()
+            ->with('files')
+            ->get();
+
+        $users = $workflow->users()
+            ->with('user')
+            ->orderBy('order_index')
+            ->get();
+
+        $initiator = $workflow->user;
+
+        $currentUserWorkflow = $workflow->users()
+            ->where('user_id', auth()->id())
+            ->first();
+
+        return [
+            'workflow' => $workflow,
+            'documents' => $documents,
+            'users' => $users,
+            'initiator' => $initiator,
+            'currentUserWorkflow' => $currentUserWorkflow,
+        ];
     }
 
     public function attachDocumentsFromFolders(Workflow $workflow, array|Collection $folderIds, $documentIds): void
