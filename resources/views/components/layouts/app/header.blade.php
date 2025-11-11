@@ -12,7 +12,7 @@
     <div class="flex items-center gap-2">
         <flux:navbar class="hidden lg:flex gap-2">
             <flux:navbar.item icon="bell" href="#" label="Notification" />
-            <flux:navbar.item icon="cog-6-tooth" href="#" label="Settings" />
+            <flux:navbar.item icon="cog-6-tooth" href="{{route('settings.profile')}}" label="Settings" />
             <flux:navbar.item icon="information-circle" href="#" label="Help" />
         </flux:navbar>
 
