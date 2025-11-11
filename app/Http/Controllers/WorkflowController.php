@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ActiveStatus;
+use App\Enums\WorkflowStatus;
 use App\Enums\WorkflowUserRole;
 use App\Enums\WorkflowUserStatus;
 use App\Http\Requests\StoreWorkflowRequest;
@@ -83,12 +84,24 @@ class WorkflowController extends Controller
     public function approve(Request $request, Workflow $workflow)
     {
         $workflowUser = $this->getWorkflowUser($workflow);
-        if (!$workflowUser) abort(403, 'Нет доступа к этому процессу.');
+        if (!$workflowUser) {
+            abort(403, 'Нет доступа к этому процессу.');
+        }
 
         $workflowUser->update([
             'status' => WorkflowUserStatus::Approved,
             'acted_at' => now(),
         ]);
+
+        $allApproved = $workflow->users()
+            ->where('status', '!=', WorkflowUserStatus::Approved)
+            ->doesntExist();
+
+        if ($allApproved) {
+            $workflow->update([
+                'workflow_status' => WorkflowStatus::approved,
+            ]);
+        }
 
         return back()->with('alert', [
             'type' => 'success',
