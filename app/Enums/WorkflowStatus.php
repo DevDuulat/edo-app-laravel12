@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum WorkflowStatus: int
+enum  WorkflowStatus: int
 {
     case draft = 1;
     case in_review = 2;
