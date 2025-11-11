@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Workflow;
 
 use App\Enums\WorkflowUserRole;
 use App\Enums\WorkflowUserStatus;
@@ -8,8 +8,8 @@ use App\Models\Document;
 use App\Models\Workflow;
 use App\Models\WorkflowDocument;
 use App\Models\WorkflowUser;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 class WorkflowService
 {
@@ -19,10 +19,36 @@ class WorkflowService
             'title' => $data['title'] ?? 'Рабочий процесс — ' . now()->format('d.m.Y'),
             'slug' => $data['slug'] ?? Str::uuid(),
             'note' => $data['note'] ?? null,
-            'due_date' => $data['due_date'],
-            'workflow_status' => $data['workflow_status'] ?? 0,
+            'due_date' => $data['due_date'] ?? null,
+            'workflow_status' => $data['workflow_status'] ?? \App\Enums\WorkflowStatus::in_review->value,
             'user_id' => $data['user_id'],
         ]);
+    }
+
+    public function getWorkflowData(Workflow $workflow): array
+    {
+        $documents = $workflow->documents()
+            ->with('files')
+            ->get();
+
+        $users = $workflow->users()
+            ->with('user')
+            ->orderBy('order_index')
+            ->get();
+
+        $initiator = $workflow->user;
+
+        $currentUserWorkflow = $workflow->users()
+            ->where('user_id', auth()->id())
+            ->first();
+
+        return [
+            'workflow' => $workflow,
+            'documents' => $documents,
+            'users' => $users,
+            'initiator' => $initiator,
+            'currentUserWorkflow' => $currentUserWorkflow,
+        ];
     }
 
     public function attachDocumentsFromFolders(Workflow $workflow, array|Collection $folderIds, $documentIds): void
@@ -51,7 +77,8 @@ class WorkflowService
     public function attachUsers(Workflow $workflow, array $usersByRole, int $initiatorId): void
     {
         foreach ($usersByRole as $roleSlug => $userIds) {
-            $role = collect(WorkflowUserRole::cases())->firstWhere(fn($r) => $r->slug() === $roleSlug);
+            $role = collect(\App\Enums\WorkflowUserRole::cases())
+                ->firstWhere(fn($r) => $r->slug() === $roleSlug);
 
             if (!$role) {
                 continue;
@@ -73,8 +100,7 @@ class WorkflowService
             'user_id' => $initiatorId,
             'role' => WorkflowUserRole::Initiator->value,
             'order_index' => 0,
-            'status' => WorkflowUserStatus::Approved->value,
-            'acted_at' => now(),
+            'status' => WorkflowUserStatus::Pending->value,
         ]);
     }
 

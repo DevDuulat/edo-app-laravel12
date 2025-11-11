@@ -31,4 +31,15 @@ enum WorkflowUserRole: int
             self::Participant => 'participant',
         };
     }
+
+    public function can(string $action): bool
+    {
+        return match($action) {
+            'comment' => true,
+            'approve' => $this === self::Approver,
+            'execute' => $this === self::Executor,
+            'edit' => $this === self::Initiator,
+            default => false,
+        };
+    }
 }

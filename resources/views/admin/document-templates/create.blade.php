@@ -38,17 +38,6 @@
             overflow-x: auto;
         }
 
-        /* Панель инструментов */
-        .editor-toolbar {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            border-bottom: 1px solid #e5e7eb;
-            padding: 0.5rem 1rem;
-        }
-
-        /* Глобальные отступы */
         .content-wrapper {
             padding: 2rem 1rem;
             max-width: 1200px;
@@ -61,7 +50,6 @@
             }
         }
 
-        /* Кнопки формы */
         .form-actions button,
         .form-actions a {
             min-width: 120px;

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum WorkflowStatus: int
+enum  WorkflowStatus: int
 {
     case draft = 1;
     case in_review = 2;
@@ -34,7 +34,19 @@ enum WorkflowStatus: int
             self::executing => 'executing',
             self::completed => 'completed',
             self::archived => 'archived',
+        };
+    }
 
+    public function color(): string
+    {
+        return match ($this) {
+            self::draft => 'gray',
+            self::in_review => 'blue',
+            self::approved => 'green',
+            self::rejected => 'red',
+            self::executing => 'yellow',
+            self::completed => 'emerald',
+            self::archived => 'slate',
         };
     }
 }

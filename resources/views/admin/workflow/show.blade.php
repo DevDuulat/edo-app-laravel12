@@ -1,16 +1,31 @@
-<x-layouts.app :title="__('Workflow')">
+<x-layouts.app :title="__('Рабочий процесс')">
     <flux:breadcrumbs class="mb-6">
         <flux:breadcrumbs.item :href="route('dashboard')">Главная</flux:breadcrumbs.item>
         <flux:breadcrumbs.item active>{{ $workflow->title }}</flux:breadcrumbs.item>
     </flux:breadcrumbs>
 
     <div class="space-y-6">
+        @php
+            $status = \App\Enums\WorkflowStatus::from($workflow->workflow_status);
+        @endphp
+
         <div class="space-y-2">
-            <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ $workflow->title }}</h1>
+            <div class="flex items-center gap-3">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">
+                    {{ $workflow->title }}
+                </h1>
+
+                <span class="px-3 py-1 text-sm rounded-full
+                    bg-{{ $status->color() }}-200 text-{{ $status->color() }}-800">
+                    {{ $status->label() }}
+                </span>
+            </div>
+
             @if($workflow->note)
                 <p class="text-gray-600 dark:text-gray-400">{{ $workflow->note }}</p>
             @endif
         </div>
+
 
         <section class="p-6 bg-white rounded-xl border border-gray-200">
             @if($initiator)
@@ -24,9 +39,9 @@
             @endif
         </section>
 
-        <div class="flex flex-col md:flex-row gap-6 h-[70vh]">
+        <div class="flex flex-col md:flex-row gap-6">
             <section class="flex flex-col w-full md:w-1/2 gap-6">
-                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200 overflow-auto">
+                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200">
                     <h2 class="text-lg font-medium text-gray-900 mb-4">Пользователи в процессе утверждения</h2>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -83,7 +98,7 @@
                     </table>
                 </div>
 
-                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200 overflow-auto">
+                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200">
                     <h2 class="text-lg font-medium text-gray-900 mb-4">Файлы</h2>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -115,8 +130,9 @@
                 </div>
             </section>
 
-            <section class="flex flex-col w-full md:w-1/2 bg-white rounded-xl border border-gray-200 p-6">
-                <div class="flex-1 overflow-y-auto flex flex-col gap-6" id="commentsContainer">
+            <section class="flex flex-col w-full md:w-1/2 bg-white rounded-xl border border-gray-200 h-[600px]">
+                <!-- Контейнер с прокруткой для комментариев -->
+                <div class="flex-1 overflow-y-auto flex flex-col gap-6 p-6" id="commentsContainer">
                     @foreach($workflow->comments()->oldest()->get() as $comment)
                         @php
                             $isOwn = $comment->user_id === auth()->id();
@@ -142,14 +158,9 @@
                             : 'bg-gray-100 border border-gray-200 text-gray-900 rounded-2xl rounded-bl-none'
                         }}">
                                     <div class="flex items-center gap-2 mb-1 text-sm {{ $isOwn ? 'justify-end' : 'justify-start' }}">
-                                        <span class="font-semibold text-gray-900">
-                                            {{ $comment->user->name }}
-                                        </span>
-                                        <span class="text-xs text-gray-500">
-                                            {{ $comment->created_at->format('H:i d.m.Y') }}
-                                        </span>
+                                        <span class="font-semibold text-gray-900">{{ $comment->user->name }}</span>
+                                        <span class="text-xs text-gray-500">{{ $comment->created_at->format('H:i d.m.Y') }}</span>
                                     </div>
-
                                     <p class="text-sm leading-relaxed">{{ $comment->comment }}</p>
                                 </div>
 
@@ -170,9 +181,10 @@
                             @endif
                         </div>
                     @endforeach
+                </div>
 
-
-                    <form method="POST" action="{{ route('admin.workflows.comment.store', $workflow->id) }}" class="mt-6 flex items-center gap-3 border-t border-gray-200 pt-4">
+                <form method="POST" action="{{ route('admin.workflows.comment.store', $workflow->id) }}"
+                      class="flex items-center gap-3 border-t border-gray-200 p-4">
                     @csrf
                     <textarea id="comment" name="comment" rows="1"
                               class="flex-1 p-2 text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 resize-none"
@@ -184,6 +196,7 @@
                     </button>
                 </form>
             </section>
+
         </div>
 
         <script>
@@ -192,49 +205,75 @@
         </script>
 
         <footer class="p-6 border-t bg-gray-50 rounded-b-xl flex flex-col items-center gap-5">
-            @if($currentUserWorkflow && $currentUserWorkflow->isPending())
-                <div class="flex flex-wrap justify-center gap-4">
-                    <form method="POST" action="{{ route('admin.workflows.approve', $workflow->id) }}">
+
+            @php
+                $workflowStatus = \App\Enums\WorkflowStatus::from($workflow->workflow_status);
+                $currentRole = $currentUserWorkflow?->role;
+            @endphp
+
+            @if($currentUserWorkflow)
+
+                @if($currentUserWorkflow->isPending() && $currentRole->can('approve'))
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <form method="POST" action="{{ route('admin.workflows.approve', $workflow->id) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="min-w-[180px] py-2.5 px-6 bg-green-600 text-white font-medium rounded-xl
+                                   shadow-sm hover:bg-green-700 active:scale-[0.98] transition-all">
+                                Утвердить
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('admin.workflows.reject', $workflow->id) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="min-w-[180px] py-2.5 px-6 bg-red-600 text-white font-medium rounded-xl
+                                   shadow-sm hover:bg-red-700 active:scale-[0.98] transition-all">
+                                Отклонить
+                            </button>
+                        </form>
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.workflows.redirect', $workflow->id) }}"
+                          class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center mt-4">
                         @csrf
+                        <select name="redirect_to"
+                                class="flex-1 py-2.5 border-gray-300 rounded-xl bg-white shadow-sm
+                               focus:ring-blue-500 focus:border-blue-500 text-gray-700">
+                            @foreach($users as $workflowUserItem)
+                                @if($workflowUserItem->user_id !== auth()->id())
+                                    <option value="{{ $workflowUserItem->user_id }}">{{ $workflowUserItem->user->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
+
                         <button type="submit"
-                                class="min-w-[180px] py-2.5 px-6 bg-green-600 text-white font-medium rounded-xl
-                               shadow-sm hover:bg-green-700 active:scale-[0.98] transition-all">
-                            Утвердить
+                                class="py-2.5 px-5 bg-yellow-500 text-white font-medium rounded-xl
+                               shadow-sm hover:bg-yellow-600 active:scale-[0.98] transition-all">
+                            Перенаправить
                         </button>
                     </form>
 
-                    <form method="POST" action="{{ route('admin.workflows.reject', $workflow->id) }}">
+                @elseif($workflowStatus === \App\Enums\WorkflowStatus::approved && $currentRole->can('execute'))
+                    <form method="POST" action="{{ route('admin.workflows.execute', $workflow->id) }}">
                         @csrf
                         <button type="submit"
-                                class="min-w-[180px] py-2.5 px-6 bg-red-600 text-white font-medium rounded-xl
-                               shadow-sm hover:bg-red-700 active:scale-[0.98] transition-all">
-                            Отклонить
+                                class="min-w-[180px] py-2.5 px-6 bg-blue-600 text-white font-medium rounded-xl
+                               shadow-sm hover:bg-blue-700 active:scale-[0.98] transition-all">
+                            Выполнить задачу
                         </button>
                     </form>
-                </div>
 
-                <form method="POST" action="{{ route('admin.workflows.redirect', $workflow->id) }}"
-                      class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center">
-                    @csrf
-                    <select name="redirect_to"
-                            class="flex-1 py-2.5 border-gray-300 rounded-xl bg-white shadow-sm
-                           focus:ring-blue-500 focus:border-blue-500 text-gray-700">
-                        @foreach($users as $workflowUser)
-                            @if($workflowUser->user_id !== auth()->id())
-                                <option value="{{ $workflowUser->user_id }}">{{ $workflowUser->user->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
+                @else
+                    <p class="text-gray-500 text-center text-sm">
+                        Вы уже выполнили действие в этом процессе или у вас нет прав.
+                    </p>
+                @endif
 
-                    <button type="submit"
-                            class="py-2.5 px-5 bg-yellow-500 text-white font-medium rounded-xl
-                           shadow-sm hover:bg-yellow-600 active:scale-[0.98] transition-all">
-                        Перенаправить
-                    </button>
-                </form>
             @else
-                <p class="text-gray-500 text-center text-sm">Вы уже выполнили действие в этом процессе.</p>
+                <p class="text-gray-500 text-center text-sm">Вы не участвуете в этом процессе.</p>
             @endif
+
         </footer>
     </div>
 </x-layouts.app>
