@@ -19,10 +19,11 @@ class WorkflowService
             'title' => $data['title'] ?? 'Рабочий процесс — ' . now()->format('d.m.Y'),
             'slug' => $data['slug'] ?? Str::uuid(),
             'note' => $data['note'] ?? null,
-            'due_date' => $data['due_date'],
-            'workflow_status' => $data['workflow_status'] ?? 0,
+            'due_date' => $data['due_date'] ?? null,
+            'workflow_status' => $data['workflow_status'] ?? \App\Enums\WorkflowStatus::in_review->value,
             'user_id' => $data['user_id'],
         ]);
+
     }
 
     public function attachDocumentsFromFolders(Workflow $workflow, array|Collection $folderIds, $documentIds): void
