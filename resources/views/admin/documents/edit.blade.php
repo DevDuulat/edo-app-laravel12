@@ -1,7 +1,7 @@
 <x-layouts.app :title="__('Редактировать Документ')">
     <div x-data="documentForm({{ $templates->toJson() }}, {{ $document->template_id ?? 'null' }})">
 
-    <flux:breadcrumbs class="mb-8">
+        <flux:breadcrumbs class="mb-8">
             <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
             <flux:breadcrumbs.item href="{{ route('admin.documents.index') }}">Документы</flux:breadcrumbs.item>
             <flux:breadcrumbs.item>Редактирование Документа</flux:breadcrumbs.item>
@@ -103,10 +103,17 @@
                 editorContent: '',
 
                 applyTemplateContent() {
+                    const editor = document.getElementById('wysiwyg-example');
+
+                    if (!this.selectedTemplate) {
+                        this.editorContent = '';
+                        if (editor) editor.innerHTML = '';
+                        return;
+                    }
+
                     const selected = this.templates.find(t => t.id == this.selectedTemplate);
                     if (selected) {
                         this.editorContent = selected.content || '';
-                        const editor = document.getElementById('wysiwyg-example');
                         if (editor) editor.innerHTML = this.editorContent;
                     }
                 }
