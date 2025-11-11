@@ -52,7 +52,8 @@ class WorkflowService
     public function attachUsers(Workflow $workflow, array $usersByRole, int $initiatorId): void
     {
         foreach ($usersByRole as $roleSlug => $userIds) {
-            $role = collect(WorkflowUserRole::cases())->firstWhere(fn($r) => $r->slug() === $roleSlug);
+            $role = collect(\App\Enums\WorkflowUserRole::cases())
+                ->firstWhere(fn($r) => $r->slug() === $roleSlug);
 
             if (!$role) {
                 continue;
@@ -74,8 +75,7 @@ class WorkflowService
             'user_id' => $initiatorId,
             'role' => WorkflowUserRole::Initiator->value,
             'order_index' => 0,
-            'status' => WorkflowUserStatus::Approved->value,
-            'acted_at' => now(),
+            'status' => WorkflowUserStatus::Pending->value,
         ]);
     }
 
