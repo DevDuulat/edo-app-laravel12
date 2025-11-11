@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Workflow')">
+<x-layouts.app :title="__('Рабочий процесс')">
     <flux:breadcrumbs class="mb-6">
         <flux:breadcrumbs.item :href="route('dashboard')">Главная</flux:breadcrumbs.item>
         <flux:breadcrumbs.item active>{{ $workflow->title }}</flux:breadcrumbs.item>
@@ -39,9 +39,9 @@
             @endif
         </section>
 
-        <div class="flex flex-col md:flex-row gap-6 h-[70vh]">
+        <div class="flex flex-col md:flex-row gap-6">
             <section class="flex flex-col w-full md:w-1/2 gap-6">
-                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200 overflow-auto">
+                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200">
                     <h2 class="text-lg font-medium text-gray-900 mb-4">Пользователи в процессе утверждения</h2>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -98,7 +98,7 @@
                     </table>
                 </div>
 
-                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200 overflow-auto">
+                <div class="flex-1 p-6 bg-white rounded-xl border border-gray-200">
                     <h2 class="text-lg font-medium text-gray-900 mb-4">Файлы</h2>
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
@@ -198,8 +198,10 @@
                         </svg>
                     </button>
                 </form>
+                </div>
             </section>
         </div>
+
 
         <script>
             const container = document.getElementById('commentsContainer');
@@ -208,48 +210,56 @@
 
         <footer class="p-6 border-t bg-gray-50 rounded-b-xl flex flex-col items-center gap-5">
             @if($currentUserWorkflow && $currentUserWorkflow->isPending())
-                <div class="flex flex-wrap justify-center gap-4">
-                    <form method="POST" action="{{ route('admin.workflows.approve', $workflow->id) }}">
-                        @csrf
-                        <button type="submit"
-                                class="min-w-[180px] py-2.5 px-6 bg-green-600 text-white font-medium rounded-xl
-                               shadow-sm hover:bg-green-700 active:scale-[0.98] transition-all">
-                            Утвердить
-                        </button>
-                    </form>
+                @php
+                    $role = $currentUserWorkflow->role;
+                @endphp
+                @if($role->can('approve'))
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <form method="POST" action="{{ route('admin.workflows.approve', $workflow->id) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="min-w-[180px] py-2.5 px-6 bg-green-600 text-white font-medium rounded-xl
+                                   shadow-sm hover:bg-green-700 active:scale-[0.98] transition-all">
+                                Утвердить
+                            </button>
+                        </form>
 
-                    <form method="POST" action="{{ route('admin.workflows.reject', $workflow->id) }}">
-                        @csrf
-                        <button type="submit"
-                                class="min-w-[180px] py-2.5 px-6 bg-red-600 text-white font-medium rounded-xl
-                               shadow-sm hover:bg-red-700 active:scale-[0.98] transition-all">
-                            Отклонить
-                        </button>
-                    </form>
-                </div>
+                        <form method="POST" action="{{ route('admin.workflows.reject', $workflow->id) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="min-w-[180px] py-2.5 px-6 bg-red-600 text-white font-medium rounded-xl
+                                   shadow-sm hover:bg-red-700 active:scale-[0.98] transition-all">
+                                Отклонить
+                            </button>
+                        </form>
+                    </div>
+                @endif
 
+                @if($role->can('approve'))
                 <form method="POST" action="{{ route('admin.workflows.redirect', $workflow->id) }}"
-                      class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center">
-                    @csrf
-                    <select name="redirect_to"
-                            class="flex-1 py-2.5 border-gray-300 rounded-xl bg-white shadow-sm
-                           focus:ring-blue-500 focus:border-blue-500 text-gray-700">
-                        @foreach($users as $workflowUser)
-                            @if($workflowUser->user_id !== auth()->id())
-                                <option value="{{ $workflowUser->user_id }}">{{ $workflowUser->user->name }}</option>
-                            @endif
-                        @endforeach
-                    </select>
+                          class="flex flex-col sm:flex-row gap-3 w-full max-w-md justify-center">
+                        @csrf
+                        <select name="redirect_to"
+                                class="flex-1 py-2.5 border-gray-300 rounded-xl bg-white shadow-sm
+                               focus:ring-blue-500 focus:border-blue-500 text-gray-700">
+                            @foreach($users as $workflowUser)
+                                @if($workflowUser->user_id !== auth()->id())
+                                    <option value="{{ $workflowUser->user_id }}">{{ $workflowUser->user->name }}</option>
+                                @endif
+                            @endforeach
+                        </select>
 
-                    <button type="submit"
-                            class="py-2.5 px-5 bg-yellow-500 text-white font-medium rounded-xl
-                           shadow-sm hover:bg-yellow-600 active:scale-[0.98] transition-all">
-                        Перенаправить
-                    </button>
-                </form>
+                        <button type="submit"
+                                class="py-2.5 px-5 bg-yellow-500 text-white font-medium rounded-xl
+                               shadow-sm hover:bg-yellow-600 active:scale-[0.98] transition-all">
+                            Перенаправить
+                        </button>
+                    </form>
+                @endif
             @else
                 <p class="text-gray-500 text-center text-sm">Вы уже выполнили действие в этом процессе.</p>
             @endif
         </footer>
+
     </div>
 </x-layouts.app>
