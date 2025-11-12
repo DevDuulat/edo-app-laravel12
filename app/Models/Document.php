@@ -47,4 +47,9 @@ class Document extends Model
     {
         return $this->belongsTo(\App\Models\DocumentTemplate::class, 'template_id');
     }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 }

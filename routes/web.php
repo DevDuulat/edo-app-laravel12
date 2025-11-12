@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentTemplateController;
@@ -60,6 +61,7 @@ Route::middleware(['auth'])->group(function () {
        Route::resource('folders', FolderController::class);
        Route::resource('documents', DocumentController::class);
        Route::resource('workflows', WorkflowController::class);
+       Route::resource('categories', CategoryController::class);
        Route::get('/outgoing/workflows', [WorkflowController::class, 'outgoing'])->name('outgoing.workflows');
        Route::get('/incoming/workflows', [WorkflowController::class, 'incoming'])->name('incoming.workflows');
        Route::post('/workflows/{workflow}/approve', [WorkflowController::class, 'approve'])->name('workflows.approve');

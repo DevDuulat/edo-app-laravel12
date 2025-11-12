@@ -43,6 +43,9 @@
 
 
     <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
+        <flux:sidebar.item icon="rectangle-stack" :href="route('admin.categories.index')" wire:navigate class="py-1">
+            Категории
+        </flux:sidebar.item>
         <flux:sidebar.item icon="document-text" :href="route('admin.document-templates.index')" wire:navigate class="py-1">
             Шаблоны
         </flux:sidebar.item>

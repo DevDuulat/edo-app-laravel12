@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug')->unique();
             $table->foreignId('folder_id')->nullable()->constrained('folders')->nullOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->unsignedTinyInteger('document_type');
             $table->text('comment')->nullable();
             $table->date('due_date');
