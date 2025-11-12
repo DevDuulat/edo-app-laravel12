@@ -16,6 +16,7 @@ class StoreDocumentRequest extends FormRequest
     {
         return [
             'folder_id' => ['nullable', 'integer', 'exists:folders,id'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
             'title' => 'required|string|max:255|unique:documents,title,' . ($this->document?->id ?? ''),
             'slug' => 'required|string|max:255|unique:documents,title,' . ($this->document?->id ?? ''),
             'due_date' => 'required|date|after_or_equal:today',

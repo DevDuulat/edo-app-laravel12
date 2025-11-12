@@ -74,11 +74,7 @@
     },
     generateSlug() {
         let text = this.title.toLowerCase();
-
-        // Транслитерация
         text = text.split('').map(char => this.cyrillicMap[char] ?? char).join('');
-
-        // Удаляем недопустимые символы, заменяем пробелы на дефисы
         this.slug = text
             .replace(/[^a-z0-9 -]/g, '')
             .replace(/\s+/g, '-')
@@ -211,6 +207,17 @@
                             <template x-for="template in templates" :key="template.id">
                                 <option :value="template.id" x-text="template.name"></option>
                             </template>
+                        </select>
+                    </div>
+
+                    <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Категории</h3>
+                        <select name="category_id" id="category_id"
+                                class="w-full border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            <option value="">— Не выбран —</option> 
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                            @endforeach
                         </select>
                     </div>
 
