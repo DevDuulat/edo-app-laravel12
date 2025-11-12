@@ -21,6 +21,7 @@ class Document extends Model
         'due_date',
         'template_id',
         'folder_id',
+        'category_id',
         'approved_at',
         'workflow_status',
         'user_id',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\DocumentType;
 use App\Enums\WorkflowStatus;
 use App\Http\Requests\StoreDocumentRequest;
+use App\Models\Category;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,20 +20,25 @@ class DocumentController extends Controller
     public function index(Request $request)
     {
         $parentId = $request->query('parent_id');
-        $data = $this->folderDocumentService->getFolderData($parentId);
+        $categoryId = $request->query('category_id');
+
+        $data = $this->folderDocumentService->getFolderData($parentId, $categoryId);
+        $data['categories'] = \App\Models\Category::orderBy('name')->get();
 
         return view('admin.documents.index', $data);
     }
 
+
+
     public function create()
     {
         $users = User::query()->paginate(10);
+        $categories = Category::all();
         $templates = \App\Models\DocumentTemplate::where('active', true)
             ->select('id', 'name', 'content')
             ->get();
 
-        return view('admin.documents.create', compact('templates', 'users'));
-
+        return view('admin.documents.create', compact('templates', 'users', 'categories'));
     }
 
     public function store(StoreDocumentRequest $request)
@@ -42,7 +48,7 @@ class DocumentController extends Controller
         $data['user_id'] = auth()->id();
         $data['document_type'] = DocumentType::internal->value;
         $data['workflow_status'] = WorkflowStatus::draft->value;
-//        $data['slug'] = Str::slug($data['title']);
+
         if (empty($data['slug']) && !empty($data['title'])) {
             $data['slug'] = \Str::slug($data['title']);
         }
