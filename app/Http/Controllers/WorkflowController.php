@@ -6,6 +6,7 @@ use App\Enums\ActiveStatus;
 use App\Enums\WorkflowStatus;
 use App\Enums\WorkflowUserRole;
 use App\Enums\WorkflowUserStatus;
+use App\Events\CommentCreated;
 use App\Http\Requests\StoreWorkflowRequest;
 use App\Models\User;
 use App\Models\Workflow;
@@ -65,7 +66,7 @@ class WorkflowController extends Controller
     {
         $data = $this->workflowService->getWorkflowData($workflow);
 
-        return view('admin.workflow.show', $data);
+        return view('admin.workflows.show', $data);
     }
 
 
@@ -201,28 +202,60 @@ class WorkflowController extends Controller
     public function outgoing(Request $request, OutgoingDocumentService $outgoingService)
     {
         $parentId = $request->query('parent_id');
+        $categoryId = $request->query('category_id');
+
         $documents = $outgoingService->getOutgoingDocumentsWithWorkflow($parentId);
+
+        if ($categoryId) {
+            $documents = $documents->where('category_id', $categoryId);
+        }
+
         $folders = collect();
         $users = User::select('id', 'name')->get();
         $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
         $roles = WorkflowUserRole::cases();
+        $categories = \App\Models\Category::orderBy('name')->get(); // добавляем категории
 
-        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus', 'roles'));
+        return view('admin.documents.index', compact(
+            'folders',
+            'documents',
+            'currentFolder',
+            'users',
+            'activeStatus',
+            'roles',
+            'categories' // передаем в шаблон
+        ));
     }
+
 
     public function incoming(Request $request, IncomingDocumentService $incomingService)
     {
         $parentId = $request->query('parent_id');
+        $categoryId = $request->query('category_id');
+
         $documents = $incomingService->getIncomingDocumentsWithWorkflow($parentId);
+
+        if ($categoryId) {
+            $documents = $documents->where('category_id', $categoryId);
+        }
 
         $folders = collect();
         $users = User::select('id', 'name')->get();
         $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
         $roles = WorkflowUserRole::cases();
+        $categories = \App\Models\Category::orderBy('name')->get(); // добавляем категории
 
-        return view('admin.documents.index', compact('folders', 'documents', 'currentFolder', 'users', 'activeStatus', 'roles'));
+        return view('admin.documents.index', compact(
+            'folders',
+            'documents',
+            'currentFolder',
+            'users',
+            'activeStatus',
+            'roles',
+            'categories'
+        ));
     }
 
     public function storeComment(Request $request, Workflow $workflow)
@@ -231,10 +264,22 @@ class WorkflowController extends Controller
             'comment' => ['required', 'string', 'max:2000'],
         ]);
 
-        $workflow->comments()->create([
+        $comment = $workflow->comments()->create([
             'user_id' => auth()->id(),
             'comment' => $validated['comment'],
         ]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Комментарий добавлен.',
+                'comment' => [
+                    'user' => $comment->user->name,
+                    'text' => $comment->comment,
+                    'created_at' => $comment->created_at->diffForHumans(),
+                ]
+            ]);
+        }
+        event(new CommentCreated($comment));
 
         return back()->with('success', 'Комментарий добавлен.');
     }
