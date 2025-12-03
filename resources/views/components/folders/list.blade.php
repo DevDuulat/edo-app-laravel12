@@ -194,6 +194,7 @@
                                 >
                                     Просмотр
                                 </flux:menu.item>
+
                                 <flux:menu.separator />
                                 <flux:menu.item
                                         icon="trash"
@@ -210,6 +211,40 @@
                                     Просмотр
                                 </flux:menu.item>
                                 <flux:menu.item
+                                        icon="clipboard-document"
+                                        href="#"
+                                        onclick="copyDocument({{ $document->id }})"
+                                >
+                                    Копировать
+                                </flux:menu.item>
+                                <flux:menu.item
+                                        icon="folder-arrow-down"
+                                        href="#"
+                                        onclick="moveDocument({{ $document->id }})"
+                                >
+                                    Переместить
+                                </flux:menu.item>
+                                <flux:menu.item
+                                        icon="pencil-square"
+                                        href="#"
+                                        onclick="renameDocument({{ $document->id }})"
+                                >
+                                    Переименовать
+                                </flux:menu.item>
+                                <flux:menu.item
+                                        icon="archive-box"
+                                        onclick="archiveDocument({{ $document->id }})"
+                                >
+                                    В архив
+                                </flux:menu.item>
+                                <flux:menu.item
+                                        icon="arrow-path"
+                                        href="#"
+                                        onclick="restoreDocument({{ $document->id }})"
+                                >
+                                    Восстановить
+                                </flux:menu.item>
+                                <flux:menu.item
                                         icon="pencil"
                                         href="{{ route('admin.documents.edit', $document->id) }}"
                                 >
@@ -220,6 +255,7 @@
                                         icon="trash"
                                         href="#"
                                         variant="danger"
+                                        onclick="trashDocument({{ $document->id }})"
                                 >
                                     Удалить
                                 </flux:menu.item>
