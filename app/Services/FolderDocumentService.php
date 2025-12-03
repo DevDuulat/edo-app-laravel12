@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\Status;
 use App\Enums\WorkflowUserRole;
 use App\Models\Document;
 use App\Models\Folder;
@@ -10,18 +11,25 @@ use App\Enums\ActiveStatus;
 
 class FolderDocumentService
 {
-    public function getFolderData(?int $parentId = null, ?int $categoryId = null): array
-    {
+    public function getFolderData(
+        ?int $parentId = null,
+        ?Status $status = null,
+        ?int $categoryId = null
+    ): array {
         $currentFolder = $parentId
-            ? Folder::with('parent')->findOrFail($parentId)
+            ? Folder::with('parent')
+                ->when($status, fn($q) => $q->where('status', $status))
+                ->findOrFail($parentId)
             : null;
 
         $folders = Folder::where('parent_id', $parentId)
+            ->when($status, fn($q) => $q->where('status', $status))
             ->orderBy('order_index')
-            ->get(['id', 'name', 'created_at']);
+            ->get(['id', 'name', 'slug','status', 'created_at']);
 
         $documents = Document::query()
             ->where('folder_id', $parentId)
+            ->when($status, fn($q) => $q->where('status', $status))
             ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
             ->with('workflows')
             ->get(['id', 'title', 'folder_id', 'category_id', 'created_at']);

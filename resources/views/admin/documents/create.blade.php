@@ -47,11 +47,7 @@
     </style>
 
     <div x-data="documentForm({{ $templates->toJson() }})">
-        <flux:breadcrumbs class="mb-8">
-        <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
-            <flux:breadcrumbs.item href="{{ route('admin.documents.index') }}">Документы</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item>Создание Документа</flux:breadcrumbs.item>
-        </flux:breadcrumbs>
+        {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
 
         <form
                 method="POST"
@@ -152,7 +148,6 @@
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
                         </div>
-                        <!-- WYSIWYG редактор -->
                         <div class="mt-6">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Содержимое шаблона</label>
                             <div class="w-full border border-gray-200 rounded-lg bg-white overflow-hidden">
@@ -186,15 +181,6 @@
 
                 <div class="col-span-1 lg:col-span-4 space-y-6">
                     <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
-                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Статус</h3>
-                        <flux:select wire:model="status" placeholder="Выберите статус...">
-                            @foreach(\App\Enums\Status::cases() as $status)
-                                <flux:select.option value="{{ $status->slug() }}">
-                                    {{ $status->label() }}
-                                </flux:select.option>
-                            @endforeach
-                        </flux:select>
-
 
                         <flux:button type="submit" variant="primary" class="w-full mt-4">Сохранить документ</flux:button>
                     </div>

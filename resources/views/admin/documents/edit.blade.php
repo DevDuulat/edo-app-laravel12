@@ -1,11 +1,7 @@
 <x-layouts.app :title="__('Редактировать Документ')">
     <div x-data="documentForm({{ $templates->toJson() }}, {{ $document->template_id ?? 'null' }})">
 
-        <flux:breadcrumbs class="mb-8">
-            <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
-            <flux:breadcrumbs.item href="{{ route('admin.documents.index') }}">Документы</flux:breadcrumbs.item>
-            <flux:breadcrumbs.item>Редактирование Документа</flux:breadcrumbs.item>
-        </flux:breadcrumbs>
+        {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
 
         <form method="POST" action="{{ route('admin.documents.update', $document->id) }}">
             @csrf

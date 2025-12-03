@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\Status;
+use App\Traits\HasStatusLifecycle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Folder extends Model
 {
-    use HasFactory;
+    use HasFactory, HasStatusLifecycle;
 
     protected $fillable = [
         'name',
@@ -24,8 +26,9 @@ class Folder extends Model
 
 
     protected $casts = [
-        'status' => 'integer',
+        'status' => Status::class,
     ];
+
 
     public function parent()
     {
@@ -56,6 +59,8 @@ class Folder extends Model
     {
         return $this->parent()->with('ancestors');
     }
+
+
 
 
 }

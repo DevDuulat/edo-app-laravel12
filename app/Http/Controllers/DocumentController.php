@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DocumentType;
+use App\Enums\Status;
 use App\Enums\WorkflowStatus;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Models\Category;
@@ -22,12 +23,16 @@ class DocumentController extends Controller
         $parentId = $request->query('parent_id');
         $categoryId = $request->query('category_id');
 
-        $data = $this->folderDocumentService->getFolderData($parentId, $categoryId);
-        $data['categories'] = \App\Models\Category::orderBy('name')->get();
+        $data = $this->folderDocumentService->getFolderData(
+            parentId: $parentId,
+            status: Status::published,
+            categoryId: $categoryId
+        );
+
+        $data['categories'] = Category::orderBy('name')->get();
 
         return view('admin.documents.index', $data);
     }
-
 
 
     public function create()

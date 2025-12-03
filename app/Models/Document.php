@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Enums\DocumentType;
 use App\Enums\WorkflowStatus;
+use App\Traits\HasStatusLifecycle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
-    use HasFactory;
+    use HasFactory, HasStatusLifecycle;
 
     protected $fillable = [
         'title',
@@ -23,6 +24,7 @@ class Document extends Model
         'folder_id',
         'category_id',
         'approved_at',
+        'status',
         'workflow_status',
         'user_id',
     ];

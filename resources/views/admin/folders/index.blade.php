@@ -65,7 +65,6 @@
             <x-folders.list :folders="$folders" :documents="$documents" />
             <x-folders.grid :folders="$folders" :documents="$documents" />
 
-            {{-- Contextual action panel --}}
             <div x-show="selectedFolders.length || selectedDocuments.length"
                  class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-3 items-center border border-gray-200">
                 <span class="text-sm text-gray-600">

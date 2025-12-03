@@ -1,8 +1,7 @@
 <x-layouts.app.sidebar :title="$title ?? null">
-    <x-layouts.app.header/>
-
-{{--    <flux:main class="!p-0">--}}
     <flux:main>
-        {{ $slot }}
+        <div class="mx-auto lg:px-8">
+            {{ $slot }}
+        </div>
     </flux:main>
 </x-layouts.app.sidebar>

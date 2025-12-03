@@ -25,9 +25,13 @@ class CategoryController extends Controller
         ]);
 
         Category::create($validated);
+
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', __('Категории успешно добавлены'));
+            ->with('alert', [
+                'type' => 'success',
+                'message' => __('Категория успешно добавлена')
+            ]);
     }
 
     public function show(Category $category)
@@ -45,10 +49,15 @@ class CategoryController extends Controller
         $validated = $request->validate([
             'name' => 'required',
         ]);
+
         $category->update($validated);
+
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', __('Категории успешно обновлены'));
+            ->with('alert', [
+                'type' => 'success',
+                'message' => __('Категория успешно обновлена')
+            ]);
     }
 
     public function destroy(Category $category)
@@ -57,7 +66,11 @@ class CategoryController extends Controller
 
         return redirect()
             ->route('admin.categories.index')
-            ->with('success', __('Категории успешно удалены'));
+            ->with('alert', [
+                'type' => 'success',
+                'message' => __('Категория успешно удалена')
+            ]);
     }
+
 
 }

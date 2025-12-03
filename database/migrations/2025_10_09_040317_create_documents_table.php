@@ -26,6 +26,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('document_templates')
                 ->nullOnDelete();
+            $table->tinyInteger('status')->default(1);
             $table->unsignedTinyInteger('workflow_status');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

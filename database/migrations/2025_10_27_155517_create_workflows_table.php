@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->date('due_date');
             $table->text('note')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->unsignedTinyInteger('workflow_status')->default(1);
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->timestamps();

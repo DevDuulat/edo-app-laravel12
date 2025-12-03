@@ -1,4 +1,5 @@
 <x-layouts.app :title="__('Редактирование Категории')">
+
     <style>
         .form-actions button,
         .form-actions a {
@@ -22,11 +23,7 @@
         @endif
 
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-            <flux:breadcrumbs class="mt-4 md:mt-0">
-                <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
-                <flux:breadcrumbs.item href="{{ route('admin.categories.index') }}">Категории</flux:breadcrumbs.item>
-                <flux:breadcrumbs.item>Редактирование категории</flux:breadcrumbs.item>
-            </flux:breadcrumbs>
+            {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
         </div>
 
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
