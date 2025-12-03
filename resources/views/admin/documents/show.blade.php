@@ -1,49 +1,34 @@
 <x-layouts.app :title="__('Просмотр Документа')">
 
-    <flux:breadcrumbs class="mb-8">
-        <flux:breadcrumbs.item href="{{ route('dashboard') }}" icon="home" />
-        <flux:breadcrumbs.item href="{{ route('admin.documents.index') }}">Документы</flux:breadcrumbs.item>
-        <flux:breadcrumbs.item>Просмотр документа</flux:breadcrumbs.item>
-    </flux:breadcrumbs>
+    {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
         <div class="col-span-1 lg:col-span-8 space-y-6">
             <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-5">
-
                 <flux:field>
                     <flux:label>Название документа</flux:label>
                     <div class="text-gray-700">{{ $document->title }}</div>
                 </flux:field>
-
                 <flux:separator class="my-5" />
-
                 <flux:field>
                     <flux:label>URL (slug)</flux:label>
                     <div class="text-gray-700">{{ $document->slug }}</div>
                 </flux:field>
-
                 <flux:separator class="my-5" />
-
                 <flux:field>
                     <flux:label>Содержимое шаблона</flux:label>
                     <div class="w-full border border-gray-200 rounded-lg bg-white p-4 min-h-[400px] overflow-auto">
                         {!! $document->content !!}
                     </div>
                 </flux:field>
-
                 <flux:separator class="my-5" />
-
                 <flux:field>
                     <flux:label>Описание</flux:label>
                     <div class="text-gray-700">{{ $document->comment }}</div>
                 </flux:field>
-
             </div>
         </div>
-
         <div class="col-span-1 lg:col-span-4 space-y-6">
-
             <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
                 <flux:field>
                     <flux:label>Статус</flux:label>
@@ -102,7 +87,6 @@
                     </div>
                 </flux:field>
             </div>
-
         </div>
     </div>
 

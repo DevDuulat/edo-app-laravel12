@@ -1,89 +1,81 @@
 <x-layouts.app :title="__('Документы')">
-
+    {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
     @if(session('alert'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
             <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
         </div>
     @endif
 
-    <div class="flex flex-col flex-1 w-full h-full gap-4">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-4 gap-3">
+    <div class="flex flex-col flex-1 w-full h-full gap-6">
 
-            <nav class="flex px-5 py-3 text-gray-700 bg-gray-50 rounded-lg dark:bg-gray-800 dark:text-gray-400" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('admin.documents.index') }}"
-                           class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-white">
-                            Домашняя папка
-                        </a>
-                    </li>
-
-                    @if($currentFolder)
-                        @php $ancestors = $currentFolder->ancestors()->get(); @endphp
-                        @foreach($ancestors as $ancestor)
-                            <li class="inline-flex items-center">
-                                <div class="flex items-center">
-                                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path>
-                                    </svg>
-                                    <a href="{{ route('admin.folders.index', ['parent_id' => $ancestor->id]) }}"
-                                       class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400 hover:text-blue-600">
-                                        {{ $ancestor->name }}
-                                    </a>
-                                </div>
-                            </li>
-                        @endforeach
-
-                        <li aria-current="page" class="inline-flex items-center">
-                            <div class="flex items-center">
-                                <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"></path>
-                                </svg>
-                                <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">
-                                    {{ $currentFolder->name }}
-                                </span>
-                            </div>
-                        </li>
-                    @endif
-                </ol>
-            </nav>
+        <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl font-bold">Все Документы</h1>
+                @if($currentFolder)
+                    <div class="text-gray-600 mt-1">
+                        Текущая папка: {{ $currentFolder->name }}
+                    </div>
+                @endif
+            </div>
 
             <div class="flex gap-2 items-center">
                 @if (!$currentFolder)
                     <flux:modal.trigger name="create-root-folder">
                         <flux:button>Создать папку</flux:button>
                     </flux:modal.trigger>
-                    <flux:button href="{{ route('admin.documents.create') }}" icon="plus" variant="primary">
-                        Создать документ
-                    </flux:button>
                 @endif
-            </div>
-        </div>
 
-        <div class="flex flex-wrap gap-3 items-center mb-4">
+                <flux:button href="{{ route('admin.documents.create') }}" icon="plus" variant="primary">
+                    Создать документ
+                </flux:button>
+
+            </div>
+        </header>
+
+        <section class="flex flex-wrap gap-3 items-center">
+            <form method="GET" action="{{ route('admin.documents.index') }}" class="flex items-center gap-3 w-full md:w-auto">
+                @if(request('parent_id'))
+                    <input type="hidden" name="parent_id" value="{{ request('parent_id') }}">
+                @endif
+                @if(request('category_id'))
+                    <input type="hidden" name="category_id" value="{{ request('category_id') }}">
+                @endif
+
+                <flux:input
+                        name="search"
+                        icon="magnifying-glass"
+                        placeholder="Поиск по документам и папкам..."
+                        value="{{ request('search') }}"
+                        class="w-full md:w-64"
+                />
+
+            </form>
+
             <form method="GET" action="{{ route('admin.documents.index') }}" class="flex items-center gap-3">
                 @if(request('parent_id'))
                     <input type="hidden" name="parent_id" value="{{ request('parent_id') }}">
                 @endif
-                <div>
-                    <label for="category_id" class="text-sm text-gray-600 mr-2">Категория:</label>
-                    <select
-                            name="category_id"
-                            id="category_id"
-                            onchange="this.form.submit()"
-                            class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 bg-white"
-                    >
-                        <option value="">Все категории</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-            </form>
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
 
-        </div>
+                    <flux:select
+                            name="category_id"
+                            size="sm"
+                            onchange="this.form.submit()"
+                            value="{{ request('category_id') }}"
+                    >
+                        <flux:select.option value="">Все категории</flux:select.option>
+                        @foreach($categories as $category)
+                            <flux:select.option value="{{ $category->id }}">
+                                {{ $category->name }}
+                            </flux:select.option>
+                        @endforeach
+                    </flux:select>
+            </form>
+            <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />
+            <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />
+        </section>
 
         <div id="foldersContainer"
              x-data="{
@@ -92,16 +84,17 @@
                 users: @js($users),
                 folders: @js($folders)
              }"
-             class="transition-all relative">
+             class="relative">
 
             <x-folders.list :folders="$folders" :documents="$documents" />
             <x-folders.grid :folders="$folders" :documents="$documents" />
 
             <div x-show="selectedFolders.length || selectedDocuments.length"
-                 class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-3 items-center border border-gray-200">
-                <span class="text-sm text-gray-600">
-                    Выбрано: <strong x-text="selectedFolders.length + selectedDocuments.length"></strong> элементов
+                 class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-4 items-center border border-gray-200">
+                <span class="text-sm text-gray-700">
+                    Выбрано: <strong x-text="selectedFolders.length + selectedDocuments.length"></strong>
                 </span>
+
                 <flux:modal.trigger name="workflow-modal">
                     <flux:button variant="primary">Создать процесс</flux:button>
                 </flux:modal.trigger>
