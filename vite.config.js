@@ -15,7 +15,10 @@ export default defineConfig({
                 'resources/js/folder-interactions.js',
                 'resources/js/folders.js',
                 'resources/js/document-create-templates-editor.js',
-                'resources/js/document-edit-templates-editor.js'
+                'resources/js/document-edit-templates-editor.js',
+                'resources/js/documentForm.js',
+                'resources/js/wysiwyg.js',
+                'resources/js/workflow-tabs.js',
 
             ],
             refresh: true,
