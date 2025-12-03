@@ -170,19 +170,22 @@
             }
         }))
     })
-    async function requestAction(url, method = 'PATCH', body = {}) {
-        const res = await fetch(url, {
-            method: method,
+    async function requestAction(url, method = 'PATCH', body = null) {
+        const options = {
+            method,
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                'Content-Type': 'application/json'
-            },
-            body: method === 'PATCH' || method === 'POST'
-                ? JSON.stringify(body)
-                : null
-        });
+                'Accept': 'application/json'
+            }
+        }
 
-        return await res.json();
+        if (method === 'POST' || method === 'PATCH') {
+            options.headers['Content-Type'] = 'application/json'
+            options.body = body ? JSON.stringify(body) : '{}'
+        }
+
+        const res = await fetch(url, options)
+        return res.json()
     }
 
     async function moveFolder(id) {
@@ -264,6 +267,72 @@
         const data = await requestAction(`/admin/folders/${folderId}/force-delete`, 'DELETE');
         if (data.success) {
             removeItemFromUI(`[data-folder-id="${folderId}"]`);
+        }
+    }
+
+//     Document
+
+    async function copyDocument(id) {
+        const data = await requestAction(`/admin/documents/${id}/copy`, 'POST');
+        if (data.success) {
+            location.reload();
+        }
+    }
+
+    async function moveDocument(id) {
+        const folderId = prompt('ID новой папки (пусто = корень)')
+        const data = await requestAction(`/admin/documents/move/${id}`, 'PATCH', {
+            folder_id: folderId || null
+        })
+        if (data.success) location.reload()
+    }
+
+    async function renameDocument(id) {
+        const title = prompt('Новое имя документа')
+        if (!title) return
+        alert(id);
+
+        const data = await requestAction(`/admin/documents/${id}/rename`, 'PATCH', { title })
+
+        if (data.success) {
+            const el = document.querySelector(`[data-document-id="${id}"] .document-name`)
+            if (el) el.textContent = data.title
+            location.reload()
+        }
+    }
+
+    async function archiveDocument(documentId) {
+        const data = await requestAction(`/admin/documents/${documentId}/archive`);
+        if (data.success) {
+            removeItemFromUI(`[data-document-id="${documentId}"]`);
+        }
+    }
+
+    async function unarchiveDocument(documentId) {
+        const data = await requestAction(`/admin/documents/${documentId}/unarchive`);
+        if (data.success) {
+            removeItemFromUI(`[data-document-id="${documentId}"]`);
+        }
+    }
+
+    async function trashDocument(documentId) {
+        const data = await requestAction(`/admin/documents/${documentId}/trash`);
+        if (data.success) {
+            removeItemFromUI(`[data-document-id="${documentId}"]`);
+        }
+    }
+
+    async function restoreDocument(documentId) {
+        const data = await requestAction(`/admin/documents/${documentId}/restore`);
+        if (data.success) {
+            removeItemFromUI(`[data-document-id="${documentId}"]`);
+        }
+    }
+
+    async function forceDeleteDocument(documentId) {
+        const data = await requestAction(`/admin/documents/${documentId}/force-delete`, 'DELETE');
+        if (data.success) {
+            removeItemFromUI(`[data-document-id="${documentId}"]`);
         }
     }
 
