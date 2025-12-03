@@ -1,6 +1,6 @@
 @props(['folders', 'documents'])
 
-<div id="listView" class="border rounded-xl border-gray-200">
+<div x-data="foldersList()"  id="listView" class="border rounded-xl border-gray-200">
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
         <tr>
@@ -21,9 +21,15 @@
 
         <tbody class="bg-white divide-y divide-gray-200">
 
-        {{-- Folders --}}
         @foreach($folders as $folder)
-            <tr class="hover:bg-gray-50 transition" data-folder-id="{{ $folder->id }}">
+            <tr
+                    class="hover:bg-gray-50 transition cursor-grab"
+                    data-folder-id="{{ $folder->id }}"
+                    draggable="true"
+                    @dragstart="dragStart($event, {{ $folder->id }})"
+                    @dragover.prevent
+                    @drop="dropFolder($event, {{ $folder->id }})"
+            >
                 <td class="w-4 p-4">
                     <label class="flex items-center justify-center w-6 h-6 border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition cursor-pointer">
                         <input
@@ -40,40 +46,94 @@
                     <span class="flex items-center justify-center w-8 h-8">
                         <x-icon.folder-icon />
                     </span>
-                    <a href="{{ route('admin.folders.index', ['parent_id' => $folder->id]) }}"
+                    <a href="{{ route('admin.documents.index', ['parent_id' => $folder->id]) }}"
                        class="font-medium text-gray-900 hover:text-gray-700 transition">
                         {{ $folder->name }}
                     </a>
                 </td>
 
                 <td class="px-6 py-4">
-                    <flux:badge color="zinc">В работе</flux:badge>
+                    <flux:badge color="zinc">{{ $folder->status->label() }}</flux:badge>
                 </td>
 
                 <td class="px-6 py-4">
-                        {{ $folder->created_at->format('d.m.Y') }}
+                    {{ $folder->created_at->format('d.m.Y') }}
                 </td>
 
                 <td class="px-6 py-4 text-left">
-                    <div class="flex items-center gap-2">
+                    <flux:dropdown align="end">
                         <flux:button
-                                icon="eye"
-                                href="{{ route('admin.folders.index', ['parent_id' => $folder->id]) }}"
+                                icon="ellipsis-vertical"
                                 class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
                         />
-                        <flux:button
-                                icon="pencil"
-                                href="#"
-                                class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
-                        />
-                        <flux:button
-                                icon="trash"
-                                href="#"
-                                class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
-                        />
-                    </div>
+                        <flux:menu>
+                            <flux:menu.item
+                                    icon="eye"
+                                    href="{{ route('admin.documents.index', ['parent_id' => $folder->id]) }}"
+                            >
+                                Открыть
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="share"
+                                    href="#"
+                                    onclick="openShareModal('{{ $folder->slug }}')"
+                            >
+                                Поделиться
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="lock-closed"
+                                    href="#"
+                                    onclick="copyFolder({{ $folder->id }})"
+                            >
+                                Настройка прав
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="clipboard-document"
+                                    href="#"
+                                    onclick="copyFolder({{ $folder->id }})"
+                            >
+                                Копировать
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="folder-arrow-down"
+                                    href="#"
+                                    onclick="moveFolder({{ $folder->id }})"
+                            >
+                                Переместить
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="pencil-square"
+                                    href="#"
+                                    onclick="renameFolder({{ $folder->id }})"
+                            >
+                                Переименовать
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="archive-box"
+                                    onclick="archiveFolder({{ $folder->id }})"
+                            >
+                                В архив
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="arrow-path"
+                                    href="#"
+                                    onclick="restoreFolder({{ $folder->id }})"
+                            >
+                                Восстановить
+                            </flux:menu.item>
+                            <flux:menu.item
+                                    icon="trash"
+                                    href="#"
+                                    variant="danger"
+                                    onclick="trashFolder({{ $folder->id }})"
+                            >
+                                Удалить
+                            </flux:menu.item>
+                        </flux:menu>
+                    </flux:dropdown>
                 </td>
             </tr>
+
             <x-actions.folder-context-menu :folder="$folder" />
         @endforeach
 
@@ -117,41 +177,55 @@
                 </td>
 
                 <td class="px-6 py-4">
-                        {{ $document->created_at->format('d.m.Y') }}
+                    {{ $document->created_at->format('d.m.Y') }}
                 </td>
 
                 <td class="px-6 py-4 text-left">
-                    <div class="flex items-center gap-2">
-                        @if($document->workflows->isNotEmpty())
-                            <flux:button
-                                    icon="eye"
-                                    href="{{ route('admin.workflows.show', $document->workflows->first()->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
-                            />
-                            <flux:button
-                                    icon="trash"
-                                    href="#"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
-                            />
-                        @else
-                            <flux:button
-                                    icon="eye"
-                                    href="{{ route('admin.documents.show', $document->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
-                            />
-                            <flux:button
-                                    icon="pencil"
-                                    href="{{ route('admin.documents.edit', $document->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
-                            />
-                            <flux:button
-                                    icon="trash"
-                                    href="#"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-red-50 text-red-500 transition shadow-sm"
-                            />
-                        @endif
-
-                    </div>
+                    <flux:dropdown align="end">
+                        <flux:button
+                                icon="ellipsis-vertical"
+                                class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+                        />
+                        <flux:menu>
+                            @if($document->workflows->isNotEmpty())
+                                <flux:menu.item
+                                        icon="eye"
+                                        href="{{ route('admin.workflows.show', $document->workflows->first()->id) }}"
+                                >
+                                    Просмотр
+                                </flux:menu.item>
+                                <flux:menu.separator />
+                                <flux:menu.item
+                                        icon="trash"
+                                        href="#"
+                                        variant="danger"
+                                >
+                                    Удалить
+                                </flux:menu.item>
+                            @else
+                                <flux:menu.item
+                                        icon="eye"
+                                        href="{{ route('admin.documents.show', $document->id) }}"
+                                >
+                                    Просмотр
+                                </flux:menu.item>
+                                <flux:menu.item
+                                        icon="pencil"
+                                        href="{{ route('admin.documents.edit', $document->id) }}"
+                                >
+                                    Редактировать
+                                </flux:menu.item>
+                                <flux:menu.separator />
+                                <flux:menu.item
+                                        icon="trash"
+                                        href="#"
+                                        variant="danger"
+                                >
+                                    Удалить
+                                </flux:menu.item>
+                            @endif
+                        </flux:menu>
+                    </flux:dropdown>
                 </td>
             </tr>
         @endforeach
