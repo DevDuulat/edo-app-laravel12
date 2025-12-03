@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\HasStatusLifecycle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Workflow extends Model
 {
-    use HasFactory;
+    use HasFactory, HasStatusLifecycle;
 
     protected $fillable = [
-        'title', 'slug', 'note', 'due_date', 'workflow_status', 'user_id'
+        'title', 'slug', 'note', 'due_date', 'workflow_status', 'status', 'user_id'
     ];
 
     public function users() {
