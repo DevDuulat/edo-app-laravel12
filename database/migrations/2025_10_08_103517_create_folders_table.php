@@ -15,19 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
-            $table->string('path');                             // Полный путь, например /root/finance/reports
-            $table->integer('order_index')->default(0);   // Порядок отображения
+            $table->string('path');
+            $table->integer('order_index')->default(0);
             $table->tinyInteger('status')->default(1);
             $table->foreignId('parent_id')->nullable()->constrained('folders')->onDelete('cascade');
-            $table->integer('retention_period')->nullable();    // Срок хранения в днях
+            $table->integer('retention_period')->nullable();
             $table->foreignId('created_by')
                 ->nullable()
                 ->constrained('users')
-                ->nullOnDelete(); // Кто создал
+                ->nullOnDelete();
             $table->foreignId('updated_by')
                 ->nullable()
                 ->constrained('users')
-                ->nullOnDelete(); // Кто обновил
+                ->nullOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete(); //Кто создал
             $table->timestamps();
         });
