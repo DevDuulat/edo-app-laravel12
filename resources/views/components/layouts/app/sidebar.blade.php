@@ -5,22 +5,19 @@
 </head>
 
 <body class="min-h-screen">
-<flux:sidebar sticky stashable class="border-e z-40 border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-    <flux:sidebar.header class="pb-2">
+<flux:sidebar sticky collapsible class="border-e z-40 border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+   <flux:sidebar.header class="pb-2">
         <flux:sidebar.brand
                 href="{{ route('dashboard') }}"
                 logo="{{ config('app.logo_light') }}"
                 logo:dark="{{ config('app.logo_dark') }}"
                 name="{{ config('app.name') }}"
         />
-        <flux:sidebar.collapse class="lg:hidden" />
+       <flux:sidebar.collapse />
     </flux:sidebar.header>
 
     <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
-    <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-1 rtl:space-x-reverse" wire:navigate>
-        {{--                <x-app-logo />--}}
-    </a>
     <flux:sidebar.nav>
     <flux:sidebar.item icon="link" :href="route('sso.base')" target="_blank" class="py-1">
         Перейти в Кут База
@@ -70,13 +67,11 @@
             Исходящие
         </flux:sidebar.item>
 
-        {{--Завершенные рабочие процессы--}}
-        <flux:sidebar.item icon="archive-box" wire:navigate class="py-1">
+        <flux:sidebar.item icon="archive-box" :href="route('admin.archive.index')"  wire:navigate class="py-1">
             Архив
         </flux:sidebar.item>
 
-        {{--Завершенные рабочие процессы--}}
-        <flux:sidebar.item icon="trash" wire:navigate class="py-1">
+        <flux:sidebar.item icon="trash" :href="route('admin.trash.index')"   wire:navigate class="py-1">
             Корзина
         </flux:sidebar.item>
     </flux:sidebar.group>
@@ -144,6 +139,134 @@
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 
 <script src="{{ asset('flux/flux.js') }}"></script>
+@livewireScripts
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('foldersList', () => ({
+            draggedFolderId: null,
 
+            dragStart(event, folderId) {
+                this.draggedFolderId = folderId
+                event.dataTransfer.effectAllowed = 'move'
+            },
+
+            dropFolder(event, targetFolderId) {
+                if (this.draggedFolderId === targetFolderId) return
+
+                // Отправляем на бэкенд запрос на перемещение
+                fetch(`/admin/folders/move/${this.draggedFolderId}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ parent_id: targetFolderId })
+                }).then(res => res.json())
+                    .then(data => {
+                        if (data.success) location.reload()
+                    })
+
+                this.draggedFolderId = null
+            }
+        }))
+    })
+    async function requestAction(url, method = 'PATCH', body = {}) {
+        const res = await fetch(url, {
+            method: method,
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json'
+            },
+            body: method === 'PATCH' || method === 'POST'
+                ? JSON.stringify(body)
+                : null
+        });
+
+        return await res.json();
+    }
+
+    async function moveFolder(id) {
+        const parentId = prompt('Введите ID новой родительской папки (оставьте пустым для корня)');
+        const data = await requestAction(`/admin/folders/move/${id}`, 'PATCH', { parent_id: parentId || null });
+        if (data.success) {
+            location.reload();
+        }
+    }
+
+    function removeItemFromUI(selector) {
+        const el = document.querySelector(selector);
+        if (el) el.remove();
+    }
+
+    function openShareModal(slug) {
+        shareUrl = `${window.location.origin}/folders/${slug}`
+        navigator.clipboard.writeText(shareUrl)
+        const modal = document.getElementById('share-modal')
+        modal.style.display = 'flex'
+        modal.classList.remove('hidden')
+    }
+
+    function closeShareModal() {
+        const modal = document.getElementById('share-modal')
+        modal.style.display = 'none'
+        modal.classList.add('hidden')
+    }
+
+    async function copyFolder(id) {
+        const data = await requestAction(`/admin/folders/${id}/copy`, 'POST');
+        if (data.success) {
+            location.reload();
+        }
+    }
+
+    async function renameFolder(id) {
+        const name = prompt('Новое имя папки')
+        if (!name) return
+
+        const data = await requestAction(`/admin/folders/${id}/rename`, 'PATCH', { name })
+
+        if (data.success) {
+            const el = document.querySelector(`[data-folder-id="${id}"] .folder-name`)
+            if (el) el.textContent = data.name
+            location.reload()
+        }
+    }
+
+    async function archiveFolder(folderId) {
+        const data = await requestAction(`/admin/folders/${folderId}/archive`);
+        if (data.success) {
+            removeItemFromUI(`[data-folder-id="${folderId}"]`);
+        }
+    }
+
+    async function unarchiveFolder(folderId) {
+        const data = await requestAction(`/admin/folders/${folderId}/unarchive`);
+        if (data.success) {
+            removeItemFromUI(`[data-folder-id="${folderId}"]`);
+        }
+    }
+
+    async function trashFolder(folderId) {
+        const data = await requestAction(`/admin/folders/${folderId}/trash`);
+        if (data.success) {
+            removeItemFromUI(`[data-folder-id="${folderId}"]`);
+        }
+    }
+
+    async function restoreFolder(folderId) {
+        const data = await requestAction(`/admin/folders/${folderId}/restore`);
+        if (data.success) {
+            removeItemFromUI(`[data-folder-id="${folderId}"]`);
+        }
+    }
+
+    async function forceDeleteFolder(folderId) {
+        const data = await requestAction(`/admin/folders/${folderId}/force-delete`, 'DELETE');
+        if (data.success) {
+            removeItemFromUI(`[data-folder-id="${folderId}"]`);
+        }
+    }
+
+</script>
 </body>
 </html>
