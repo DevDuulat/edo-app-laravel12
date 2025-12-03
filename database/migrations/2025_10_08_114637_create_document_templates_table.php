@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->longText('content')->nullable();
             $table->boolean('active')->default(true);
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
