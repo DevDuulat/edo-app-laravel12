@@ -23,5 +23,4 @@
         </div>
     </div>
 </div>
-
 <x-actions.folder-context-menu :folder="$folder" />

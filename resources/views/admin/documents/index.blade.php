@@ -44,8 +44,6 @@
                         value="{{ request('search') }}"
                         class="w-full md:w-64"
                 />
-
-
                     <input type="date"
                         name="date"
                         value="{{ request('date') }}"
@@ -100,6 +98,7 @@
                    class="{{ $baseClasses }} {{ $activeView === 'list' ? $activeClasses : $inactiveClasses }}"
                 >
                     <x-icon.list-bullet class="w-5 h-5" />
+
                 </a>
             </div>
         </section>
