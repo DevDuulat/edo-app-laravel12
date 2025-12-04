@@ -32,7 +32,6 @@
         </header>
 
         <section class="flex flex-wrap gap-3 items-center justify-between">
-
             <form method="GET" action="{{ route('admin.documents.index') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                 @if(request('parent_id'))
                     <input type="hidden" name="parent_id" value="{{ request('parent_id') }}">
@@ -46,19 +45,27 @@
                         class="w-full md:w-64"
                 />
 
-                    <select
-                            name="category_id"
-                            onchange="this.form.submit()"
-                            value="{{ request('category_id') }}"
-                            class="p-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-colors w-full md:w-auto"
-                    >
-                        <option value="">Все категории</option>
-                        @foreach($categories as $category)
-                            <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
-                                {{ $category->name }}
-                            </option>
-                        @endforeach
-                    </select>
+
+                    <input type="date"
+                        name="date"
+                        value="{{ request('date') }}"
+                        onchange="this.form.submit()"
+                        class="p-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-colors"
+                />
+
+                <select
+                        name="category_id"
+                        onchange="this.form.submit()"
+                        value="{{ request('category_id') }}"
+                        class="p-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-colors w-full md:w-auto"
+                >
+                    <option value="">Все категории</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
+                            {{ $category->name }}
+                        </option>
+                    @endforeach
+                </select>
 
                 @if(request('search'))
                     <flux:button type="submit" variant="ghost" icon="magnifying-glass" title="Применить фильтры" />
