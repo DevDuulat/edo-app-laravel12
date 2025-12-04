@@ -72,8 +72,8 @@
                         @endforeach
                     </flux:select>
             </form>
-            <flux:button id="listViewBtn" icon="bars-3" variant="ghost" title="Список" />
             <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />
+            <flux:button id="listViewBtn" icon="list-bullet" variant="ghost" title="Список" />
         </section>
 
         <div id="foldersContainer"
@@ -85,8 +85,9 @@
              }"
              class="relative">
 
-            <x-folders.list :folders="$folders" :documents="$documents" />
             <x-folders.grid :folders="$folders" :documents="$documents" />
+            <x-folders.list :folders="$folders" :documents="$documents" />
+
             @if (!request()->routeIs(['admin.incoming.workflows', 'admin.outgoing.workflows']))
             <div x-show="selectedFolders.length || selectedDocuments.length"
                  class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-4 items-center border border-gray-200">

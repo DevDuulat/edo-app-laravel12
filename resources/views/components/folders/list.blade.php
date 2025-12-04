@@ -1,6 +1,6 @@
 @props(['folders', 'documents'])
 
-<div x-data="foldersList()"  id="listView" class="border rounded-xl border-gray-200">
+<div x-data="foldersList()"  id="listView" class="hidden border rounded-xl border-gray-200">
     <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
         <tr>
