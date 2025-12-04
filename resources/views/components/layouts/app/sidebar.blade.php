@@ -6,75 +6,75 @@
 
 <body class="min-h-screen">
 <flux:sidebar sticky collapsible class="border-e z-40 border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-   <flux:sidebar.header class="pb-2">
+    <flux:sidebar.header class="pb-2">
         <flux:sidebar.brand
                 href="{{ route('dashboard') }}"
                 logo="{{ config('app.logo_light') }}"
                 logo:dark="{{ config('app.logo_dark') }}"
                 name="{{ config('app.name') }}"
         />
-       <flux:sidebar.collapse />
+        <flux:sidebar.collapse />
     </flux:sidebar.header>
 
     <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
     <flux:sidebar.nav>
-    <flux:sidebar.item icon="link" :href="route('sso.base')" target="_blank" class="py-1">
-        Перейти в Кут База
-    </flux:sidebar.item>
+        <flux:sidebar.item icon="link" :href="route('sso.base')" target="_blank" class="py-1">
+            Перейти в Кут База
+        </flux:sidebar.item>
 
-   @canany(['edo-hr-department', 'edo-employee-list'])
-    <flux:sidebar.group expandable heading="Менеджмент" class="grid gap-1">
-        @can('edo-hr-department')
-            <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate class="py-1">
-                Департаменты
+        @canany(['edo-hr-department', 'edo-employee-list'])
+            <flux:sidebar.group expandable heading="Менеджмент" class="grid gap-1">
+                @can('edo-hr-department')
+                    <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate class="py-1">
+                        Департаменты
+                    </flux:sidebar.item>
+                @endcan
+                @can('edo-employee-list')
+                    <flux:sidebar.item icon="users" :href="route('admin.employees.index')" wire:navigate class="py-1">
+                        Сотрудники
+                    </flux:sidebar.item>
+                @endcan
+            </flux:sidebar.group>
+        @endcanany
+
+
+        <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
+            <flux:sidebar.item icon="rectangle-stack" :href="route('admin.categories.index')" wire:navigate class="py-1">
+                Категории
             </flux:sidebar.item>
-        @endcan
-        @can('edo-employee-list')
-            <flux:sidebar.item icon="users" :href="route('admin.employees.index')" wire:navigate class="py-1">
-                Сотрудники
+            <flux:sidebar.item icon="document-text" :href="route('admin.document-templates.index')" wire:navigate class="py-1">
+                Шаблоны
             </flux:sidebar.item>
-        @endcan
-    </flux:sidebar.group>
-    @endcanany
+            {{--Все документы--}}
+            {{--Это “база” всех созданных документов — черновики, утверждённые, в процессе и т.д.--}}
+            <flux:sidebar.item icon="document-duplicate" :href="route('admin.documents.index')" wire:navigate class="py-1">
+                Все документы
+            </flux:sidebar.item>
 
+            {{--Входящие рабочие процессы--}}
+            <flux:sidebar.item
+                    icon="document-arrow-down"
+                    :badge="$incomingCount"
+                    :href="route('admin.incoming.workflows')"
+                    wire:navigate
+                    class="py-1">
+                Входящие
+            </flux:sidebar.item>
 
-    <flux:sidebar.group expandable heading="Документы" class="grid gap-1">
-        <flux:sidebar.item icon="rectangle-stack" :href="route('admin.categories.index')" wire:navigate class="py-1">
-            Категории
-        </flux:sidebar.item>
-        <flux:sidebar.item icon="document-text" :href="route('admin.document-templates.index')" wire:navigate class="py-1">
-            Шаблоны
-        </flux:sidebar.item>
-        {{--Все документы--}}
-        {{--Это “база” всех созданных документов — черновики, утверждённые, в процессе и т.д.--}}
-        <flux:sidebar.item icon="document-duplicate" :href="route('admin.documents.index')" wire:navigate class="py-1">
-            Все документы
-        </flux:sidebar.item>
+            {{--Исходящие рабочие процессы--}}
+            <flux:sidebar.item icon="document-arrow-up" :href="route('admin.outgoing.workflows')" wire:navigate class="py-1">
+                Исходящие
+            </flux:sidebar.item>
 
-        {{--Входящие рабочие процессы--}}
-        <flux:sidebar.item
-                icon="document-arrow-down"
-                :badge="$incomingCount"
-                :href="route('admin.incoming.workflows')"
-                wire:navigate
-                class="py-1">
-            Входящие
-        </flux:sidebar.item>
+            <flux:sidebar.item icon="archive-box" :href="route('admin.archive.index')"  wire:navigate class="py-1">
+                Архив
+            </flux:sidebar.item>
 
-        {{--Исходящие рабочие процессы--}}
-        <flux:sidebar.item icon="document-arrow-up" :href="route('admin.outgoing.workflows')" wire:navigate class="py-1">
-            Исходящие
-        </flux:sidebar.item>
-
-        <flux:sidebar.item icon="archive-box" :href="route('admin.archive.index')"  wire:navigate class="py-1">
-            Архив
-        </flux:sidebar.item>
-
-        <flux:sidebar.item icon="trash" :href="route('admin.trash.index')"   wire:navigate class="py-1">
-            Корзина
-        </flux:sidebar.item>
-    </flux:sidebar.group>
+            <flux:sidebar.item icon="trash" :href="route('admin.trash.index')"   wire:navigate class="py-1">
+                Корзина
+            </flux:sidebar.item>
+        </flux:sidebar.group>
     </flux:sidebar.nav>
     <flux:spacer />
 
@@ -89,9 +89,7 @@
                 <div class="p-0 text-sm font-normal">
                     <div class="flex items-center gap-1 px-1 py-1 text-start text-sm">
                                 <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                    <span
-                                            class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white"
-                                    >
+                                    <span class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
                                         {{ auth()->user()->initials() }}
                                     </span>
                                 </span>
@@ -311,7 +309,7 @@
         }
     }
 
-//     Document
+    //     Document
 
     async function copyDocument(id) {
         const data = await requestAction(`/admin/documents/${id}/copy`, 'POST');
