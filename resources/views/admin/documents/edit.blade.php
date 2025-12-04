@@ -53,11 +53,7 @@
 
                 <div class="col-span-1 lg:col-span-4 space-y-6">
                     <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
-                        <h3 class="text-sm font-semibold text-gray-700 mb-3">Статус</h3>
-                        <select name="status" class="w-full rounded-lg border-gray-300 focus:ring-blue-500 focus:border-blue-500">
-                            <option value="draft" {{ $document->status === 'draft' ? 'selected' : '' }}>Черновик</option>
-                            <option value="published" {{ $document->status === 'published' ? 'selected' : '' }}>Опубликован</option>
-                        </select>
+
                         <flux:button type="submit" variant="primary" class="w-full mt-4">Обновить документ</flux:button>
                     </div>
 

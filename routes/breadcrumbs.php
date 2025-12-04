@@ -167,3 +167,14 @@ Breadcrumbs::for('admin.incoming.workflows', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Входящие процессы', route('admin.incoming.workflows'));
 });
+// archive
+Breadcrumbs::for('admin.archive.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Архив', route('admin.archive.index'));
+});
+
+// trash
+Breadcrumbs::for('admin.trash.index', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Корзина', route('admin.trash.index'));
+});

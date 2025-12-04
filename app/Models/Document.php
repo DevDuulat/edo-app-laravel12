@@ -15,7 +15,6 @@ class Document extends Model
     protected $fillable = [
         'title',
         'slug',
-        'description',
         'document_type',
         'comment',
         'content',

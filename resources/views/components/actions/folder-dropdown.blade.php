@@ -1,20 +1,70 @@
-<flux:dropdown>
-    <flux:button size="sm" variant="ghost" icon="cog-6-tooth" />
+<flux:dropdown align="end">
+    <flux:button
+            icon="ellipsis-vertical"
+            class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition shadow-sm"
+    />
     <flux:menu>
-        <flux:modal.trigger name="create-folder">
-            <flux:menu.item icon="plus-circle" @click="
-                document.getElementById('parent_id').value = '{{ $folder->id }}';
-            ">
-                Создать подпапку
-            </flux:menu.item>
-        </flux:modal.trigger>
-
-        <flux:menu.item icon="pencil-square">Переименовать</flux:menu.item>
-        <flux:menu.separator />
-        <flux:menu.item icon="lock-closed">Настроить доступ</flux:menu.item>
-        <flux:menu.item icon="archive-box">Архивировать</flux:menu.item>
-        <flux:menu.item icon="arrow-path">Восстановить</flux:menu.item>
-        <flux:menu.separator />
-        <flux:menu.item icon="trash" variant="danger">Удалить</flux:menu.item>
+        <flux:menu.item
+                icon="eye"
+                href="{{ route('admin.documents.index', ['parent_id' => $folder->id]) }}"
+        >
+            Открыть
+        </flux:menu.item>
+        <flux:menu.item
+                icon="share"
+                href="#"
+                onclick="openShareModal('{{ $folder->slug }}')"
+        >
+            Поделиться
+        </flux:menu.item>
+        <flux:menu.item
+                icon="lock-closed"
+                href="#"
+                onclick="copyFolder({{ $folder->id }})"
+        >
+            Настройка прав
+        </flux:menu.item>
+        <flux:menu.item
+                icon="clipboard-document"
+                href="#"
+                onclick="copyFolder({{ $folder->id }})"
+        >
+            Копировать
+        </flux:menu.item>
+        <flux:menu.item
+                icon="folder-arrow-down"
+                href="#"
+                onclick="moveFolder({{ $folder->id }})"
+        >
+            Переместить
+        </flux:menu.item>
+        <flux:menu.item
+                icon="pencil-square"
+                href="#"
+                onclick="renameFolder({{ $folder->id }})"
+        >
+            Переименовать
+        </flux:menu.item>
+        <flux:menu.item
+                icon="archive-box"
+                onclick="archiveFolder({{ $folder->id }})"
+        >
+            В архив
+        </flux:menu.item>
+        <flux:menu.item
+                icon="arrow-path"
+                href="#"
+                onclick="restoreFolder({{ $folder->id }})"
+        >
+            Восстановить
+        </flux:menu.item>
+        <flux:menu.item
+                icon="trash"
+                href="#"
+                variant="danger"
+                onclick="trashFolder({{ $folder->id }})"
+        >
+            Удалить
+        </flux:menu.item>
     </flux:menu>
 </flux:dropdown>

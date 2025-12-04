@@ -206,16 +206,16 @@ class WorkflowController extends Controller
 
         $documents = $outgoingService->getOutgoingDocumentsWithWorkflow($parentId);
 
-        if ($categoryId) {
-            $documents = $documents->where('category_id', $categoryId);
-        }
+        $documents = $documents->when($categoryId, function ($q) use ($categoryId) {
+            $q->where('category_id', $categoryId);
+        });
 
         $folders = collect();
         $users = User::select('id', 'name')->get();
         $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
         $roles = WorkflowUserRole::cases();
-        $categories = \App\Models\Category::orderBy('name')->get(); // добавляем категории
+        $categories = \App\Models\Category::orderBy('name')->get();
 
         return view('admin.documents.index', compact(
             'folders',
@@ -224,7 +224,7 @@ class WorkflowController extends Controller
             'users',
             'activeStatus',
             'roles',
-            'categories' // передаем в шаблон
+            'categories'
         ));
     }
 
@@ -236,16 +236,14 @@ class WorkflowController extends Controller
 
         $documents = $incomingService->getIncomingDocumentsWithWorkflow($parentId);
 
-        if ($categoryId) {
-            $documents = $documents->where('category_id', $categoryId);
-        }
+        $documents = $documents->when($categoryId, fn($q) => $q->where('category_id', $categoryId));
 
         $folders = collect();
         $users = User::select('id', 'name')->get();
         $activeStatus = ActiveStatus::cases();
         $currentFolder = null;
         $roles = WorkflowUserRole::cases();
-        $categories = \App\Models\Category::orderBy('name')->get(); // добавляем категории
+        $categories = \App\Models\Category::orderBy('name')->get();
 
         return view('admin.documents.index', compact(
             'folders',

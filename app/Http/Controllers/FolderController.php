@@ -53,7 +53,7 @@ class FolderController extends Controller
 
         Storage::disk('local')->makeDirectory($path);
 
-        return redirect()->route('admin.folders.index')->with('alert', [
+        return redirect()->route('admin.documents.index')->with('alert', [
             'type' => 'success',
             'message' => 'Папка успешно создана!'
         ]);

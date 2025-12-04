@@ -31,12 +31,6 @@
         <div class="col-span-1 lg:col-span-4 space-y-6">
             <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
                 <flux:field>
-                    <flux:label>Статус</flux:label>
-                    <div class="text-gray-700">{{ ucfirst($document->status) }}</div>
-                </flux:field>
-            </div>
-            <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4 mt-6">
-                <flux:field>
                     <flux:label>Файлы документа</flux:label>
                     @if($document->files->isNotEmpty())
                         <table class="w-full text-left border-collapse">
