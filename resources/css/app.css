@@ -46,6 +46,13 @@
     @apply  !mb-0 !leading-tight;
 }
 
+
+* {
+    -webkit-user-select: none; /* Chrome/Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none; /* Стандартный синтаксис */
+}
 /*input:focus[data-flux-control],*/
 /*textarea:focus[data-flux-control],*/
 /*select:focus[data-flux-control] {*/
