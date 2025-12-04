@@ -7,7 +7,6 @@
     @endif
 
     <div class="flex flex-col flex-1 w-full h-full gap-6">
-
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold">Все Документы</h1>
@@ -17,19 +16,19 @@
                     </div>
                 @endif
             </div>
+            @if (!request()->routeIs(['admin.incoming.workflows', 'admin.outgoing.workflows']))
+                <div class="flex gap-2 items-center">
+                    @if (!$currentFolder)
+                        <flux:modal.trigger name="create-root-folder">
+                            <flux:button>Создать папку</flux:button>
+                        </flux:modal.trigger>
+                    @endif
 
-            <div class="flex gap-2 items-center">
-                @if (!$currentFolder)
-                    <flux:modal.trigger name="create-root-folder">
-                        <flux:button>Создать папку</flux:button>
-                    </flux:modal.trigger>
-                @endif
-
-                <flux:button href="{{ route('admin.documents.create') }}" icon="plus" variant="primary">
-                    Создать документ
-                </flux:button>
-
-            </div>
+                    <flux:button href="{{ route('admin.documents.create') }}" icon="plus" variant="primary">
+                        Создать документ
+                    </flux:button>
+                </div>
+            @endif
         </header>
 
         <section class="flex flex-wrap gap-3 items-center">
@@ -88,7 +87,7 @@
 
             <x-folders.list :folders="$folders" :documents="$documents" />
             <x-folders.grid :folders="$folders" :documents="$documents" />
-
+            @if (!request()->routeIs(['admin.incoming.workflows', 'admin.outgoing.workflows']))
             <div x-show="selectedFolders.length || selectedDocuments.length"
                  class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-4 items-center border border-gray-200">
                 <span class="text-sm text-gray-700">
@@ -101,6 +100,7 @@
             </div>
 
             <x-modals.modal-create-workflow :users="$users" :roles="$roles" />
+            @endif
         </div>
     </div>
 
