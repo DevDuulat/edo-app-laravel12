@@ -31,13 +31,11 @@
             @endif
         </header>
 
-        <section class="flex flex-wrap gap-3 items-center">
-            <form method="GET" action="{{ route('admin.documents.index') }}" class="flex items-center gap-3 w-full md:w-auto">
+        <section class="flex flex-wrap gap-3 items-center justify-between">
+
+            <form method="GET" action="{{ route('admin.documents.index') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
                 @if(request('parent_id'))
                     <input type="hidden" name="parent_id" value="{{ request('parent_id') }}">
-                @endif
-                @if(request('category_id'))
-                    <input type="hidden" name="category_id" value="{{ request('category_id') }}">
                 @endif
 
                 <flux:input
@@ -48,32 +46,55 @@
                         class="w-full md:w-64"
                 />
 
-            </form>
-
-            <form method="GET" action="{{ route('admin.documents.index') }}" class="flex items-center gap-3">
-                @if(request('parent_id'))
-                    <input type="hidden" name="parent_id" value="{{ request('parent_id') }}">
-                @endif
-                @if(request('search'))
-                    <input type="hidden" name="search" value="{{ request('search') }}">
-                @endif
-
-                    <flux:select
+                    <select
                             name="category_id"
-                            size="sm"
                             onchange="this.form.submit()"
                             value="{{ request('category_id') }}"
+                            class="p-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-colors w-full md:w-auto"
                     >
-                        <flux:select.option value="">Все категории</flux:select.option>
+                        <option value="">Все категории</option>
                         @foreach($categories as $category)
-                            <flux:select.option value="{{ $category->id }}">
+                            <option value="{{ $category->id }}" @selected(request('category_id') == $category->id)>
                                 {{ $category->name }}
-                            </flux:select.option>
+                            </option>
                         @endforeach
-                    </flux:select>
+                    </select>
+
+                @if(request('search'))
+                    <flux:button type="submit" variant="ghost" icon="magnifying-glass" title="Применить фильтры" />
+                @endif
             </form>
-            <flux:button id="gridViewBtn" icon="squares-2x2" variant="ghost" title="Сетка" />
-            <flux:button id="listViewBtn" icon="list-bullet" variant="ghost" title="Список" />
+
+            <div class="flex gap-2 p-1 bg-gray-100 dark:bg-zinc-700 rounded-lg shadow-inner">
+
+                @php
+                    $activeView = 'grid';
+
+                    $baseClasses = 'p-2 rounded-md transition-colors duration-150 flex items-center justify-center';
+
+                    $activeClasses = 'bg-white text-gray-900 shadow-sm ' .
+                                     'dark:bg-zinc-800 dark:text-gray-100 dark:hover:bg-zinc-700 ' .
+                                     'hover:bg-gray-50 focus:outline-none';
+
+                    $inactiveClasses = 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-zinc-600 focus:outline-none';
+                @endphp
+
+                <a href="#"
+                   id="gridViewBtn"
+                   title="Сетка"
+                   class="{{ $baseClasses }} {{ $activeView === 'grid' ? $activeClasses : $inactiveClasses }}"
+                >
+                    <x-icon.squares-2x2 class="w-5 h-5" />
+                </a>
+
+                <a href="#"
+                   id="listViewBtn"
+                   title="Список"
+                   class="{{ $baseClasses }} {{ $activeView === 'list' ? $activeClasses : $inactiveClasses }}"
+                >
+                    <x-icon.list-bullet class="w-5 h-5" />
+                </a>
+            </div>
         </section>
 
         <div id="foldersContainer"
