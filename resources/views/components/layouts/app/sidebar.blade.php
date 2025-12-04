@@ -329,7 +329,6 @@
     async function renameDocument(id) {
         const title = prompt('Новое имя документа')
         if (!title) return
-        alert(id);
 
         const data = await requestAction(`/admin/documents/${id}/rename`, 'PATCH', { title })
 
