@@ -1,7 +1,7 @@
 <x-layouts.app :title="__('Шаблоны')">
     <style>
         .editor-content .ProseMirror {
-            min-height: 300px; /* уменьшено для мобильных */
+            min-height: 300px;
             outline: none;
             padding: 0.5rem;
         }
