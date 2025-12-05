@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
 });
     Route::get('/sso/callback', [SsoController::class, 'callback']);
     Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
+    Route::post('/telegram/webhook', [App\Http\Controllers\TelegramController::class, 'handle']);
 
 
 
