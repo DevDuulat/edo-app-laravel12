@@ -12,9 +12,13 @@ class VerifySyncToken
     protected $except = [
         'telegram/webhook',
     ];
-   
+
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->is('telegram/webhook')) {
+            return $next($request);
+        }
+
         $token = $request->bearerToken();
 
         if ($token !== env('SECRET_TOKEN')) {
@@ -23,4 +27,5 @@ class VerifySyncToken
 
         return $next($request);
     }
+
 }

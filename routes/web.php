@@ -9,6 +9,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\OcrController;
 use App\Http\Controllers\SsoController;
+use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TrashController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkflowController;
@@ -50,8 +51,9 @@ Route::middleware(['auth'])->group(function () {
 });
     Route::get('/sso/callback', [SsoController::class, 'callback']);
     Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
-Route::post('/telegram/webhook', [App\Http\Controllers\TelegramController::class, 'handle'])
-    ->middleware('verify.sync.token');
+    Route::post('/telegram/webhook', [TelegramController::class, 'handle'])
+        ->middleware('verify.sync.token');
+
 
 
 
