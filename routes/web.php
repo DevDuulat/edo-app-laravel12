@@ -51,11 +51,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sso/callback', [SsoController::class, 'callback']);
     Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
 
-    Route::middleware(['auth'])->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
+
 
 
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+       Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
        Route::resource('categories', CategoryController::class);
        Route::resource('departments', DepartmentController::class);
        Route::resource('employees', EmployeeController::class);
@@ -97,6 +97,6 @@ Route::middleware(['auth'])->group(function () {
 
    });
 
-    });
+
 require __DIR__.'/auth.php';
 
