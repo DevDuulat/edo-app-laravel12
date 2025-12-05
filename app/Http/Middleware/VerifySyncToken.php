@@ -8,14 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VerifySyncToken
 {
-
-    protected $except = [
-        'telegram/webhook',
-    ];
-
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->is('telegram/webhook')) {
+        if ($request->path() === 'telegram/webhook') {
             return $next($request);
         }
 
@@ -27,5 +22,4 @@ class VerifySyncToken
 
         return $next($request);
     }
-
 }
