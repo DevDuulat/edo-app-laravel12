@@ -17,6 +17,9 @@ return [
         'verify_url' => env('SSO_VERIFY_URL'),
         'url' => env('SSO_URL'),
     ],
+    'telegram' =>[
+        'bot_token' => env('TELEGRAM_BOT_TOKEN'),
+    ],
     'postmark' => [
         'token' => env('POSTMARK_TOKEN'),
     ],

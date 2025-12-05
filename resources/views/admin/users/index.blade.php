@@ -12,6 +12,8 @@
                     <th class="px-6 py-3 text-left">Имя</th>
                     <th class="px-6 py-3 text-left">Email</th>
                     <th class="px-6 py-3 text-left">Роль</th>
+                    <th class="px-6 py-3 text-left">Telegram</th>
+                    <th class="px-6 py-3 text-left">Действие</th>
                 </tr>
                 </thead>
 
@@ -22,8 +24,18 @@
                         <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $user->name }}</td>
                         <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $user->email }}</td>
                         <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $user->roles->pluck('name')->implode(', ') }}</td>
-
-
+                        <td class="px-6 py-4 text-gray-700 dark:text-gray-300">{{ $user->telegram_username ?? '-' }}</td>
+                        <td class="px-6 py-4">
+                            <button
+                                    onclick="document.getElementById('telegram-form-{{ $user->id }}').classList.toggle('hidden')"
+                                    class="text-blue-500">Редактировать</button>
+                            <form id="telegram-form-{{ $user->id }}" action="{{ route('admin.users.updateTelegram', $user->id) }}" method="POST" class="hidden mt-2">
+                                @csrf
+                                @method('PATCH')
+                                <input type="text" name="telegram_username" placeholder="Telegram username" value="{{ $user->telegram_username }}" class="border rounded px-2 py-1">
+                                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded">Сохранить</button>
+                            </form>
+                        </td>
                     </tr>
                 @endforeach
                 </tbody>
