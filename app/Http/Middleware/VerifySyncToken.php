@@ -8,6 +8,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class VerifySyncToken
 {
+    protected $except = [
+        'telegram/webhook',
+    ];
+
     public function handle(Request $request, Closure $next): Response
     {
         $token = $request->bearerToken();
