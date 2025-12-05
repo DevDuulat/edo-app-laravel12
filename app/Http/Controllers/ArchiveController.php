@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Enums\Status;
 use App\Models\Category;
-use App\Models\Department;
-use App\Models\Document;
-use App\Models\Employee;
-use App\Models\Folder;
 use App\Services\FolderDocumentService;
 use Illuminate\Http\Request;
 
