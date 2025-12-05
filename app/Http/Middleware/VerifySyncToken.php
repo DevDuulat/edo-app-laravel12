@@ -10,10 +10,6 @@ class VerifySyncToken
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->path() === 'telegram/webhook') {
-            return $next($request);
-        }
-
         $token = $request->bearerToken();
 
         if ($token !== env('SECRET_TOKEN')) {

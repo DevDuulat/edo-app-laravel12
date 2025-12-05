@@ -17,6 +17,7 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
+use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
@@ -51,11 +52,7 @@ Route::middleware(['auth'])->group(function () {
 });
     Route::get('/sso/callback', [SsoController::class, 'callback']);
     Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
-    Route::post('/telegram/webhook', [TelegramController::class, 'handle'])
-        ->middleware('verify.sync.token');
-
-
-
+    Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
 
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
        Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');

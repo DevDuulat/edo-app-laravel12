@@ -3,26 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Telegram\Bot\Laravel\Facades\Telegram;
+use DefStudio\Telegraph\Telegraph;
+
 class TelegramController extends Controller
 {
-    public function handle(Request $request)
+    public function webhook(Request $request)
     {
-        $update = Telegram::getWebhookUpdate();
-        $chatId = $update->getMessage()->getChat()->getId();
-        $text = $update->getMessage()->getText();
+        $update = $request->all();
 
-        if ($text === '/start') {
-            Telegram::sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'Привет! Я ваш бот на Laravel'
-            ]);
-        } else {
-            Telegram::sendMessage([
-                'chat_id' => $chatId,
-                'text' => 'Вы написали: ' . $text
-            ]);
+        if(isset($update['message'])) {
+            $chat_id = $update['message']['chat']['id'];
+            $text = $update['message']['text'] ?? '';
+
+            if($text === '/start') {
+                Telegraph::chat($chat_id)->message('Привет! Спасибо за запуск бота')->send();
+            }
         }
+
+        return response()->json(['ok' => true]);
     }
 
 }
