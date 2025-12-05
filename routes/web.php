@@ -52,8 +52,8 @@ Route::middleware(['auth'])->group(function () {
 });
     Route::get('/sso/callback', [SsoController::class, 'callback']);
     Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
-    Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
-
+Route::post('/telegram/webhook', [TelegramController::class, 'webhook'])
+    ->withoutMiddleware([\App\Http\Middleware\VerifySyncToken::class]);
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
        Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
        Route::patch('/users/{user}/telegram', [UserController::class, 'updateTelegram'])->name('users.updateTelegram');
