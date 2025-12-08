@@ -9,7 +9,6 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FolderController;
 use App\Http\Controllers\OcrController;
 use App\Http\Controllers\SsoController;
-use App\Http\Controllers\TelegramController;
 use App\Http\Controllers\TrashController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkflowController;
@@ -17,7 +16,6 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\Settings\TwoFactor;
-use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 
