@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\TelegramController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SsoController;
@@ -14,3 +15,5 @@ Route::post('/sync-roles-permissions', [UserSyncController::class, 'syncRolesPer
     ->middleware('verify.sync.token');
 Route::post('/sync-email', [UserSyncController::class, 'syncEmail'])
     ->middleware('verify.sync.token');
+
+Route::post('/telegram/webhook', [TelegramController::class, 'webhook']);
