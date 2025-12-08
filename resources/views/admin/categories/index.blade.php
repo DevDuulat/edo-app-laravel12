@@ -60,7 +60,7 @@
                                 </button>
                             </div>
 
-                            <div x-data @click="$dispatch('open-modal', { name: 'delete-category-{{ $category->id }}' })">
+                                <div x-data @click="$dispatch('open-modal', { name: 'delete-category-{{ $category->id }}' })">
                                 <button type="button" title="Удалить"
                                         class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 transition shadow-sm text-gray-500 hover:text-blue-600">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 15 15"><path fill="#ff0000" fill-rule="evenodd" d="M5.5 1a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1h-4ZM3 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H11v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4h-.5a.5.5 0 0 1-.5-.5ZM5 4h5v8H5V4Z" clip-rule="evenodd"/></svg>
