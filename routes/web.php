@@ -52,7 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sso/base', [SsoController::class, 'handleRedirect'])->name('sso.base');
 
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-       Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
+       Route::get('/users', [UserController::class, 'index'])->name('user.index');
        Route::patch('users/{user}/telegram-token', [UserController::class, 'generateTelegramToken'])
            ->name('users.generateTelegramToken');
        Route::resource('categories', CategoryController::class);
