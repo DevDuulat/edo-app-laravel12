@@ -53,7 +53,8 @@ Route::middleware(['auth'])->group(function () {
 
    Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
        Route::get('/users', [UserController::class, 'index'])->name('admin.user.index');
-       Route::patch('/users/{user}/telegram', [UserController::class, 'updateTelegram'])->name('users.updateTelegram');
+       Route::patch('users/{user}/telegram-token', [UserController::class, 'generateTelegramToken'])
+           ->name('users.generateTelegramToken');
        Route::resource('categories', CategoryController::class);
        Route::resource('departments', DepartmentController::class);
        Route::resource('employees', EmployeeController::class);
