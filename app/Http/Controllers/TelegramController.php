@@ -21,22 +21,28 @@ class TelegramController extends WebhookHandler
         if ($this->chat->storage()->get('awaiting_token')) {
             $token = $text->toString();
 
+            $messageIdToDelete = $this->messageId;
+
             $user = User::query()
                 ->where('telegram_token', $token)
                 ->first();
 
             if ($user) {
-
                 $user->update([
                     'telegram_id' => $this->chat->id,
                     'telegram_token' => null,
                 ]);
 
-                $this->reply("Аккаунт привязан!\nВаш аккаунт **{$user->name}** теперь связан с этим Telegram чатом.");
+
+                $this->reply("🎉 Успешно!\nАккаунт привязан!\nВаш аккаунт **{$user->name}** теперь связан с этим Telegram чатом.");
+
+                Telegraph::chat($this->chat)
+                    ->deleteMessage($messageIdToDelete)
+                    ->send();
 
 
             } else {
-                $this->reply('❌ Ошибка привязки!\nНе удалось найти пользователя с таким токеном. Пожалуйста, проверьте токен и попробуйте снова.');
+                $this->reply('❌ **Ошибка привязки!**\nНе удалось найти пользователя с таким токеном. Пожалуйста, проверьте токен и попробуйте снова.');
 
                 return;
             }
