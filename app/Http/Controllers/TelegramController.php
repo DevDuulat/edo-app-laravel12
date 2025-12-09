@@ -11,8 +11,10 @@ class TelegramController extends WebhookHandler
 {
     public function start(): void
     {
-        Telegraph::message('Добро пожаловать! Чтобы привязать аккаунт, пожалуйста, введите ваш токен.')
+        Telegraph::chat($this->chat)
+            ->message('Добро пожаловать! Чтобы привязать аккаунт, введите ваш токен.')
             ->send();
+
         $this->chat->storage()->set('awaiting_token', true);
     }
 
@@ -20,8 +22,7 @@ class TelegramController extends WebhookHandler
     {
         if ($this->chat->storage()->get('awaiting_token')) {
             $token = $text->toString();
-
-            $messageIdToDelete = $this->messageId;
+            $messageId = $this->messageId;
 
             $user = User::query()
                 ->where('telegram_token', $token)
@@ -33,24 +34,20 @@ class TelegramController extends WebhookHandler
                     'telegram_token' => null,
                 ]);
 
-
-                $this->reply("🎉 Успешно!\nАккаунт привязан!\nВаш аккаунт **{$user->name}** теперь связан с этим Telegram чатом.");
+                $this->reply("Успешно. Аккаунт привязан. Ваш аккаунт {$user->name} теперь связан с этим чатом.");
 
                 Telegraph::chat($this->chat)
-                    ->deleteMessage($messageIdToDelete)
+                    ->deleteMessage($messageId)
                     ->send();
 
-
-            } else {
-                $this->reply('❌ **Ошибка привязки!**\nНе удалось найти пользователя с таким токеном. Пожалуйста, проверьте токен и попробуйте снова.');
-
+                $this->chat->storage()->set('awaiting_token', null);
                 return;
             }
 
-            $this->chat->storage()->set('awaiting_token', null);
-
-        } else {
-            $this->reply('Я получил ваше сообщение: ' . $text->toString() . '. Для привязки аккаунта введите команду /start.');
+            $this->reply('Ошибка привязки. Пользователь с таким токеном не найден.');
+            return;
         }
+
+        $this->reply('Для привязки аккаунта введите команду /start.');
     }
 }
