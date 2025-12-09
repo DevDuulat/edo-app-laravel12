@@ -22,23 +22,5 @@ class UserController extends Controller
         return back();
     }
 
-    public function updateTelegram(Request $request, User $user)
-    {
-        $request->validate([
-            'telegram_id' => 'nullable|string|max:255'
-        ]);
-
-        if ($request->telegram_id) {
-            $user->telegram_id = $request->telegram_id;
-        }
-
-        if (!$user->telegram_token) {
-            $user->telegram_token = bin2hex(random_bytes(5));
-        }
-
-        $user->save();
-
-        return back()->with('success', 'Telegram данные обновлены');
-    }
 
 }
