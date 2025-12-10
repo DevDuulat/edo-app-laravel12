@@ -108,8 +108,7 @@ class WorkflowService
             Telegraph::chat($u->telegram_id)
                 ->message(
                     "У вас новый рабочий процесс\n" .
-                    "Название: {$workflow->title}\n" .
-                    "Статус: {$workflow->status->label()}"
+                    "Название: {$workflow->title}\n"
                 )
                 ->send();
         }
