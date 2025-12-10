@@ -8,6 +8,7 @@ use App\Models\Document;
 use App\Models\Workflow;
 use App\Models\WorkflowDocument;
 use App\Models\WorkflowUser;
+use DefStudio\Telegraph\Facades\Telegraph;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -27,20 +28,10 @@ class WorkflowService
 
     public function getWorkflowData(Workflow $workflow): array
     {
-        $documents = $workflow->documents()
-            ->with('files')
-            ->get();
-
-        $users = $workflow->users()
-            ->with('user')
-            ->orderBy('order_index')
-            ->get();
-
+        $documents = $workflow->documents()->with('files')->get();
+        $users = $workflow->users()->with('user')->orderBy('order_index')->get();
         $initiator = $workflow->user;
-
-        $currentUserWorkflow = $workflow->users()
-            ->where('user_id', auth()->id())
-            ->first();
+        $currentUserWorkflow = $workflow->users()->where('user_id', auth()->id())->first();
 
         return [
             'workflow' => $workflow,
@@ -63,7 +54,6 @@ class WorkflowService
         }
 
         $documentIds = collect($documentIds);
-
         $documents = $folderDocuments->merge($documentIds)->unique();
 
         foreach ($documents as $documentId) {
@@ -104,6 +94,26 @@ class WorkflowService
         ]);
     }
 
+    protected function notifyUsers(Workflow $workflow): void
+    {
+        $users = $workflow->users()->with('user')->get();
+
+        foreach ($users as $participant) {
+            $u = $participant->user;
+
+            if (!$u || !$u->telegram_id) {
+                continue;
+            }
+
+            Telegraph::chat($u->telegram_id)
+                ->message(
+                    "У вас новый рабочий процесс\n" .
+                    "Название: {$workflow->title}\n" .
+                    "Статус: {$workflow->status->label()}"
+                )
+                ->send();
+        }
+    }
 
     public function createFullWorkflow(array $data): Workflow
     {
@@ -115,6 +125,8 @@ class WorkflowService
 
         $this->attachDocumentsFromFolders($workflow, $data['folder_ids'] ?? [], $data['document_ids'] ?? []);
         $this->attachUsers($workflow, $data['user_ids'] ?? [], $data['user_id']);
+
+        $this->notifyUsers($workflow);
 
         return $workflow;
     }
