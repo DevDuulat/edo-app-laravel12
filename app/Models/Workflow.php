@@ -14,6 +14,12 @@ class Workflow extends Model
         'title', 'slug', 'note', 'due_date', 'workflow_status', 'status', 'user_id'
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+
     public function users() {
         return $this->hasMany(WorkflowUser::class);
     }

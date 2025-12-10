@@ -97,6 +97,7 @@ class WorkflowService
     protected function notifyUsers(Workflow $workflow): void
     {
         $users = $workflow->users()->with('user')->get();
+        $url = route('admin.workflows.show', $workflow->slug);
 
         foreach ($users as $participant) {
             $u = $participant->user;
@@ -108,7 +109,8 @@ class WorkflowService
             Telegraph::chat($u->telegram_id)
                 ->message(
                     "У вас новый рабочий процесс\n" .
-                    "Название: {$workflow->title}\n"
+                    "Название: {$workflow->title}\n" .
+                    "Ссылка: {$url}"
                 )
                 ->send();
         }

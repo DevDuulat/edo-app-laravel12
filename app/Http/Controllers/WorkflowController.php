@@ -65,7 +65,6 @@ class WorkflowController extends Controller
     public function show(Workflow $workflow)
     {
         $data = $this->workflowService->getWorkflowData($workflow);
-
         return view('admin.workflows.show', $data);
     }
 

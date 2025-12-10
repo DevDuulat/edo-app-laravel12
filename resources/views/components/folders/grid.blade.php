@@ -6,6 +6,6 @@
     @endforeach
 
     @foreach($documents as $document)
-            <x-document.list :document="$document" />
+            <x-document.card :document="$document" />
     @endforeach
 </div>
