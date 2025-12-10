@@ -91,7 +91,7 @@
                         @endif
                     </span>
                     @if($document->workflows->isNotEmpty())
-                        <a href="{{ route('admin.workflows.show', $document->workflows->first()->id) }}"
+                        <a href="{{ route('admin.workflows.show', $document->workflows->first()->slug) }}"
                            class="font-medium text-gray-900 hover:text-gray-700 transition">
                             {{ $document->title }}
                         </a>
