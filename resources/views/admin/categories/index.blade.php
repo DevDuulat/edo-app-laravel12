@@ -51,7 +51,6 @@
                         </td>
                         <td class="px-6 py-4 flex gap-2">
 
-                            {{-- Кнопка редактирования. Триггер модального окна Alpine --}}
                             <div x-data @click="$dispatch('open-modal', { name: 'edit-category-{{ $category->id }}' })">
                                 <button type="button" title="Редактировать"
                                         class="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-200 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:border-gray-700 transition shadow-sm text-gray-500 hover:text-blue-600">
@@ -68,14 +67,13 @@
                         </td>
                     </tr>
 
-                    {{-- Модальное окно редактирования --}}
                     <div x-data="{ show: false, name: 'edit-category-{{ $category->id }}' }"
                          x-show="show"
                          x-on:open-modal.window="show = ($event.detail.name === name)"
                          x-on:close-modal.window="show = false"
                          x-on:keydown.escape.window="show = false"
                          class="fixed inset-0 z-50 overflow-y-auto"
-                         style="display: none;" {{-- Initial hide for browsers without JS --}}
+                         style="display: none;"
                     >
                         <div x-show="show" class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80 transition-opacity"
                              x-on:click="show = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -121,7 +119,6 @@
                         </div>
                     </div>
 
-                    {{-- Модальное окно удаления --}}
                     <div x-data="{ show: false, name: 'delete-category-{{ $category->id }}' }"
                          x-show="show"
                          x-on:open-modal.window="show = ($event.detail.name === name)"
@@ -189,7 +186,6 @@
          class="fixed inset-0 z-50 overflow-y-auto"
          style="display: none;"
     >
-        {{-- Фон (Overlay) --}}
         <div x-show="show" class="fixed inset-0 bg-gray-900/50 dark:bg-gray-900/80 transition-opacity"
              x-on:click="show = false" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
              x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
