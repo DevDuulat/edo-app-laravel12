@@ -108,7 +108,14 @@
                 selectedFolders: [],
                 selectedDocuments: [],
                 users: @js($users),
-                folders: @js($folders)
+                folders: @js($folders),
+                documents: @js($documents),
+                get hasBlockedDocument() {
+                return this.selectedDocuments.some(id => {
+                    const doc = this.documents.find(d => d.id === id)
+                    return doc && doc.workflows && doc.workflows.length > 0
+                })
+        }
              }"
              class="relative">
 
@@ -116,19 +123,20 @@
             <x-folders.list :folders="$folders" :documents="$documents" />
 
             @if (!request()->routeIs(['admin.incoming.workflows', 'admin.outgoing.workflows']))
-            <div x-show="selectedFolders.length || selectedDocuments.length"
-                 class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-4 items-center border border-gray-200">
+                <div x-show="(selectedFolders.length || selectedDocuments.length) && !hasBlockedDocument"
+                     class="fixed bottom-6 right-6 bg-white dark:bg-gray-800 shadow-lg rounded-xl px-4 py-3 flex gap-4 items-center border border-gray-200">
                 <span class="text-sm text-gray-700">
                     Выбрано: <strong x-text="selectedFolders.length + selectedDocuments.length"></strong>
                 </span>
 
-                <flux:modal.trigger name="workflow-modal">
-                    <flux:button variant="primary">Создать процесс</flux:button>
-                </flux:modal.trigger>
-            </div>
+                    <flux:modal.trigger name="workflow-modal">
+                        <flux:button variant="primary">Создать процесс</flux:button>
+                    </flux:modal.trigger>
+                </div>
 
-            <x-modals.modal-create-workflow :users="$users" :roles="$roles" />
+                <x-modals.modal-create-workflow :users="$users" :roles="$roles" />
             @endif
+
         </div>
     </div>
 
