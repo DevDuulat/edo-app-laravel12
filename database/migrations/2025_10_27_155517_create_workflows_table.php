@@ -1,5 +1,7 @@
 <?php
 
+use App\Enums\Status;
+use App\Enums\WorkflowStatus;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -15,8 +17,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->date('due_date');
             $table->text('note')->nullable();
-            $table->tinyInteger('status')->default(1);
-            $table->unsignedTinyInteger('workflow_status')->default(1);
+            $table->tinyInteger('status')->default(Status::published->value);
+            $table->unsignedTinyInteger('workflow_status')->default(WorkflowStatus::draft->value);
             $table->foreignIdFor(User::class)->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
