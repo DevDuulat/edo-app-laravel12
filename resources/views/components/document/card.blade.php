@@ -28,8 +28,8 @@
             <x-icon.document-icon class="w-10 h-10 text-green-600 dark:text-green-400 group-hover:scale-105 transition-transform"/>
         @endif
         <span class="text-base font-medium text-gray-900 dark:text-gray-100 mt-2 line-clamp-2 text-center w-full">
-                    {{ $document->title }}
-                </span>
+            {{ $document->title }}
+        </span>
     </a>
 
     <div class="flex items-center justify-start w-full mt-4 text-xs text-gray-500 dark:text-gray-400">
