@@ -31,7 +31,6 @@
                 @endisset
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                    {{-- Название шаблона --}}
                     <div class="flex flex-col gap-2 md:col-span-2">
                         <label for="name" class="text-sm font-medium text-gray-900">{{ __('Название шаблона') }}</label>
                         <input
@@ -40,7 +39,6 @@
                                 id="name"
                                 placeholder="Введите название шаблона"
                                 required
-                                {{-- Стили унифицированы --}}
                                 class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-500 transition-all duration-300"
                                 value="{{ old('name', $template->name ?? '') }}"
                         >
@@ -49,18 +47,15 @@
                         @enderror
                     </div>
 
-                    {{-- Статус --}}
                     <div class="flex flex-col gap-2">
                         <label class="text-sm font-medium text-gray-900">{{ __('Статус') }}</label>
                         <div class="flex gap-2 flex-wrap h-full">
                             @foreach (\App\Enums\ActiveStatus::cases() as $status)
-                                {{-- Стили унифицированы --}}
                                 <label class="flex-1 flex items-center justify-center space-x-1 rounded-lg border border-gray-300 p-2 bg-white hover:bg-gray-50 transition cursor-pointer has-[:checked]:border-gray-900 has-[:checked]:bg-gray-50 text-sm h-full">
                                     <input
                                             type="radio"
                                             name="active"
                                             value="{{ $status->value }}"
-                                            {{-- Стили унифицированы --}}
                                             class="h-4 w-4 text-black accent-gray-900 focus:ring-gray-900 cursor-pointer"
                                             @checked(old('active', $template->active->value ?? \App\Enums\ActiveStatus::active->value) == $status->value)
                                     >
@@ -74,15 +69,12 @@
                     </div>
                 </div>
 
-                {{-- Содержимое шаблона --}}
                 <div class="grid gap-2">
                     <label class="text-sm font-medium text-gray-900">{{ __('Содержимое шаблона') }}</label>
                     <div class="w-full border border-gray-300 rounded-lg bg-white shadow-sm overflow-hidden">
-                        {{-- Тулбар --}}
                         <div class="editor-toolbar px-3 py-2 border-b border-gray-300 overflow-x-auto flex flex-wrap gap-1">
                             <x-editor-toolbar />
                         </div>
-                        {{-- Поле редактора --}}
                         <div class="px-4 py-3 bg-white">
                             <div id="wysiwyg-example"
                                  class="editor-content w-full min-h-[300px] p-2 bg-white focus:outline-none">
@@ -95,7 +87,6 @@
                     </div>
                 </div>
 
-                {{-- Действия --}}
                 <div class="flex gap-3 mt-4">
                     <button type="submit" class="px-6 py-2 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md transition-all duration-200">
                         @isset($template)
