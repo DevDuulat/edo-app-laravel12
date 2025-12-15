@@ -78,10 +78,8 @@ class EmployeeController extends Controller
             ->with('canDelete', true);
     }
 
-    public function update(UpdateEmployeeRequest $request, EmployeeService $employeeService, string $id)
+    public function update(UpdateEmployeeRequest $request, EmployeeService $employeeService, Employee $employee)
     {
-        $employee = Employee::findOrFail($id);
-
         $validated = $request->validated();
 
         if ($request->hasFile('avatar_url')) {

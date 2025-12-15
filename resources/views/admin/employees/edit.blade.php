@@ -14,7 +14,8 @@
         </div>
 
         <div class="px-5 py-5 rounded-xl border border-gray-200 bg-white max-w-5xl mx-auto w-full shadow-lg">
-            <form action="{{ route('admin.employees.update', $employee) }}" method="POST" enctype="multipart/form-data" class="grid gap-5 md:grid-cols-2" x-data="employeeForm()">
+                <form method="POST" action="{{ route('admin.employees.update', $employee) }}" enctype="multipart/form-data" class="grid gap-5 md:grid-cols-2" x-data="employeeForm()">
+
                 @csrf
                 @method('PUT')
 
@@ -87,8 +88,8 @@
                     @error('inn')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                <div class="flex flex-col gap-2 md:col-span-2" x-data="avatarPreview()">
-                    <label class="text-sm font-medium text-gray-900">Фото сотрудника</label>
+                <div class="flex flex-col gap-2 md:col-span-2" x-data="avatarPreview('{{ asset('storage/' . $employee->avatar_url) }}')">
+                    <label>Фото сотрудника</label>
                     <div @dragover.prevent="dragOver=true" @dragleave.prevent="dragOver=false"
                          @drop.prevent="handleDrop($event)"
                          :class="dragOver ? 'border-gray-600 bg-gray-100' : 'border-gray-400 bg-gray-50'"
@@ -99,6 +100,9 @@
                                 <img :src="preview" class="w-32 h-32 object-cover rounded-lg shadow">
                                 <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-gray-800">&times;</button>
                             </div>
+                        </template>
+                        <template x-if="!preview && existing">
+                            <img :src="existing" class="w-32 h-32 object-cover rounded-lg shadow">
                         </template>
                         <template x-if="!preview && !existing">
                             <p class="text-sm text-gray-500 mt-2">Перетащите фото сюда или нажмите для выбора файла</p>
@@ -166,7 +170,6 @@
         function employeeForm() {
             return {
                 files: [],
-                // Превью и добавление множественных файлов
                 previewFiles(event) {
                     const selectedFiles = Array.from(event.target.files);
 
@@ -179,12 +182,10 @@
                         reader.readAsDataURL(file);
                     });
                 },
-                // Удаление файла
                 removeFile(index) {
                     this.files.splice(index, 1);
                     this.updateInputFiles();
                 },
-                // Синхронизация input.files с массивом this.files
                 updateInputFiles() {
                     const dt = new DataTransfer();
                     this.files.forEach(f => dt.items.add(f.file));
@@ -226,11 +227,11 @@
 
     <script>
 
-        function avatarPreview() {
+        function avatarPreview(existingUrl = null) {
             return {
                 preview: null,
+                existing: existingUrl,
                 dragOver: false,
-                existing: false,
                 previewFile(event) {
                     const file = event.target.files[0];
                     if (!file) return;
@@ -242,9 +243,9 @@
                     const file = event.dataTransfer.files[0];
                     this.previewFile({ target: { files: [file] } });
                 },
-
                 clear() {
                     this.preview = null;
+                    this.existing = null;
                     document.querySelector('input[name="avatar_url"]').value = '';
                 }
             }
