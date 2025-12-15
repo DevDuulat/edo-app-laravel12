@@ -91,8 +91,6 @@ Breadcrumbs::for('admin.documents.show', function (BreadcrumbTrail $trail, ?Cate
     }
 });
 
-
-// Admin > Departments
 Breadcrumbs::for('admin.departments.index', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Департаменты', route('admin.departments.index'));
@@ -108,7 +106,11 @@ Breadcrumbs::for('admin.departments.edit', function (BreadcrumbTrail $trail, Dep
     $trail->push('Редактировать: ' . $department->name, route('admin.departments.edit', $department));
 });
 
-// Admin > Employees
+Breadcrumbs::for('admin.employees.byDepartment', function (BreadcrumbTrail $trail, Department $department) {
+    $trail->parent('admin.departments.index');
+    $trail->push($department->name, route('admin.employees.byDepartment', $department));
+});
+
 Breadcrumbs::for('admin.employees.index', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Сотрудники', route('admin.employees.index'));
@@ -121,7 +123,14 @@ Breadcrumbs::for('admin.employees.create', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('admin.employees.edit', function (BreadcrumbTrail $trail, Employee $employee) {
     $trail->parent('admin.employees.index');
-    $trail->push('Редактировать: ' . $employee->name, route('admin.employees.edit', $employee));
+    $trail->push('Редактировать: ' . $employee->full_name, route('admin.employees.edit', $employee));
+});
+
+Breadcrumbs::for('admin.employees.show', function (BreadcrumbTrail $trail, ?Employee $employee = null) {
+    $trail->parent('admin.employees.index');
+    if ($employee) {
+        $trail->push('Просмотр: ' . $employee->first_name, route('admin.employees.show', $employee));
+    }
 });
 
 // Admin > Folders
@@ -178,3 +187,4 @@ Breadcrumbs::for('admin.trash.index', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Корзина', route('admin.trash.index'));
 });
+
