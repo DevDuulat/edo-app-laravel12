@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
 use App\Models\Department;
+use Alert;
 
 class DepartmentController extends Controller
 {
@@ -20,9 +21,9 @@ class DepartmentController extends Controller
     public function store(StoreDepartmentRequest $request)
     {
         Department::create($request->validated());
-        return redirect()
-            ->route('admin.departments.index')
-            ->with('success', __('Department created successfully.'));
+        Alert::success('Департамент успешно создан!', 'Готово');
+
+        return redirect()->route('admin.departments.index');
     }
 
     public function show(Department $department)
@@ -36,11 +37,15 @@ class DepartmentController extends Controller
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
         $department->update($request->validated());
-        return redirect()->route('admin.departments.index')->with('success', 'Department updated successfully.');
+        Alert::success('Департамент успешно обновлён!', 'Готово');
+
+        return redirect()->route('admin.departments.index');
     }
     public function destroy(Department $department)
     {
         $department->delete();
-        return redirect()->route('admin.departments.index')->with('success', 'Department deleted successfully.');
+        Alert::error('Департамент успешно удалён!', 'Готово');
+
+        return redirect()->route('admin.departments.index');
     }
 }

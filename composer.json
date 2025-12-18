@@ -22,6 +22,7 @@
         "pusher/pusher-php-server": "^7.0",
         "spatie/image": "^3.8",
         "spatie/laravel-permission": "^6.21",
+        "synergitech/laravel-alert": "^2.0",
         "thiagoalessio/tesseract_ocr": "^2.13",
         "tonysm/rich-text-laravel": "^3.3"
     },

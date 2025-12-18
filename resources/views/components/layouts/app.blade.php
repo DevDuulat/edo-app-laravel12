@@ -4,4 +4,6 @@
             {{ $slot }}
         </div>
     </flux:main>
+
+    @include('components.alerts.sweetalert')
 </x-layouts.app.sidebar>

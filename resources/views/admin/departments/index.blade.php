@@ -1,10 +1,5 @@
 <x-layouts.app :title="__('Департаменты')">
     {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
-    @if(session('alert'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
-            <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
-        </div>
-    @endif
 
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between mb-6">
@@ -95,17 +90,7 @@
                                     icon="trash"
                                     icon-only
                                     title="Удалить"
-                                    onclick="
-                                    if (!confirm('Вы уверены что хотите удалить?')) return;
-                                    fetch('{{ route('admin.departments.destroy', $department) }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ _method: 'DELETE' })
-                                    }).then(() => location.reload());
-                                "
+                                    onclick="deleteResource('{{ route('admin.departments.destroy', $department) }}')"
                             />
                         </td>
                     </tr>
