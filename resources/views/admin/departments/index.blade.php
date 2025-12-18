@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Departments')">
+<x-layouts.app :title="__('Департаменты')">
     {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
     @if(session('alert'))
         <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
@@ -9,7 +9,6 @@
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-2xl font-bold text-gray-900">{{ __('Департаменты') }}</h1>
-
             <flux:button href="{{ route('admin.departments.create') }}" icon="plus" class="bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md transition-all duration-200">
                 {{ __('Добавить департамент') }}
             </flux:button>
