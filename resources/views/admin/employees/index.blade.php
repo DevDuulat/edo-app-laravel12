@@ -1,4 +1,4 @@
-<x-layouts.app :title="'Employees'">
+<x-layouts.app :title="'Сотрудники'">
     {{ Breadcrumbs::render(Route::currentRouteName(), ...array_values(Route::current()->parameters())) }}
 
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
