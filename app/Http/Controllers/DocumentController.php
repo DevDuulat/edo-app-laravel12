@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Enums\DocumentType;
-use App\Enums\Status;
 use App\Enums\WorkflowStatus;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Models\Category;
 use App\Models\Document;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Services\FolderDocumentService;
+use App\Services\PublishedService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
     public function __construct(
-        protected FolderDocumentService $folderDocumentService
+        protected PublishedService $publishedService
     ) {}
 
     public function index(Request $request)
@@ -26,9 +25,8 @@ class DocumentController extends Controller
         $categoryId = $request->query('category_id');
         $date = $request->query('date');
 
-        $data = $this->folderDocumentService->getFolderData(
+        $data = $this->publishedService->getPublishedData(
             parentId: $parentId,
-            status: Status::published,
             categoryId: $categoryId,
             date: $date
         );
