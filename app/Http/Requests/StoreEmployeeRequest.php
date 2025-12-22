@@ -17,10 +17,10 @@ class StoreEmployeeRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'position' => 'required|string|max:100',
             'salary' => 'required|numeric|min:0',
             'hire_date' => 'required|date',
             'department_id' => 'required|exists:departments,id',
+            'position_id' => 'nullable|exists:positions,id',
             'passport_number' => 'nullable|string|max:20',
             'inn' => 'nullable|string|max:14',
             'avatar_url' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
