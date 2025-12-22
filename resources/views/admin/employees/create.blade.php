@@ -30,11 +30,22 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <label for="position" class="text-sm font-medium text-gray-900">{{ __('Должность') }}</label>
-                    <input type="text" name="position" id="position" value="{{ old('position') }}" required
-                           placeholder="Введите должность"
-                           class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-500 transition-all duration-300">
-                    @error('position')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
+                    <label for="position_id" class="text-sm font-medium text-gray-900">{{ __('Должность') }}</label>
+
+                    <select name="position_id" id="position_id" required
+                            class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300">
+                        <option value="" disabled {{ old('position_id') ? '' : 'selected' }}>{{ __('Выберите должность') }}</option>
+
+                        @foreach($positions as $position)
+                            <option value="{{ $position->id }}" {{ old('position_id') == $position->id ? 'selected' : '' }}>
+                                {{ $position->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    @error('position_id')
+                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="flex flex-col gap-2">

@@ -53,7 +53,6 @@
 
                 <div class="col-span-1 lg:col-span-4 space-y-6">
                     <div class="rounded-xl border border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 p-4">
-
                         <flux:button type="submit" variant="primary" class="w-full mt-4">Обновить документ</flux:button>
                     </div>
 

@@ -63,8 +63,9 @@
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $employee->full_name }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $employee->position }}</td>
-
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                            {{ $employee->position->name ?? 'Не указана' }}
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             <a href="{{ route('admin.employees.byDepartment', $employee->department) }}"
                                class="text-gray-900 hover:text-black underline font-medium">

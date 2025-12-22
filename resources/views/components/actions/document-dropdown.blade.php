@@ -14,7 +14,28 @@
             >
                 Просмотр
             </flux:menu.item>
-
+            <flux:menu.item
+                    icon="archive-box"
+                    href="#"
+                    onclick="archiveWorkflow({{ $document->workflows->first()->id}})"
+            >
+                В архив
+            </flux:menu.item>
+            <flux:menu.item
+                    icon="arrow-path"
+                    href="#"
+                    onclick="unarchiveWorkflow({{ $document->workflows->first()->id}})"
+            >
+                Восстановить
+            </flux:menu.item>
+            {{-- TODO надо сделать чтобы можно было уведомить участников процессе по telegraph телеграмм бот--}}
+            <flux:menu.item
+                    icon="bell-alert"
+                    href="#"
+                    onclick=""
+            >
+                Уведомить участников
+            </flux:menu.item>
             <flux:menu.separator />
 
             <flux:menu.item

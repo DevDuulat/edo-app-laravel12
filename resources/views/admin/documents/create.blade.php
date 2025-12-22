@@ -1,51 +1,7 @@
 <x-layouts.app :title="__('Создать Документ')">
-    <style>
-        .editor-content .ProseMirror {
-            min-height: 400px;
-            outline: none;
-            padding: 0.5rem;
-        }
-
-        .editor-content .ProseMirror:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 1px #3b82f6;
-        }
-
-        .editor-content .ProseMirror p {
-            margin-bottom: 0.75rem;
-            line-height: 1.6;
-        }
-
-        .editor-content .ProseMirror img {
-            max-width: 100%;
-            border-radius: 0.5rem;
-        }
-
-        .editor-content .ProseMirror blockquote {
-            border-left: 4px solid #d1d5db;
-            padding-left: 1rem;
-            color: #4b5563;
-            font-style: italic;
-            margin: 1rem 0;
-        }
-
-        .editor-content .ProseMirror pre {
-            background: #f9fafb;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            font-family: monospace;
-            font-size: 0.875rem;
-        }
-
-        .editor-toolbar {
-            position: sticky;
-            top: 0;
-            background: white;
-            z-index: 10;
-            border-bottom: 1px solid #e5e7eb;
-        }
-    </style>
-
+    @once
+        @vite('resources/css/editor.css')
+    @endonce
     <div x-data="documentForm({{ $templates->toJson() }})">
         {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
 
@@ -247,7 +203,6 @@
                         if (file.type.startsWith('image/')) {
                             reader.readAsDataURL(file);
                         } else {
-                            // Не читаем весь файл для не-изображений, просто добавляем иконку
                             this.files.push({
                                 file,
                                 preview: this.iconForType(file.type),
@@ -335,6 +290,8 @@
         });
 
     </script>
-
-    @vite('resources/js/document-create-templates-editor.js')
+    <script>
+        window.editorContent = {!! json_encode(old('content', $template->content ?? '<p>Начните вводить текст здесь...</p>')) !!};
+    </script>
+    @vite('resources/js/editor.js')np
 </x-layouts.app>

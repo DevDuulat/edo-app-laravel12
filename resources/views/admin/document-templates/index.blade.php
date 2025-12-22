@@ -19,17 +19,13 @@
             </flux:button>
         </div>
 
-        <div class="hidden sm:block border rounded-xl border-gray-300  bg-white shadow-lg w-full">
-            <table class="min-w-full divide-y divide-gray-300">
+        <div class="hidden sm:block border rounded-xl border-gray-300 bg-white shadow-lg w-full overflow-hidden">
+
+        <table class="min-w-full divide-y divide-gray-300">
                 <thead class="bg-gray-50">
                 <tr>
                     <th class="p-3">
-                        <input
-                                type="checkbox"
-                                :checked="selectedDocuments.length === {{ $documents->count() }}"
-                                @click="selectedDocuments = selectedDocuments.length === {{ $documents->count() }} ? [] : @js($documents->pluck('id'))"
-                                class="w-4 h-4 text-black bg-white border-gray-300 rounded focus:ring-black"
-                        />
+                        <input type="checkbox" />
                     </th>
                     <th class="px-6 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Название</th>
                     <th class="px-6 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Статус</th>
@@ -45,9 +41,6 @@
                             <label class="flex items-center justify-center w-6 h-6 bg-white cursor-pointer">
                                 <input
                                         type="checkbox"
-                                        name="document_ids[]"
-                                        value="{{ $template->id }}"
-                                        x-model="selectedDocuments"
                                         class="w-4 h-4 text-black bg-white border-gray-300 rounded focus:ring-black cursor-pointer"
                                 />
                             </label>

@@ -9,14 +9,16 @@
     <div class="flex flex-col flex-1 w-full h-full gap-6">
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold">Все Документы</h1>
+                <h1 class="text-2xl font-bold">
+                    {{ collect(Breadcrumbs::generate(Route::currentRouteName(), $category ?? null))->last()->title }}
+                </h1>
                 @if($currentFolder)
                     <div class="text-gray-600 mt-1">
                         Текущая папка: {{ $currentFolder->name }}
                     </div>
                 @endif
             </div>
-            @if (!request()->routeIs(['admin.incoming.workflows', 'admin.outgoing.workflows']))
+            @if (request()->routeIs(['admin.documents.index']))
                 <div class="flex gap-2 items-center">
                     @if (!$currentFolder)
                         <flux:modal.trigger name="create-root-folder">
@@ -28,6 +30,12 @@
                         Создать документ
                     </flux:button>
                 </div>
+            @endif
+            @if(request()->routeIs(['admin.trash.index']))
+            {{--TODO нужно сделать так чтобы можно было почистить корзину--}}
+                <flux:button href="" icon="trash" variant="primary">
+                    Очистить корзину
+                </flux:button>
             @endif
         </header>
 
@@ -49,7 +57,7 @@
                         value="{{ request('date') }}"
                         onchange="this.form.submit()"
                         class="p-2 text-sm border border-gray-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-colors"
-                />
+                    />
 
                 <select
                         name="category_id"
