@@ -7,7 +7,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DocumentTemplateController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\FolderController;
-use App\Http\Controllers\OcrController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\SsoController;
 use App\Http\Controllers\TrashController;
 use App\Http\Controllers\UserController;
@@ -32,7 +32,6 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
-
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
@@ -57,6 +56,7 @@ Route::middleware(['auth'])->group(function () {
            ->name('users.generateTelegramToken');
        Route::resource('categories', CategoryController::class);
        Route::resource('departments', DepartmentController::class);
+       Route::resource('positions', PositionController::class);
        Route::resource('employees', EmployeeController::class);
        Route::resource('folders', FolderController::class);
        Route::resource('documents', DocumentController::class);
@@ -92,6 +92,16 @@ Route::middleware(['auth'])->group(function () {
            Route::patch('{id}/rename', [DocumentController::class, 'rename'])->name('rename');
            Route::post('{id}/copy', [DocumentController::class, 'copy'])->name('copy');
            Route::patch('move/{id}', [DocumentController::class, 'move'])->name('move');
+       });
+       Route::prefix('workflows')->name('documents.')->group(function () {
+           Route::patch('{id}/archive', [WorkflowController::class, 'archive'])->name('archive');
+           Route::patch('{id}/unarchive', [WorkflowController::class, 'unarchive'])->name('unarchive');
+           Route::patch('{id}/trash', [WorkflowController::class, 'trash'])->name('trash');
+           Route::patch('{id}/restore', [WorkflowController::class, 'restore'])->name('restore');
+           Route::delete('{id}/delete', [WorkflowController::class, 'delete'])->name('forceDelete');
+//           Route::patch('{id}/rename', [WorkflowController::class, 'rename'])->name('rename');
+//           Route::post('{id}/copy', [WorkflowController::class, 'copy'])->name('copy');
+//           Route::patch('move/{id}', [WorkflowController::class, 'move'])->name('move');
        });
 
    });
