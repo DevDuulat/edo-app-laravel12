@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 
@@ -53,6 +54,7 @@ class UserSyncController extends Controller
         $validated = $request->validate([
             'old_email' => 'required|email',
             'new_email' => 'required|email',
+            'new_password' => 'required|string|min:8',
             'name' => 'nullable|string',
         ]);
 
@@ -62,9 +64,10 @@ class UserSyncController extends Controller
             $user->update([
                 'email' => $validated['new_email'],
                 'name' => $validated['name'] ?? $user->name,
+                'password' => Hash::make($validated['new_password']),
             ]);
 
-            \Log::info('Email synced', [
+            \Log::info('Email & password synced', [
                 'user_id' => $user->id,
                 'old_email' => $validated['old_email'],
                 'new_email' => $validated['new_email'],
