@@ -281,6 +281,45 @@ class WorkflowController extends Controller
         return back()->with('success', 'Комментарий добавлен.');
     }
 
+    public function archive($id)
+    {
+        $model = Workflow::findOrFail($id);
+        $model->markArchived();
+
+        return response()->json(['success' => true]);
+    }
+    public function unarchive($id)
+    {
+        $model = Workflow::findOrFail($id);
+        $model->markActive();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function trash($id)
+    {
+        $model = Workflow::findOrFail($id);
+        $model->markTrashed();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function restore($id)
+    {
+        $model = Workflow::findOrFail($id);
+        $model->markActive();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function delete($id)
+    {
+        $model = Workflow::findOrFail($id);
+        $model->forceRemove();
+
+        return response()->json(['success' => true]);
+    }
+
 
 
 }
