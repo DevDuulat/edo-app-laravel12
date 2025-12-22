@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Status;
+use App\Http\Controllers\Controller;
 use App\Models\Category;
-use App\Services\FolderDocumentService;
+use App\Services\ArchiveService;
 use Illuminate\Http\Request;
 
 class ArchiveController extends Controller
 {
-    public function __construct(
-        protected FolderDocumentService $folderDocumentService
-    ) {}
+    protected ArchiveService $archiveService;
+
+    public function __construct(ArchiveService $archiveService)
+    {
+        $this->archiveService = $archiveService;
+    }
 
     public function index(Request $request)
     {
@@ -19,16 +22,9 @@ class ArchiveController extends Controller
         $categoryId = $request->query('category_id');
         $date = $request->query('date');
 
-        $data = $this->folderDocumentService->getFolderData(
-            parentId: $parentId,
-            status: Status::archived,
-            categoryId: $categoryId,
-            date: $date
-        );
-
+        $data = $this->archiveService->getArchiveData($parentId, $categoryId, $date);
         $data['categories'] = Category::orderBy('name')->get();
 
         return view('admin.documents.index', $data);
     }
-
 }
