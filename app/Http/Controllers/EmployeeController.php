@@ -8,8 +8,10 @@ use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\EmployeeFile;
+use App\Models\Position;
 use App\Services\EmployeeService;
 use Illuminate\Support\Facades\Storage;
+use Alert;
 
 class EmployeeController extends Controller
 {
@@ -22,7 +24,8 @@ class EmployeeController extends Controller
     public function create()
     {
         $departments = Department::all();
-        return view('admin.employees.create' , compact('departments'))  ;
+        $positions = Position::all();
+        return view('admin.employees.create' , compact('departments', 'positions'));  ;
     }
 
     public function store(StoreEmployeeRequest $request, EmployeeService $employeeService)
@@ -45,6 +48,7 @@ class EmployeeController extends Controller
         }
 
         $employeeService->uploadEmployeeFiles($employee, $allFiles);
+        Alert::success('Сотрудник успешно создан!', 'Готово');
 
         return redirect()->route('admin.employees.index')
             ->with('success', 'Сотрудник успешно создан и файлы загружены.');
@@ -86,14 +90,7 @@ class EmployeeController extends Controller
             $validated['avatar_url'] = $employeeService->handleAvatarUpload($request->file('avatar_url'), $employee);
         }
 
-        if ($request->has('files_to_delete')) {
-            $filesToDeleteIds = $request->input('files_to_delete');
-            $filesToDelete = EmployeeFile::whereIn('id', $filesToDeleteIds)->get();
-            foreach ($filesToDelete as $file) {
-                Storage::disk('public')->delete($file->file_url);
-                $file->delete();
-            }
-        }
+        $this->extracted($request);
 
         $employee->update($validated);
 
@@ -108,6 +105,8 @@ class EmployeeController extends Controller
         if (!empty($allFiles)) {
             $employeeService->uploadEmployeeFiles($employee, $allFiles);
         }
+
+        Alert::success('Сотрудник успешно обновлён!', 'Готово');
 
         return redirect()
             ->route('admin.employees.index')
@@ -128,6 +127,23 @@ class EmployeeController extends Controller
     {
         $employees = $department->employees()->with('department')->paginate(10);
         return view('admin.employees.index', compact('employees', 'department'));
+    }
+
+    /**
+     *
+     * @param UpdateEmployeeRequest $request
+     * @return void
+     */
+    public function extracted(UpdateEmployeeRequest $request): void
+    {
+        if ($request->has('files_to_delete')) {
+            $filesToDeleteIds = $request->input('files_to_delete');
+            $filesToDelete = EmployeeFile::whereIn('id', $filesToDeleteIds)->get();
+            foreach ($filesToDelete as $file) {
+                Storage::disk('public')->delete($file->file_url);
+                $file->delete();
+            }
+        }
     }
 
 

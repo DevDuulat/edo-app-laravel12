@@ -12,7 +12,7 @@ class Employee extends Model
     protected $fillable = [
         'first_name',
         'last_name',
-        'position',
+        'position_id',
         'salary',
         'hire_date',
         'department_id',
@@ -29,10 +29,16 @@ class Employee extends Model
         return $this->belongsTo(Department::class);
     }
 
+    public function position()
+    {
+        return $this->belongsTo(Position::class);
+    }
+
     public function files()
     {
         return $this->hasMany(EmployeeFile::class);
     }
+
 
 
     public function getFullNameAttribute()
