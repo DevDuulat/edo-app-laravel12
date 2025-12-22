@@ -212,6 +212,44 @@
 @livewireScripts
 
 <script>
+    // delete resourse
+
+   function resourceManager() {
+    return {
+        async handleAction(action, url) {
+            if (action !== 'delete') return;
+
+            const confirmResult = await Swal.fire({
+                title: 'Вы уверены, что хотите удалить?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Да, удалить!',
+                cancelButtonText: 'Отмена'
+            });
+
+            if (!confirmResult.isConfirmed) return;
+
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ _method: 'DELETE' })
+                });
+
+                location.reload();
+
+            } catch (err) {
+                console.error(err);
+                Swal.fire('Ошибка!', 'Не удалось удалить.', 'error');
+            }
+        }
+    }
+}
+
     document.addEventListener('alpine:init', () => {
         Alpine.data('foldersList', () => ({
             draggedFolderId: null,

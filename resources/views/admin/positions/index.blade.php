@@ -1,7 +1,7 @@
 <x-layouts.app :title="__('Должности')">
 {{--    {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}--}}
 
-    <div class="flex flex-col flex-1 w-full h-full gap-6 p-4">
+<div x-data="resourceManager()" class="flex flex-col flex-1 w-full h-full gap-6 p-4">
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold text-gray-900">Все должности</h1>
 
@@ -48,14 +48,12 @@
                                 />
                             </flux:modal.trigger>
 
-                            <flux:modal.trigger name="delete-category-{{ $position->id }}">
-                                <flux:button
-                                        icon="trash"
-                                        icon-only
-                                        title="Удалить"
-                                        type="button"
-                                />
-                            </flux:modal.trigger>
+                           <flux:button
+                                icon="trash"
+                                icon-only
+                                title="Удалить"
+                                x-on:click="handleAction('delete', '{{ route('admin.positions.destroy', $position) }}')"
+                            />
                         </td>
                     </tr>
 

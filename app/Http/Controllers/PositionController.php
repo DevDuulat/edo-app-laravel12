@@ -23,4 +23,12 @@ class PositionController extends Controller
         return redirect()->route('admin.positions.index');
 
     }
+
+     public function destroy(Position $position)
+    {
+        $position->delete();
+        Alert::error('Должнсть успешно удалён!', 'Готово');
+
+        return redirect()->route('admin.positions.index');
+    }
 }
