@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('first_name', 50);
             $table->string('last_name', 50);
-            $table->string('position', 100);
+            $table->foreignIdFor(\App\Models\Position::class)
+                ->nullable()
+                ->constrained()
+                ->onDelete('set null');
             $table->decimal('salary', 10, 2);
             $table->date('hire_date');
             $table->unsignedBigInteger('department_id');
