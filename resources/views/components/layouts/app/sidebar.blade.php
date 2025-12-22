@@ -1,7 +1,34 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
 <head>
-    @include('partials.head')
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ $title ?? config('app.name') }}</title>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
+
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('android-chrome-192x192.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('android-chrome-512x512.png') }}">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}">
+
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/dropdown.css'])
+    @vite(['resources/js/folder-interactions.js'])
+    @vite('resources/js/folders.js')
+
+    @if (Route::is('admin.employees.show') || Route::is('admin.employees.edit'))
+        @vite('resources/js/photoswipe-init.js')
+    @endif
+    {{--@fluxAppearance--}}
+    @livewireStyles
 </head>
 
 <body class="min-h-screen">
@@ -29,6 +56,9 @@
                     <flux:sidebar.item icon="building-office" :href="route('admin.departments.index')" wire:navigate class="py-1">
                         Департаменты
                     </flux:sidebar.item>
+                <flux:sidebar.item icon="briefcase" :href="route('admin.positions.index')" wire:navigate class="py-1">
+                    Должности
+                </flux:sidebar.item>
                 @endcan
                 @can('edo-employee-list')
                     <flux:sidebar.item icon="users" :href="route('admin.employees.index')" wire:navigate class="py-1">
@@ -171,14 +201,16 @@
 
 {{ $slot }}
 @fluxScripts
+
 <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/photoswipe@5.4.4/dist/photoswipe.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe@5.4.4/dist/photoswipe.css" />
 <link rel="stylesheet" href="https://unpkg.com/photoswipe-dynamic-caption-plugin/photoswipe-dynamic-caption-plugin.css" />
 
-<script src="{{ asset('flux/flux.js') }}"></script>
+{{--<script src="{{ asset('flux/flux.js') }}"></script>--}}
 @livewireScripts
+
 <script>
     document.addEventListener('alpine:init', () => {
         Alpine.data('foldersList', () => ({
@@ -371,6 +403,72 @@
         const data = await requestAction(`/admin/documents/${documentId}/force-delete`, 'DELETE');
         if (data.success) {
             removeItemFromUI(`[data-document-id="${documentId}"]`);
+        }
+    }
+
+
+    // Workflow
+
+    async function copyWorkflow(id) {
+        const data = await requestAction(`/admin/workflows/${id}/copy`, 'POST');
+        if (data.success) {
+            location.reload();
+        }
+    }
+
+    async function moveWorkflow(id) {
+        const folderId = prompt('ID новой папки (пусто = корень)')
+        const data = await requestAction(`/admin/workflows/move/${id}`, 'PATCH', {
+            folder_id: folderId || null
+        })
+        if (data.success) location.reload()
+    }
+
+    async function renameWorkflow(id) {
+        const title = prompt('Новое имя рабочего процесса')
+        if (!title) return
+
+        const data = await requestAction(`/admin/workflows/${id}/rename`, 'PATCH', { title })
+
+        if (data.success) {
+            const el = document.querySelector(`[data-workflow-id="${id}"] .workflow-name`)
+            if (el) el.textContent = data.title
+            location.reload()
+        }
+    }
+
+    async function archiveWorkflow(workflowId) {
+        const data = await requestAction(`/admin/workflows/${workflowId}/archive`);
+        if (data.success) {
+            removeItemFromUI(`[data-workflow-id="${workflowId}"]`);
+        }
+    }
+
+    async function unarchiveWorkflow(workflowId) {
+        const data = await requestAction(`/admin/workflows/${workflowId}/unarchive`);
+        if (data.success) {
+            removeItemFromUI(`[data-workflow-id="${workflowId}"]`);
+        }
+    }
+
+    async function trashWorkflow(workflowId) {
+        const data = await requestAction(`/admin/workflows/${workflowId}/trash`);
+        if (data.success) {
+            removeItemFromUI(`[data-workflow-id="${workflowId}"]`);
+        }
+    }
+
+    async function restoreWorkflow(workflowId) {
+        const data = await requestAction(`/admin/workflows/${workflowId}/restore`);
+        if (data.success) {
+            removeItemFromUI(`[data-workflow-id="${workflowId}"]`);
+        }
+    }
+
+    async function forceDeleteWorkflow(workflowId) {
+        const data = await requestAction(`/admin/workflows/${workflowId}/force-delete`, 'DELETE');
+        if (data.success) {
+            removeItemFromUI(`[data-workflow-id="${workflowId}"]`);
         }
     }
 
