@@ -64,7 +64,7 @@ class UserSyncController extends Controller
             $user->update([
                 'email' => $validated['new_email'],
                 'name' => $validated['name'] ?? $user->name,
-                'password' => Hash::make($validated['new_password']),
+                'password' => $validated['new_password'],
             ]);
 
             \Log::info('Email & password synced', [
