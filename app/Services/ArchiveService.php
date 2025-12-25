@@ -36,7 +36,7 @@ class ArchiveService
                     ->orWhereHas('workflows', fn($qq) => $qq->where('status', Status::archived->value));
             })
             ->with(['workflows' => fn($q) => $q->where('status', Status::archived->value)])
-            ->get(['id','title','folder_id','category_id','created_at']);
+            ->get(['id', 'title', 'folder_id', 'category_id', 'status', 'created_at']);
 
         $documents = $documents->sortByDesc(fn($doc) => $doc->workflows->isNotEmpty() ? 1 : 0);
 

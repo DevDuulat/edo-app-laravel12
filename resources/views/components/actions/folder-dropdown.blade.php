@@ -10,20 +10,20 @@
         >
             Открыть
         </flux:menu.item>
-        <flux:menu.item
-                icon="share"
-                href="#"
-                onclick="openShareModal('{{ $folder->slug }}')"
-        >
-            Поделиться
-        </flux:menu.item>
-        <flux:menu.item
-                icon="lock-closed"
-                href="#"
-                onclick="copyFolder({{ $folder->id }})"
-        >
-            Настройка прав
-        </flux:menu.item>
+{{--        <flux:menu.item--}}
+{{--                icon="share"--}}
+{{--                href="#"--}}
+{{--                onclick="openShareModal('{{ $folder->slug }}')"--}}
+{{--        >--}}
+{{--            Поделиться--}}
+{{--        </flux:menu.item>--}}
+{{--        <flux:menu.item--}}
+{{--                icon="lock-closed"--}}
+{{--                href="#"--}}
+{{--                onclick="copyFolder({{ $folder->id }})"--}}
+{{--        >--}}
+{{--            Настройка прав--}}
+{{--        </flux:menu.item>--}}
         <flux:menu.item
                 icon="clipboard-document"
                 href="#"
@@ -31,13 +31,14 @@
         >
             Копировать
         </flux:menu.item>
-        <flux:menu.item
-                icon="folder-arrow-down"
-                href="#"
-                onclick="moveFolder({{ $folder->id }})"
-        >
-            Переместить
-        </flux:menu.item>
+{{--        TODO изменить ui перемещение папок--}}
+{{--        <flux:menu.item--}}
+{{--                icon="folder-arrow-down"--}}
+{{--                href="#"--}}
+{{--                onclick="moveFolder({{ $folder->id }})"--}}
+{{--        >--}}
+{{--            Переместить--}}
+{{--        </flux:menu.item>--}}
         <flux:menu.item
                 icon="pencil-square"
                 href="#"

@@ -34,7 +34,7 @@ class FolderDocumentService
             ->when($categoryId, fn($q) => $q->where('category_id', $categoryId))
             ->when($date, fn($q) => $q->whereDate('created_at', $date))
             ->with('workflows')
-            ->get(['id','title','folder_id','category_id','created_at']);
+            ->get(['id','title','folder_id', 'status','category_id','created_at']);
 
         $users = User::select('id','name')->get();
         $roles = WorkflowUserRole::cases();

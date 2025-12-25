@@ -28,6 +28,7 @@ class Document extends Model
         'user_id',
     ];
     protected $casts = [
+        'status' => \App\Enums\Status::class,
         'document_type' => DocumentType::class,
         'workflow_status' => WorkflowStatus::class,
     ];
