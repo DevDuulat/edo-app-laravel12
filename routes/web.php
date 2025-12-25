@@ -54,10 +54,11 @@ Route::middleware(['auth'])->group(function () {
        Route::get('/users', [UserController::class, 'index'])->name('user.index');
        Route::patch('users/{user}/telegram-token', [UserController::class, 'generateTelegramToken'])
            ->name('users.generateTelegramToken');
-       Route::resource('categories', CategoryController::class);
        Route::resource('departments', DepartmentController::class);
        Route::resource('positions', PositionController::class);
        Route::resource('employees', EmployeeController::class);
+       Route::resource('categories', CategoryController::class);
+       Route::resource('document-templates', DocumentTemplateController::class);
        Route::resource('folders', FolderController::class);
        Route::resource('documents', DocumentController::class);
        Route::resource('workflows', WorkflowController::class);
@@ -68,7 +69,6 @@ Route::middleware(['auth'])->group(function () {
        Route::post('/workflows/{workflow}/redirect', [WorkflowController::class, 'redirect'])->name('workflows.redirect');
        Route::post('/workflows/{workflow}/execute', [WorkflowController::class, 'execute'])->name('workflows.execute');
        Route::post('/workflows/{workflow}/comments', [WorkflowController::class, 'storeComment'])->name('workflows.comment.store');
-       Route::resource('document-templates', DocumentTemplateController::class);
        Route::get('departments/{department}/employees', [EmployeeController::class, 'byDepartment'])
         ->name('employees.byDepartment');
        Route::get('archive', [ArchiveController::class, 'index'])->name('archive.index');

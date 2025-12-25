@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ActiveStatus;
 use App\Models\DocumentTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Alert;
+
 class DocumentTemplateController extends Controller
 {
     public function index()
@@ -34,10 +35,10 @@ class DocumentTemplateController extends Controller
         $validatedData['slug'] = Str::slug($validatedData['name']);
 
         DocumentTemplate::create($validatedData);
+        Alert::success('Шаблон успешно создан!', 'Готово');
 
         return redirect()
-            ->route('admin.document-templates.index')
-            ->with('success', 'Шаблон документа успешно создан.');
+            ->route('admin.document-templates.index');
     }
 
     public function show(DocumentTemplate $documentTemplate)
@@ -61,13 +62,9 @@ class DocumentTemplateController extends Controller
         ]);
 
         $documentTemplate->update($validated);
-
+        Alert::success('Шаблон успешно обновлен!', 'Готово');
         return redirect()
-            ->route('admin.document-templates.index')
-            ->with('alert', [
-                'type' => 'success',
-                'message' => 'Шаблон успешно обновлён',
-            ]);
+            ->route('admin.document-templates.index');
     }
 
 
