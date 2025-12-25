@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreDocumentTemplateRequest;
+use App\Http\Requests\UpdateDocumentTemplateRequest;
 use App\Models\DocumentTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -23,22 +25,13 @@ class DocumentTemplateController extends Controller
     {
         return view('admin.document-templates.create');
     }
-    public function store(Request $request)
+    public function store(StoreDocumentTemplateRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'description' => ['nullable', 'string', 'max:255'],
-            'content' => ['nullable', 'string'],
-            'active' => ['sometimes', 'boolean'],
-        ]);
+        DocumentTemplate::create($request->validated());
 
-        $validatedData['slug'] = Str::slug($validatedData['name']);
-
-        DocumentTemplate::create($validatedData);
         Alert::success('Шаблон успешно создан!', 'Готово');
 
-        return redirect()
-            ->route('admin.document-templates.index');
+        return redirect()->route('admin.document-templates.index');
     }
 
     public function show(DocumentTemplate $documentTemplate)
@@ -53,18 +46,13 @@ class DocumentTemplateController extends Controller
         ]);
     }
 
-    public function update(Request $request, DocumentTemplate $documentTemplate)
+    public function update(UpdateDocumentTemplateRequest $request, DocumentTemplate $documentTemplate)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'content' => 'nullable|string',
-            'active' => 'boolean',
-        ]);
+        $documentTemplate->update($request->validated());
 
-        $documentTemplate->update($validated);
         Alert::success('Шаблон успешно обновлен!', 'Готово');
-        return redirect()
-            ->route('admin.document-templates.index');
+
+        return redirect()->route('admin.document-templates.index');
     }
 
 

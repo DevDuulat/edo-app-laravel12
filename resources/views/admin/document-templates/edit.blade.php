@@ -42,9 +42,12 @@
                                 class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-500 transition-all duration-300"
                                 value="{{ old('name', $template->name ?? '') }}"
                         >
-                        @error('name')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
+                        @if($errors->has('name') || $errors->has('slug'))
+                            <div class="text-red-500 text-xs mt-1 space-y-1">
+                                @error('name') <p>{{ $message }}</p> @enderror
+                                @error('slug') <p>⚠️ {{ $message }}</p> @enderror
+                            </div>
+                        @endif
                     </div>
 
                     <div class="flex flex-col gap-2">
