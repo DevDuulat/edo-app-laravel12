@@ -54,23 +54,33 @@
                                 {{ $department->name }}
                             </a>
 
-                            <div class="flex items-center mt-2 space-x-2 overflow-x-auto py-1">
-                                @foreach($department->employees as $index => $employee)
-                                    @if($index < 4)
-                                        <img
-                                            class="w-10 h-10 rounded-full border-2 border-gray-100 shadow-sm object-cover hover:scale-110 transition-transform duration-200 cursor-pointer"
-                                            src="{{ asset('storage/' . $employee->avatar_url) }}"
-                                            alt="{{ $employee->name }}"
-                                            title="{{ $employee->name }}"
-                                        >
-                                    @endif
+                            <div class="flex items-center mt-2 -space-x-3 overflow-hidden py-1">
+                                @foreach($department->employees->take(4) as $employee)
+                                    <div class="relative inline-block" title="{{ $employee->first_name }} {{ $employee->last_name }}">
+                                        @if($employee->avatar_url)
+                                            {{-- Если фото есть --}}
+                                            <img
+                                                    class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover hover:scale-110 hover:z-20 relative transition-transform duration-200 cursor-pointer"
+                                                    src="{{ asset('storage/' . $employee->avatar_url) }}"
+                                                    alt="{{ $employee->first_name }}"
+                                            >
+                                        @else
+                                            <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-gray-700 to-black text-white shadow-sm hover:scale-110 hover:z-20 relative transition-transform duration-200 cursor-pointer">
+                                                <span class="text-xs font-bold leading-none uppercase">
+                                                    {{ $employee->initials }}
+                                                </span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 @endforeach
 
-                                @if($department->employees()->count() > 4)
+                                @php $remaining = $department->employees->count() - 4; @endphp
+
+                                @if($remaining > 0)
                                     <a href="{{ route('admin.employees.byDepartment', $department->id) }}"
-                                       class="flex items-center justify-center w-10 h-10 text-xs font-semibold text-white bg-black border-2 border-gray-100 rounded-full shadow-sm hover:bg-gray-800 hover:scale-105 transition-transform duration-200"
-                                       title="Еще {{ $department->employees()->count() - 4 }} сотрудников">
-                                        +{{ $department->employees()->count() - 4 }}
+                                       class="relative z-10 flex items-center justify-center w-10 h-10 text-xs font-bold text-white bg-black border-2 border-white rounded-full shadow-sm hover:bg-gray-800 hover:scale-105 transition-all duration-200"
+                                       title="Еще {{ $remaining }} сотрудников">
+                                        +{{ $remaining }}
                                     </a>
                                 @endif
                             </div>

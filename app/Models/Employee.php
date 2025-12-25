@@ -39,10 +39,13 @@ class Employee extends Model
         return $this->hasMany(EmployeeFile::class);
     }
 
-
-
     public function getFullNameAttribute()
     {
         return $this->first_name . ' ' . $this->last_name;
+    }
+
+    public function getInitialsAttribute(): string
+    {
+        return mb_substr($this->first_name, 0, 1) . mb_substr($this->last_name, 0, 1);
     }
 }
