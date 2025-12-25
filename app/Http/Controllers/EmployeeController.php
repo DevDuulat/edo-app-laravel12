@@ -100,6 +100,9 @@ class EmployeeController extends Controller
 
         if ($request->hasFile('avatar_url')) {
             $validated['avatar_url'] = $employeeService->handleAvatarUpload($request->file('avatar_url'), $employee);
+        } elseif ($request->input('delete_avatar') === '1') {
+            $employeeService->deleteAvatar($employee);
+            $validated['avatar_url'] = null;
         }
 
         $this->extracted($request);

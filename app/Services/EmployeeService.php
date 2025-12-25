@@ -76,4 +76,12 @@ class EmployeeService
         return $file->store('avatars', 'public');
     }
 
+
+    public function deleteAvatar(Employee $employee): void
+    {
+        if ($employee->avatar_url && Storage::disk('public')->exists($employee->avatar_url)) {
+            Storage::disk('public')->delete($employee->avatar_url);
+        }
+    }
+
 }

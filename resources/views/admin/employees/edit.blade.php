@@ -102,40 +102,37 @@
 
                         <label class="text-sm font-medium text-gray-900">Фото сотрудника</label>
 
+                        <input type="hidden" name="delete_avatar" :value="avatarDeleted ? '1' : '0'">
+
                         <div @dragover.prevent="dragOver=true"
                              @dragleave.prevent="dragOver=false"
                              @drop.prevent="handleDrop($event)"
                              :class="dragOver ? 'border-gray-600 bg-gray-100' : 'border-gray-400 bg-gray-50'"
                              class="relative flex flex-col items-center justify-center w-full p-6 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300 bg-white hover:bg-gray-100">
 
-                            <input type="file" name="avatar_url" accept="image/*" @change="previewFile($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <input type="file" name="avatar_url" id="avatar_input" accept="image/*" @change="previewFile($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
 
                             <template x-if="preview">
                                 <div class="relative">
                                     <img :src="preview" class="w-32 h-32 object-cover rounded-lg shadow">
-                                    <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-gray-800">&times;</button>
+                                    <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-700 shadow-md transition-colors">&times;</button>
                                 </div>
                             </template>
 
-                            <template x-if="!preview && existing">
+                            <template x-if="!preview && existing && !avatarDeleted">
                                 <div class="relative">
                                     <img :src="existing" class="w-32 h-32 object-cover rounded-lg shadow">
-                                    {{-- Если нужно разрешить удаление старой аватарки, можно добавить кнопку сюда --}}
+                                    <button type="button" @click="removeExisting" class="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-gray-800 shadow-md transition-colors">&times;</button>
                                 </div>
                             </template>
 
-                            <template x-if="!preview && !existing">
+                            <template x-if="!preview && (!existing || avatarDeleted)">
                                 <div class="text-center">
                                     <flux:icon.user class="mx-auto h-12 w-12 text-gray-300" />
-                                    <p class="text-sm text-gray-500 mt-2">Перетащите фото сюда или нажмите для выбора</p>
+                                    <p class="text-sm text-gray-500 mt-2">Нажмите или перетащите фото</p>
                                 </div>
                             </template>
-
                         </div>
-
-                        @error('avatar_url')
-                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
                     </div>
 
                 <div class="flex flex-col gap-2 md:col-span-2" x-data="passportFilesPreview({{ $passportFilesJson ?? '[]' }})">
@@ -256,21 +253,38 @@
                 preview: null,
                 existing: existingUrl,
                 dragOver: false,
+                avatarDeleted: false, // Флаг удаления
+
                 previewFile(event) {
-                    const file = event.target.files[0];
+                    const file = event.target.files ? event.target.files[0] : null;
                     if (!file) return;
+
+                    this.avatarDeleted = false; // Если выбрали новый файл, отменяем "удаление"
                     const reader = new FileReader();
                     reader.onload = e => this.preview = e.target.result;
                     reader.readAsDataURL(file);
                 },
+
                 handleDrop(event) {
                     const file = event.dataTransfer.files[0];
+                    const input = document.getElementById('avatar_input');
+
+                    // Важно: передаем файл в сам input, чтобы он улетел на сервер
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    input.files = dataTransfer.files;
+
                     this.previewFile({ target: { files: [file] } });
                 },
+
+                removeExisting() {
+                    this.existing = null;
+                    this.avatarDeleted = true; // Указываем серверу, что файл нужно удалить
+                },
+
                 clear() {
                     this.preview = null;
-                    this.existing = null;
-                    document.querySelector('input[name="avatar_url"]').value = '';
+                    document.getElementById('avatar_input').value = '';
                 }
             }
         }
