@@ -26,13 +26,9 @@ class CategoryController extends Controller
         ]);
 
         Category::create($validated);
-
+        Alert::success('Категория успешно создан!', 'Готово');
         return redirect()
-            ->route('admin.categories.index')
-            ->with('alert', [
-                'type' => 'success',
-                'message' => __('Категория успешно добавлена')
-            ]);
+            ->route('admin.categories.index');
     }
 
     public function show(Category $category)
@@ -52,13 +48,9 @@ class CategoryController extends Controller
         ]);
 
         $category->update($validated);
-
+        Alert::success('Категория успешно обновлен!', 'Готово');
         return redirect()
-            ->route('admin.categories.index')
-            ->with('alert', [
-                'type' => 'success',
-                'message' => __('Категория успешно обновлена')
-            ]);
+            ->route('admin.categories.index');
     }
 
     public function destroy(Category $category)
