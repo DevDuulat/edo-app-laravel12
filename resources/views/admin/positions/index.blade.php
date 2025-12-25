@@ -45,7 +45,6 @@
                         </td>
                     </tr>
 
-                    {{-- МОДАЛКА РЕДАКТИРОВАНИЯ ДОЛЖНА БЫТЬ ВНУТРИ ЦИКЛА --}}
                     <flux:modal name="edit-position-{{ $position->id }}" class="md:w-96">
                         <div class="space-y-4">
                             <div>

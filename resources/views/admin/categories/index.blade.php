@@ -1,8 +1,6 @@
 <x-layouts.app :title="__('Категории')">
     {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
-
-
-    <div class="flex flex-col flex-1 w-full h-full gap-6 p-4">
+    <div x-data="resourceManager()" class="flex flex-col flex-1 w-full h-full gap-6 p-4">
         <div class="flex justify-between items-center">
             <h1 class="text-2xl font-bold text-gray-900">Все категории</h1>
 
@@ -49,14 +47,12 @@
                                 />
                             </flux:modal.trigger>
 
-                            <flux:modal.trigger name="delete-category-{{ $category->id }}">
-                                <flux:button
-                                        icon="trash"
-                                        icon-only
-                                        title="Удалить"
-                                        type="button"
-                                />
-                            </flux:modal.trigger>
+                            <flux:button
+                                    icon="trash"
+                                    icon-only
+                                    title="Удалить"
+                                    x-on:click="handleAction('delete', '{{ route('admin.categories.destroy', $category) }}')"
+                            />
                         </td>
                     </tr>
 
@@ -97,36 +93,6 @@
                             </form>
                         </div>
                     </flux:modal>
-
-                    <flux:modal name="delete-category-{{ $category->id }}" class="md:w-80">
-                        <div class="space-y-4 text-center">
-                            <h3 class="text-xl font-semibold text-red-700">Удаление категории</h3>
-                            <p class="text-gray-700">Вы уверены, что хотите удалить категорию "<strong>{{ $category->name }}</strong>"? Это действие нельзя будет отменить.</p>
-                            <div class="flex justify-center gap-3 mt-4 pt-4 border-t border-gray-200">
-                                <flux:button type="button" x-on:click="$dispatch('close-modal', { name: 'delete-category-{{ $category->id }}' })"
-                                             class="px-4 py-2 border border-gray-400 shadow-sm text-sm font-medium rounded-lg text-gray-900 bg-white hover:bg-gray-100 transition">
-                                    Отмена
-                                </flux:button>
-                                <button type="button"
-                                        class="inline-flex justify-center py-2 px-4 border border-red-700 shadow-sm text-sm font-medium rounded-lg text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-700 transition"
-                                        @click="
-                                            fetch('{{ route('admin.categories.destroy', $category) }}', {
-                                                method: 'POST',
-                                                headers: {
-                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({ _method: 'DELETE' })
-                                            }).then(() => {
-                                                $dispatch('close-modal', { name: 'delete-category-{{ $category->id }}' });
-                                                location.reload();
-                                            });
-                                            "
-                                >Удалить</button>
-                            </div>
-                        </div>
-                    </flux:modal>
-
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-4 text-center text-gray-500">Нет категорий</td>

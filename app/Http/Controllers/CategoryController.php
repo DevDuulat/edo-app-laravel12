@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Alert;
 
 class CategoryController extends Controller
 {
@@ -63,13 +64,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete();
-
-        return redirect()
-            ->route('admin.categories.index')
-            ->with('alert', [
-                'type' => 'success',
-                'message' => __('Категория успешно удалена')
-            ]);
+        return redirect()->route('admin.categories.index');
     }
 
 
