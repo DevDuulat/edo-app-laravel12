@@ -4,7 +4,7 @@
             <h1 class="text-2xl font-bold text-gray-900">Все должности</h1>
 
             <flux:modal.trigger name="create-position">
-                <flux:button icon="plus" class="bg-black text-white hover:bg-gray-800">
+                <flux:button icon="plus" class="bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md transition-all duration-200">
                     Новая должность
                 </flux:button>
             </flux:modal.trigger>
