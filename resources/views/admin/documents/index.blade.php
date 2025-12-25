@@ -1,10 +1,5 @@
 <x-layouts.app :title="__('Документы')">
     {{ Breadcrumbs::render(Route::currentRouteName(), $category ?? null) }}
-    @if(session('alert'))
-        <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)">
-            <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
-        </div>
-    @endif
 
     <div class="flex flex-col flex-1 w-full h-full gap-6">
         <header class="flex flex-col md:flex-row md:items-center justify-between gap-4">

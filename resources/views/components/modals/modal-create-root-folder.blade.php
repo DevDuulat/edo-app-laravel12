@@ -12,3 +12,25 @@
             </div>
         </form>
 </flux:modal>
+    @if ($errors->any())
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const firstErrorMessage = "{{ $errors->first() }}";
+
+                Swal.fire({
+                    icon: "error",
+                    title: firstErrorMessage,
+                    text: "Пожалуйста, проверьте данные и попробуйте снова.",
+                    confirmButtonText: "Исправить",
+                    confirmButtonColor: "#000000",
+                    customClass: {
+                        popup: 'rounded-xl',
+                    }
+                }).then((result) => {
+                    if (typeof $flux !== 'undefined') {
+                        $flux.show('create-root-folder');
+                    }
+                });
+            });
+        </script>
+    @endif
