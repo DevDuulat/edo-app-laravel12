@@ -36,10 +36,19 @@
                 </div>
 
                 <div class="flex flex-col gap-2">
-                    <label for="position" class="text-sm font-medium text-gray-900">Должность</label>
-                    <input type="text" name="position" id="position" value="{{ old('position', $employee->position) }}" required
-                           placeholder="Введите должность"
-                           class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 placeholder-gray-500 transition-all duration-300">
+                    <label for="position_id" class="text-sm font-medium text-gray-900">Должность</label>
+                    <select name="position_id" id="position_id" required
+                            class="w-full px-4 py-2 text-gray-900 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-all duration-300">
+
+                        <option value="" disabled>Выберите должность</option>
+
+                        @foreach($positions as $position)
+                            <option value="{{ $position->id }}"
+                                    {{ old('position_id', $employee->position_id) == $position->id ? 'selected' : '' }}>
+                                {{ $position->name }}
+                            </option>
+                        @endforeach
+                    </select>
                     @error('position')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
@@ -88,31 +97,46 @@
                     @error('inn')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                <div class="flex flex-col gap-2 md:col-span-2" x-data="avatarPreview('{{ asset('storage/' . $employee->avatar_url) }}')">
-                    <label>Фото сотрудника</label>
-                    <div @dragover.prevent="dragOver=true" @dragleave.prevent="dragOver=false"
-                         @drop.prevent="handleDrop($event)"
-                         :class="dragOver ? 'border-gray-600 bg-gray-100' : 'border-gray-400 bg-gray-50'"
-                         class="relative flex flex-col items-center justify-center w-full p-6 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300 bg-white hover:bg-gray-100">
-                        <input type="file" name="avatar_url" accept="image/*" @change="previewFile($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        <template x-if="preview">
-                            <div class="relative">
-                                <img :src="preview" class="w-32 h-32 object-cover rounded-lg shadow">
-                                <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-gray-800">&times;</button>
-                            </div>
-                        </template>
-                        <template x-if="!preview && existing">
-                            <img :src="existing" class="w-32 h-32 object-cover rounded-lg shadow">
-                        </template>
-                        <template x-if="!preview && !existing">
-                            <p class="text-sm text-gray-500 mt-2">Перетащите фото сюда или нажмите для выбора файла</p>
-                        </template>
-                        @if($employee->avatar_url)
-                            <img src="{{ asset('storage/' . $employee->avatar_url) }}" alt="preview" class="w-32 h-32 object-cover rounded-lg shadow" x-data="{ existing: true }">
-                        @endif
+                    <div class="flex flex-col gap-2 md:col-span-2"
+                         x-data="avatarPreview('{{ $employee->avatar_url ? asset('storage/' . $employee->avatar_url) : '' }}')">
+
+                        <label class="text-sm font-medium text-gray-900">Фото сотрудника</label>
+
+                        <div @dragover.prevent="dragOver=true"
+                             @dragleave.prevent="dragOver=false"
+                             @drop.prevent="handleDrop($event)"
+                             :class="dragOver ? 'border-gray-600 bg-gray-100' : 'border-gray-400 bg-gray-50'"
+                             class="relative flex flex-col items-center justify-center w-full p-6 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300 bg-white hover:bg-gray-100">
+
+                            <input type="file" name="avatar_url" accept="image/*" @change="previewFile($event)" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+
+                            <template x-if="preview">
+                                <div class="relative">
+                                    <img :src="preview" class="w-32 h-32 object-cover rounded-lg shadow">
+                                    <button type="button" @click="clear" class="absolute -top-2 -right-2 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-gray-800">&times;</button>
+                                </div>
+                            </template>
+
+                            <template x-if="!preview && existing">
+                                <div class="relative">
+                                    <img :src="existing" class="w-32 h-32 object-cover rounded-lg shadow">
+                                    {{-- Если нужно разрешить удаление старой аватарки, можно добавить кнопку сюда --}}
+                                </div>
+                            </template>
+
+                            <template x-if="!preview && !existing">
+                                <div class="text-center">
+                                    <flux:icon.user class="mx-auto h-12 w-12 text-gray-300" />
+                                    <p class="text-sm text-gray-500 mt-2">Перетащите фото сюда или нажмите для выбора</p>
+                                </div>
+                            </template>
+
+                        </div>
+
+                        @error('avatar_url')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
-                    @error('avatar_url')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
-                </div>
 
                 <div class="flex flex-col gap-2 md:col-span-2" x-data="passportFilesPreview({{ $passportFilesJson ?? '[]' }})">
                     <label for="passport_copy" class="text-sm font-medium text-gray-900">Копия паспорта</label>

@@ -29,7 +29,9 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="flex flex-col">
                         <span class="text-sm font-semibold text-gray-500">Должность</span>
-                        <span class="text-lg text-gray-900">{{ $employee->position }}</span>
+                        <span class="text-lg text-gray-900">
+                            {{ $employee->position->name ?? 'Не указана' }}
+                        </span>
                     </div>
                     <div class="flex flex-col">
                         <span class="text-sm font-semibold text-gray-500">Заработная плата</span>
