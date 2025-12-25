@@ -6,12 +6,6 @@
 
     <div class="flex flex-col flex-1 w-full h-full gap-4 p-4">
 
-        @if(session('alert'))
-            <div x-data="{ show: true }" x-show="show" x-init="setTimeout(() => show = false, 5000)" class="mb-4">
-                <x-alerts.alert :type="session('alert.type')" :message="session('alert.message')" />
-            </div>
-        @endif
-
         <h3 class="mb-2 text-2xl leading-none tracking-tight text-center text-gray-900">
             @isset($template)
                 {{ __('Редактирование шаблона') }}
