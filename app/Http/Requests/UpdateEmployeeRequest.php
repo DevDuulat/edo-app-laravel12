@@ -18,7 +18,7 @@ class UpdateEmployeeRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:50',
             'last_name' => 'required|string|max:50',
-            'position' => 'required|string|max:100',
+            'position_id' => 'nullable|exists:positions,id',
             'salary' => 'required|numeric|min:0',
             'hire_date' => 'required|date',
             'department_id' => 'required|exists:departments,id',
